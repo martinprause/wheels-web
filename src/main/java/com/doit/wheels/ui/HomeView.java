@@ -6,6 +6,7 @@ import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
 import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.List;
+import java.util.Locale;
 
 @Configurable
 @SpringComponent
@@ -33,18 +35,26 @@ public class HomeView extends HorizontalLayout implements View{
     private TextField login = new TextField("Last name");
     private Button save = new Button("Save", e -> saveCustomer());
     private Label tableHeader = new Label();
-    public void init(){
+    private Button changeLocale;
 
+
+    public void init(){
         updateGrid();
         users.setColumns("name", "login");
         users.addSelectionListener(e -> updateForm());
+        tableHeader.setId("user.table");
         tableHeader.setValue(messageService.getMessage("user.table"));
         addComponent(tableHeader);
         binder.bindInstanceFields(this);
-
-        VerticalLayout layout = new VerticalLayout(tableHeader, users, name, login, save);
+        changeLocale = new Button(messageService.getMessage("localization"));
+        changeLocale.setId("localization");
+        changeLocale.addClickListener(e -> {
+            Locale locale = !VaadinSession.getCurrent().getLocale().equals(Locale.ENGLISH) ? Locale.ENGLISH : Locale.GERMAN;
+                messageService.updateLocale(getUI(), locale);
+                VaadinSession.getCurrent().setLocale(locale);
+        });
+        VerticalLayout layout = new VerticalLayout(tableHeader, users, name, login, save, changeLocale);
         addComponent(layout);
-//        setContent(layout);
     }
 
     private void updateGrid() {

@@ -13,6 +13,8 @@ import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Locale;
+
 
 @Viewport("user-scalable=no,initial-scale=1.0")
 @Theme("mytheme")
@@ -28,12 +30,10 @@ public class ApplicationUI extends UI implements View{
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         new Navigator(this, this);
-
         getNavigator().addProvider(viewProvider);
-
         Responsive.makeResponsive(this);
-        setLocale(vaadinRequest.getLocale());
         getPage().setTitle("Wheels");
+        getSession().setLocale(Locale.ENGLISH);
     }
 
     @Override

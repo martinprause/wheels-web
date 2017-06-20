@@ -121,6 +121,7 @@ public class LoginView extends CssLayout implements View{
             choosedLocale = Locale.ENGLISH;
         }
         VaadinSession.getCurrent().setLocale(choosedLocale);
+        getUI();
     }
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
