@@ -1,18 +1,8 @@
 package com.doit.wheels.ui;
 
-import com.doit.wheels.dao.entities.User;
-import com.doit.wheels.services.UserService;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Page;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,31 +11,26 @@ import java.util.Locale;
 /**
  * UI content when the user is not logged in yet.
  */
-@Configurable
-@SpringComponent
-@SpringView(name = LoginView.NAME)
-public class LoginView extends CssLayout implements View{
+//@Configurable
+//@SpringComponent
+//@SpringView(name = LoginView.NAME)
+public class LoginView extends CssLayout{
 
-    @Autowired
-    private UserService service;
 
     private TextField username;
     private PasswordField password;
     private Button login;
     private ComboBox<Locale> locales = new ComboBox<>();
 
-    public static final String NAME = "";
-
-    public void init(){
-        buildUI();
-        username.focus();
+    public LoginView(LoginCallback callback){
+        buildUI(callback);
     }
 
-    private void buildUI() {
+    private void buildUI(LoginCallback callback) {
         addStyleName("login-screen");
 
         // login form, centered in the available part of the screen
-        Component loginForm = buildLoginForm();
+        Component loginForm = buildLoginForm(callback);
 
         // layout to center login form when there is sufficient screen space
         // - see the theme for how this is made responsive for various screen
@@ -61,7 +46,7 @@ public class LoginView extends CssLayout implements View{
         addComponent(centeringLayout);
     }
 
-    private Component buildLoginForm() {
+    private Component buildLoginForm(LoginCallback callback) {
         FormLayout loginForm = new FormLayout();
 
         loginForm.addStyleName("login-form");
@@ -78,15 +63,11 @@ public class LoginView extends CssLayout implements View{
         loginForm.addComponent(buttons);
 
         buttons.addComponent(login = new Button("Login"));
-        login.setDisableOnClick(true);
-        login.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                try {
-                    login();
-                } finally {
-                    login.setEnabled(true);
-                }
+        login.addClickListener((Button.ClickListener) event -> {
+            String pword = password.getValue();
+            if (!callback.login(username.getValue(), pword)) {
+                Notification.show("Login failed");
+                username.focus();
             }
         });
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
@@ -95,37 +76,14 @@ public class LoginView extends CssLayout implements View{
         localeList.add(Locale.ENGLISH);
         localeList.add(Locale.GERMAN);
         locales.setItems(localeList);
-        buttons.addComponent(locales);
+//        buttons.addComponent(locales);
         return loginForm;
     }
 
-    private void login() {
-        setSessionLocale(locales.getValue());
-        User user = service.findUserByLogin(username.getValue());
-        if (user == null) showNotification(new Notification("Login", "No such user"));
-        else if (user.getPassword().equals(password.getValue())){
-            getUI().getNavigator().navigateTo(HomeView.NAME);
-        }
-        else showNotification(new Notification("Login", "Password incorrect"));
-    }
+    @FunctionalInterface
+    public interface LoginCallback {
 
-    private void showNotification(Notification notification) {
-        // keep the notification visible a little while after moving the
-        // mouse, or until clicked
-        notification.setDelayMsec(2000);
-        notification.show(Page.getCurrent());
-    }
-
-    private void setSessionLocale(Locale choosedLocale){
-        if (choosedLocale == null){
-            choosedLocale = Locale.ENGLISH;
-        }
-        VaadinSession.getCurrent().setLocale(choosedLocale);
-        getUI();
-    }
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
-        init();
+        boolean login(String username, String password);
     }
 
 }

@@ -12,6 +12,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,23 +28,26 @@ public class HomeView extends HorizontalLayout implements View{
     @Autowired
     private MessageByLocaleServiceImpl messageService;
 
-    public static final String NAME = "home";
+    public static final String NAME = "";
     private Grid<User> users = new Grid<>(User.class);
     private User user;
     private Binder<User> binder = new Binder<>(User.class);
-    private TextField name = new TextField("Name");
-    private TextField login = new TextField("Last name");
+    private TextField username = new TextField("Username");
+    private TextField password = new TextField("Password");
     private Button save = new Button("Save", e -> saveCustomer());
     private Label tableHeader = new Label();
+    private Label currentUser = new Label();
     private Button changeLocale;
+    private Button logout;
 
 
     public void init(){
         updateGrid();
-        users.setColumns("name", "login");
+        users.setColumns("username", "password");
         users.addSelectionListener(e -> updateForm());
         tableHeader.setId("user.table");
         tableHeader.setValue(messageService.getMessage("user.table"));
+        currentUser.setValue(SecurityContextHolder.getContext().getAuthentication().getName());
         addComponent(tableHeader);
         binder.bindInstanceFields(this);
         changeLocale = new Button(messageService.getMessage("localization"));
@@ -53,12 +57,14 @@ public class HomeView extends HorizontalLayout implements View{
                 messageService.updateLocale(getUI(), locale);
                 VaadinSession.getCurrent().setLocale(locale);
         });
-        VerticalLayout layout = new VerticalLayout(tableHeader, users, name, login, save, changeLocale);
+        logout = new Button("logout");
+        logout.addClickListener(e -> logout());
+        VerticalLayout layout = new VerticalLayout(tableHeader, users, username, password, save, changeLocale, currentUser, logout);
         addComponent(layout);
     }
 
     private void updateGrid() {
-        List<User> userList = (List<User>) userService.findAll();
+        List<User> userList = userService.findAll();
         users.setItems(userList);
         setFormVisible(false);
     }
@@ -74,8 +80,8 @@ public class HomeView extends HorizontalLayout implements View{
     }
 
     private void setFormVisible(boolean visible) {
-        name.setVisible(visible);
-        login.setVisible(visible);
+        username.setVisible(visible);
+        password.setVisible(visible);
         save.setVisible(visible);
     }
 
@@ -84,6 +90,10 @@ public class HomeView extends HorizontalLayout implements View{
         updateGrid();
     }
 
+    private void logout() {
+        getUI().getPage().reload();
+        getSession().close();
+    }
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         init();
