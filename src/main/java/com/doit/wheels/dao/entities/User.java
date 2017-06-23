@@ -1,7 +1,8 @@
 package com.doit.wheels.dao.entities;
 
+import com.doit.wheels.utils.*;
+
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name="users")
@@ -14,8 +15,7 @@ public class User {
 
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private Set<UserRole> role;
+    private UserRoleEnum role;
 
     public User() {
 
@@ -50,11 +50,12 @@ public class User {
         this.password = password;
     }
 
-    public Set<UserRole> getRole() {
+    public UserRoleEnum getRole() {
         return role;
     }
 
-    public void setRole(Set<UserRole> role) {
+    public void setRole(UserRoleEnum role) {
         this.role = role;
     }
+
 }

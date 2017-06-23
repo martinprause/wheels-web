@@ -28,6 +28,7 @@ public class HomeView extends HorizontalLayout implements View{
     @Autowired
     private MessageByLocaleServiceImpl messageService;
 
+
     public static final String NAME = "";
     private Grid<User> users = new Grid<>(User.class);
     private User user;

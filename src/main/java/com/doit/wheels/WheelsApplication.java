@@ -23,5 +23,4 @@ public class WheelsApplication {
         messageSource.setCacheSeconds(3600); //refresh cache once per hour
         return messageSource;
     }
-
 }

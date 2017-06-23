@@ -1,6 +1,5 @@
 package com.doit.wheels.ui;
 
-import com.doit.wheels.dao.repositories.UserRepository;
 import com.doit.wheels.auth.SecurityUtils;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Viewport;
@@ -34,10 +33,7 @@ import java.util.Locale;
 public class ApplicationUI extends UI implements View{
 
     @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserRepository service;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private SpringViewProvider viewProvider;
@@ -60,8 +56,10 @@ public class ApplicationUI extends UI implements View{
 
     private void showMain() {
         new Navigator(this, this);
+        viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
         getNavigator().addProvider(viewProvider);
         getNavigator().navigateTo("");
+        setErrorHandler(this::handleError);
     }
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {

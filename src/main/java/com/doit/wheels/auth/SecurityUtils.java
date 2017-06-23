@@ -1,8 +1,12 @@
 package com.doit.wheels.auth;
 
+import com.doit.wheels.utils.UserRoleEnum;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Set;
+
 
 public final class SecurityUtils {
 
@@ -14,8 +18,15 @@ public final class SecurityUtils {
         return authentication != null && authentication.isAuthenticated();
     }
 
-    public static boolean hasRole(String role) {
+    public static boolean hasRole(Set<UserRoleEnum> roles) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && authentication.getAuthorities().contains(new SimpleGrantedAuthority(role));
+        if (authentication != null){
+            for (UserRoleEnum role : roles) {
+                if (authentication.getAuthorities().contains(new SimpleGrantedAuthority(role.name()))){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
