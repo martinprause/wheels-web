@@ -84,7 +84,21 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <username>
+                        tomcatuser
+                    </username>
+                    <password>
+                        tomcatpass
+                    </password>
+                </configuration>
+            </plugin>
 		</plugins>
+        <finalName>wheels</finalName>
 	</build>
 
 
