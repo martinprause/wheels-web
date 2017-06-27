@@ -1,21 +1,27 @@
 package com.doit.wheels.dao.entities;
 
-import com.doit.wheels.utils.*;
+import com.doit.wheels.utils.UserRoleEnum;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
 
 @Entity
 @Table(name="users")
-public class User {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
+public class User extends Model{
+
 
     private String username;
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private UserRoleEnum role;
+
+    private String employeeNo;
+
+    private String comment;
 
     public User() {
 
@@ -24,14 +30,6 @@ public class User {
     public User(String login, String password) {
         this.username = login;
         this.password = password;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -56,6 +54,22 @@ public class User {
 
     public void setRole(UserRoleEnum role) {
         this.role = role;
+    }
+
+    public String getEmployeeNo() {
+        return employeeNo;
+    }
+
+    public void setEmployeeNo(String employeeNo) {
+        this.employeeNo = employeeNo;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 }

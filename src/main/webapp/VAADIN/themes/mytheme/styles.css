@@ -12503,7 +12503,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .login-screen {
 	background: #3b3f42;
-	background-image: url(img/bg.jpg);
+	background-image: url(img/background.jpg);
 	background-size: cover;
 	background-position: 50% 50%;
 	width: 100%;
@@ -13079,4 +13079,19 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .align-right {
 	text-align: right;
+}
+
+.mytheme .header {
+    background-color: #999999;
+    margin-top: -20px;
+    padding: 15px 10px;
+}
+
+.mytheme .headerButton {
+    float: right;
+    margin-right: 10px;
+}
+
+.mytheme .header-statusbar-title{
+    margin-right: 5px;
 }
