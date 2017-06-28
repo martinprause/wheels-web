@@ -1,8 +1,11 @@
 package com.doit.wheels.ui;
 
+import com.doit.wheels.dao.entities.AccessLevel;
 import com.doit.wheels.dao.entities.User;
+import com.doit.wheels.services.AccessLevelService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
+import com.doit.wheels.utils.AccessLevelType;
 import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -25,17 +28,25 @@ public class HomeView extends HorizontalLayout implements View{
     @Autowired
     private MessageByLocaleServiceImpl messageService;
 
-    static final String NAME = "";
+    @Autowired
+    private AccessLevelService accessLevelService;
+
+    static final String NAME = "home";
     private Grid<User> users = new Grid<>(User.class);
+    private Grid<AccessLevel> accessLevels = new Grid<>(AccessLevel.class);
     private User user;
     private Binder<User> binderUser = new Binder<>(User.class);
+    private Binder<AccessLevel> binderAccessLevels = new Binder<>(AccessLevel.class);
     private TextField username = new TextField("Username");
     private TextField comment = new TextField("Comment");
     private Button save = new Button("Save", e -> saveCustomer());
     private Label userTableCaption = new Label();
     private Label accessTableCaption = new Label();
+    private ComboBox<AccessLevelType> accessEnums = new ComboBox<>("Accesses");
+    private Button addAccess = new Button("Add", e -> addAccess());
 
     private void init(){
+        setWidth("100%");
         updateGrid();
         users.setColumns("username", "role", "comment");
         users.addSelectionListener(e -> updateForm());
@@ -44,11 +55,18 @@ public class HomeView extends HorizontalLayout implements View{
         addComponent(userTableCaption);
         binderUser.bindInstanceFields(this);
         VerticalLayout tableLayout = new VerticalLayout(userTableCaption, users);
+        VerticalLayout detailsLayout = new VerticalLayout(accessEnums, addAccess, username, comment, save);
         addComponent(tableLayout);
-        VerticalLayout userDetailsLayout = new VerticalLayout(username, comment, save);
-        addComponent(userDetailsLayout);
+        setExpandRatio(tableLayout, 1.0f);
+        accessLevels.setColumns("accessLevelType");
+        accessLevels.setWidth("80%");
         accessTableCaption.setId("access.table");
         accessTableCaption.setValue(messageService.getMessage("access.table"));
+        VerticalLayout accessesLayout = new VerticalLayout(accessTableCaption, accessLevels);
+        addComponent(accessesLayout);
+        setExpandRatio(accessesLayout, 1.0f);
+        addComponent(detailsLayout);
+        setExpandRatio(detailsLayout, 0.4f);
     }
 
     private void updateGrid() {
@@ -64,6 +82,8 @@ public class HomeView extends HorizontalLayout implements View{
             user = users.asSingleSelect().getValue();
             binderUser.setBean(user);
             setFormVisible(true);
+            accessLevels.setItems(user.getAccessLevels());
+            accessEnums.setItems(AccessLevelType.values());
         }
     }
 
@@ -71,13 +91,25 @@ public class HomeView extends HorizontalLayout implements View{
         username.setVisible(visible);
         comment.setVisible(visible);
         save.setVisible(visible);
+        accessLevels.setVisible(visible);
+        accessEnums.setVisible(visible);
         accessTableCaption.setVisible(visible);
+        addAccess.setVisible(visible);
     }
 
     private void saveCustomer() {
         userService.saveUser(user);
         updateGrid();
     }
+
+    private void addAccess(){
+        AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevelType(accessEnums.getSelectedItem().get());
+        user.addAccessLevel(accessLevel);
+//        accessLevel.getUsers().add(user);
+        userService.saveUser(user);
+        updateForm();
+    }
+
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {

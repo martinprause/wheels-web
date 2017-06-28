@@ -72,6 +72,11 @@ public class ApplicationUI extends UI implements View{
         header.setWidth("100%");
         layout.addComponent(header);
 
+        ThemeResource resourceHeader = new ThemeResource("img/ico/header-user.png");
+        Image userImage = new Image(null, resourceHeader);
+        userImage.addStyleName("header-user-image");
+        header.addComponent(userImage);
+
         Label headerStatusBar = new Label(messageService.getMessage("header.statusbar"));
         headerStatusBar.setId("header.statusbar");
         headerStatusBar.setStyleName("header-statusbar-title");
@@ -79,7 +84,16 @@ public class ApplicationUI extends UI implements View{
 
         headerUser = new Label();
         headerUser.setSizeUndefined();
+        headerUser.setStyleName("header-user-title");
         header.addComponent(headerUser);
+
+        ThemeResource resource = new ThemeResource("img/felgen.png");
+        Image image = new Image(null, resource);
+        image.setStyleName("header-image");
+        image.setWidth("200px");
+        image.setHeight("50px");
+        header.addComponent(image);
+
         Button logoutButton = new Button(messageService.getMessage("header.logout"));
         logoutButton.setId("header.logout");
         logoutButton.addClickListener(e -> logout());
@@ -103,7 +117,7 @@ public class ApplicationUI extends UI implements View{
         Navigator navigator = new Navigator(this, viewContainer);
         navigator.addProvider(viewProvider);
         viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
-        navigator.navigateTo("");
+        navigator.navigateTo("landing");
         updateHeaderUser();
     }
     @Override

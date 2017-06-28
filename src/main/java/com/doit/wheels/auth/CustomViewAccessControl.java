@@ -17,7 +17,8 @@ public class CustomViewAccessControl implements ViewAccessControl {
     @Override
     public boolean isAccessGranted(UI ui, String beanName) {
         Set<UserRoleEnum> roles = new HashSet<>();
-        if (beanName.equals("homeView")) {
+        if (beanName.equals("homeView") ||
+                beanName.equals("landingView")) {
             roles.add(UserRoleEnum.ADMIN);
             roles.add(UserRoleEnum.ENGINEER);
             return SecurityUtils.hasRole(roles);

@@ -13082,16 +13082,76 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .header {
-    background-color: #999999;
+    background-color: #ffffff;
     margin-top: -20px;
     padding: 15px 10px;
+    border-radius: 4px;
+    border: 1px solid #d5d5d5;
+    -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+    overflow: visible !important;
+    text-align: center;
 }
 
 .mytheme .headerButton {
     float: right;
     margin-right: 10px;
+    margin-top: 5px;
+    width: 100px !important;
 }
 
 .mytheme .header-statusbar-title{
     margin-right: 5px;
+    margin-top: 5px;
+    float: left;
+}
+
+.mytheme .header-user-title{
+    float: left;
+    margin-top:5px;
+}
+
+.mytheme .header-user-image{
+    float: left;
+    margin-right: 5px;
+}
+
+.mytheme .landing-page{
+    background: #3b3f42;
+    background-image: url(img/background.jpg);
+    background-size: cover;
+    background-position: 50% 30%;
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    text-align:center;
+    position: relative;
+}
+
+.mytheme .button-group{
+    /*background-color: #00ace0;*/
+}
+
+.mytheme .center-menu-bar{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.mytheme .center-menu-bar-buttons{
+    width: 100px !important;
+    height: 100px !important;
+    padding: 0 0; !important;
+    background: rgba(255,255,255,0.75);
+    /*white-space: normal;*/
+}
+
+.mytheme .center-menu-bar-buttons .v-button-caption{
+    white-space: normal;
+}
+
+.mytheme .center-menu-bar-buttons .v-button-wrap{
+    vertical-align: middle;
 }
