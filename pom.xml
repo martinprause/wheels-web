@@ -89,12 +89,11 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <username>
-                        tomcatuser
-                    </username>
-                    <password>
-                        tomcatpass
-                    </password>
+                    <url>http://localhost:8080/manager/text</url>
+                    <path>/wheels</path>
+                    <server>TomcatServer</server>
+                    <username>tomcat</username>
+                    <password>root</password>
                 </configuration>
             </plugin>
 		</plugins>

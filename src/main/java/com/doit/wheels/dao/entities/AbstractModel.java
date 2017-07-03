@@ -6,10 +6,10 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class Model {
+public abstract class AbstractModel {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    protected Integer id;
 
     public Integer getId() {
         return id;

@@ -5,12 +5,12 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 @Component
@@ -38,10 +38,16 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
                 return;
             }
             if (c instanceof Label){
-                ((Label) c).setValue(rb.getString(c.getId()));
+                if (((Label) c).getValue().endsWith(":*")){
+                    ((Label) c).setValue(rb.getString(c.getId()) + ":*");
+                }
+                else ((Label) c).setValue(rb.getString(c.getId()));
             }
             else if (c instanceof Button){
-                c.setCaption(rb.getString(c.getId()));
+                if (c.getCaption().endsWith(":*")){
+                    c.setCaption(rb.getString(c.getId()) + ":*");
+                }
+                else c.setCaption(rb.getString(c.getId()));
             }
         });
     }

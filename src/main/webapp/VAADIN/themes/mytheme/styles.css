@@ -1909,7 +1909,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-spacing {
 	width: 18px;
-	height: 18px;
+	height: 10px;
 }
 
 .mytheme .v-verticallayout-well, .mytheme .v-horizontallayout-well {
@@ -13129,29 +13129,162 @@ div.v-layout.v-horizontal.v-widget {
     position: relative;
 }
 
-.mytheme .button-group{
-    /*background-color: #00ace0;*/
-}
-
-.mytheme .center-menu-bar{
+.mytheme .landing-center-menu-bar{
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.mytheme .center-menu-bar-buttons{
-    width: 100px !important;
-    height: 100px !important;
+.mytheme .landing-center-menu-bar-buttons{
+    width: 150px !important;
+    height: 150px !important;
     padding: 0 0; !important;
     background: rgba(255,255,255,0.75);
-    /*white-space: normal;*/
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
 }
 
-.mytheme .center-menu-bar-buttons .v-button-caption{
+.mytheme .landing-center-menu-bar-buttons:hover {
+    background-color: #2E8DEF;
+    border-radius: 100%;
+}
+
+.mytheme .landing-center-menu-bar-buttons .v-button-caption{
     white-space: normal;
 }
 
-.mytheme .center-menu-bar-buttons .v-button-wrap{
+.mytheme .landing-center-menu-bar-buttons .v-button-wrap{
     vertical-align: middle;
 }
+
+.mytheme .user-management-menubar{
+    width: 70%;
+    height: 100px;
+    margin-left: 15%;
+    align-items: center;
+}
+
+.mytheme .user-management-menubar .create-user-button{
+    float:left;
+    margin-left: 5%;
+    margin-top: 17.5px;
+    width:300px;
+}
+
+.mytheme .user-management-menubar .manage-user-access-button{
+    float:right;
+    margin-right: 5%;
+    margin-top: 17.5px;
+    width:300px;
+}
+
+.mytheme .clear-button{
+    border: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+.mytheme .user-management-menubar .create-user-button:hover:after{
+    background-color: transparent;
+}
+
+.mytheme .user-management-menubar .create-user-button:hover{
+    color:#00ace0;
+}
+
+.mytheme .user-management-menubar .create-user-button:hover img{
+    content: url(img/ico/new-user-blue.png);
+}
+
+.mytheme .user-management-menubar .manage-user-access-button:hover:after{
+    background-color: transparent;
+}
+
+.mytheme .user-management-menubar .manage-user-access-button:hover{
+    color:#00ace0;
+}
+
+.mytheme .user-management-menubar .manage-user-access-button:hover img{
+    content: url(img/ico/settings-blue.png);
+}
+
+.mytheme .user-management-data-horizontal{
+    height: 100%;
+    width: 70%;
+    /*background-color: #00ace0;*/
+    margin-left: 15%;
+}
+
+.mytheme .v-slot .v-slot-user-management-menubar{
+    height:100px !important;
+}
+
+.mytheme .v-slot .v-slot-user-management-data-horizontal{
+    height: auto !important;
+}
+
+.mytheme .user-management-data-left{
+    width:100%;
+    height: 100%;
+    text-align:center;
+}
+
+.mytheme .user-management-data-right{
+    width: 100%;
+    height:100%;
+    text-align:center;
+}
+
+.mytheme .v-slot-user-management-data-horizontal .v-spacing{
+    width: 0 !important;
+}
+
+.mytheme .v-slot .v-slot-user-management-data-left{
+    width: 50%;
+}
+
+.mytheme .v-slot .v-slot-user-management-data-right{
+    width: 50%;
+}
+
+.mytheme .user-management-label{
+    margin-right: 10px;
+    width: 150px;
+    font-weight: 600;
+}
+
+.mytheme .user-management .v-spacing{
+    height: 0;
+}
+
+.mytheme .v-slot-user-management-data-left .v-spacing{
+    height: 15px;
+}
+
+.mytheme .v-slot-user-management-data-right .v-spacing{
+    height: 15px;
+}
+
+.mytheme .v-slot-user-management{
+    height: 80% !important;
+    margin-top: -45px;
+}
+
+.mytheme .v-slot-user-management .v-expand{
+    padding-top: 0 !important;
+}
+
+.mytheme .user-management-footer{
+    width: 70%;
+    height: 75px;
+    margin-left: 15%;
+}
+
+
+
+
+

@@ -9,8 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="users")
-public class User extends Model{
-
+public class User extends Contact{
 
     private String username;
 
@@ -22,6 +21,9 @@ public class User extends Model{
     private String employeeNo;
 
     private String comment;
+
+//    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+//    private Set<AccessLevel> accessLevels = new HashSet<>();
 
     public User() {
 
@@ -72,4 +74,16 @@ public class User extends Model{
         this.comment = comment;
     }
 
+//    public Set<AccessLevel> getAccessLevels() {
+//        return accessLevels;
+//    }
+//
+//    public void setAccessLevels(Set<AccessLevel> accessLevels) {
+//        this.accessLevels = accessLevels;
+//    }
+//
+//    public void addAccessLevel(AccessLevel accessLevel) {
+//        accessLevels.add(accessLevel);
+//        accessLevel.getUsers().add(this);
+//    }
 }

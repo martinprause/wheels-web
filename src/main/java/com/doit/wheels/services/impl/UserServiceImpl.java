@@ -3,8 +3,10 @@ package com.doit.wheels.services.impl;
 import com.doit.wheels.dao.entities.User;
 import com.doit.wheels.dao.repositories.UserRepository;
 import com.doit.wheels.services.UserService;
+import com.doit.wheels.utils.exceptions.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +17,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public User getUser(long id) {
         return userRepository.findOne(id);
@@ -22,7 +27,14 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public User saveUser(User user){
+    public User saveUser(User user) throws UserException {
+
+        if (findUserByUsername(user.getUsername()) != null){
+            throw new UserException();
+        }
+        else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userRepository.save(user);
     }
 
