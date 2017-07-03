@@ -75,17 +75,19 @@ public class ApplicationUI extends UI implements View{
         ThemeResource resourceHeader = new ThemeResource("img/ico/header-user.png");
         Image userImage = new Image(null, resourceHeader);
         userImage.addStyleName("header-user-image");
-        header.addComponent(userImage);
 
-        Label headerStatusBar = new Label(messageService.getMessage("header.statusbar"));
+        Label headerStatusBar = new Label("Statusbar");
         headerStatusBar.setId("header.statusbar");
         headerStatusBar.setStyleName("header-statusbar-title");
-        header.addComponent(headerStatusBar);
 
         headerUser = new Label();
         headerUser.setSizeUndefined();
         headerUser.setStyleName("header-user-title");
-        header.addComponent(headerUser);
+
+        CssLayout headerLeft = new CssLayout();
+        headerLeft.addStyleName("header-item-left");
+        headerLeft.addComponents(userImage, headerStatusBar, headerUser);
+        header.addComponent(headerLeft);
 
         ThemeResource resource = new ThemeResource("img/felgen.png");
         Image image = new Image(null, resource);
@@ -94,17 +96,22 @@ public class ApplicationUI extends UI implements View{
         image.setHeight("50px");
         header.addComponent(image);
 
-        Button logoutButton = new Button(messageService.getMessage("header.logout"));
-        logoutButton.setId("header.logout");
-        logoutButton.addClickListener(e -> logout());
-        logoutButton.setStyleName("headerButton");
-        header.addComponent(logoutButton);
         changeLocale = new Button(messageService.getMessage("localization"));
         changeLocale.setId("localization");
         changeLocale.addClickListener(e -> changeLocale());
         changeLocale.setStyleName("headerButton");
         header.addComponent(changeLocale);
-//        header.setComponentAlignment(headerUser, Alignment.MIDDLE_LEFT);
+
+        Button logoutButton = new Button(messageService.getMessage("header.logout"));
+        logoutButton.setId("header.logout");
+        logoutButton.addClickListener(e -> logout());
+        logoutButton.setStyleName("headerButton");
+        header.addComponent(logoutButton);
+
+        CssLayout headerRight = new CssLayout();
+        headerRight.addStyleName("header-item-right");
+        headerRight.addComponents(changeLocale, logoutButton);
+        header.addComponent(headerRight);
 
         Panel viewContainer = new Panel();
         viewContainer.setSizeFull();

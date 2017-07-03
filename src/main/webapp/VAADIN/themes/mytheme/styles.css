@@ -13094,7 +13094,6 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .headerButton {
-    float: right;
     margin-right: 10px;
     margin-top: 5px;
     width: 100px !important;
@@ -13103,16 +13102,14 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .header-statusbar-title{
     margin-right: 5px;
     margin-top: 5px;
-    float: left;
 }
 
 .mytheme .header-user-title{
-    float: left;
     margin-top:5px;
 }
 
 .mytheme .header-user-image{
-    float: left;
+	height: 32px;
     margin-right: 5px;
 }
 
@@ -13284,6 +13281,27 @@ div.v-layout.v-horizontal.v-widget {
     margin-left: 15%;
 }
 
+.mytheme .header-item-right{
+
+}
+
+.mytheme .header-item-left{
+
+}
+
+.mytheme .header {
+	display: flex;
+	align-items: center;
+}
+
+.mytheme .header-item-left {
+	margin-right: auto;
+	width: 17%;
+}
+
+.mytheme .header-item-right {
+	margin-left: auto;
+}
 
 
 
