@@ -13302,7 +13302,61 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .header-item-right {
 	margin-left: auto;
 }
+.mytheme .general-properties-menu-bar {
+	width: 100%;
+	height: 100px;
+	text-align: center;
+}
 
+.mytheme .v-slot-general-properties-menu-bar {
+	height: auto !important;
+}
 
+.mytheme .menu-button {
+	margin-top: 17.5px !important;
+	width: calc(100% / 6) !important;
+}
 
+.mytheme .menu-button:hover:after{
+	background-color: transparent;
+}
 
+.mytheme .menu-button:hover{
+	color:#00ace0;
+}
+
+#generalProperties\.country:hover img {
+	content: url(img/ico/country-blue.png);
+}
+
+#generalProperties\.manufacturer:hover img {
+	content: url(img/ico/settings-blue.png);
+}
+#generalProperties\.model:hover img {
+	content: url(img/ico/model-blue.png);
+}
+
+#generalProperties\.modelType:hover img {
+	content: url(img/ico/model-type-blue.png);
+}
+
+#generalProperties\.valveType:hover img {
+	content: url(img/ico/valve-type-blue.png);
+}
+
+#generalProperties\.guideline:hover img {
+	content: url(img/ico/guideline-blue.png);
+}
+
+.gen-properties-middle-layout > *,
+#generalProperties\.buttons\.add,
+#generalProperties\.buttons\.edit,
+#generalProperties\.buttons\.delete {
+	background:#5b99e2 !important;
+	color: #ffffff;
+	border-radius: 5px;
+	border:0;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}

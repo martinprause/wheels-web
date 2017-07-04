@@ -61,6 +61,7 @@ public class LandingView extends CssLayout implements View {
         generaLPropertiesButton.setStyleName("landing-center-menu-bar-buttons");
         generaLPropertiesButton.setIcon(new ThemeResource("img/ico/wrench.png"));
         generaLPropertiesButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        generaLPropertiesButton.addClickListener(enter -> getUI().getNavigator().navigateTo("general-properties"));
 
         secondButtonGroup.addComponents(searchButton, generaLPropertiesButton);
         centerMenuBar.addComponent(secondButtonGroup);

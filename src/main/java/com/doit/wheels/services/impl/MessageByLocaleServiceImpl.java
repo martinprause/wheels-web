@@ -2,9 +2,7 @@ package com.doit.wheels.services.impl;
 
 import com.doit.wheels.services.MessageByLocaleService;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HasComponents;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -42,6 +40,15 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
                     ((Label) c).setValue(rb.getString(c.getId()) + ":*");
                 }
                 else ((Label) c).setValue(rb.getString(c.getId()));
+            }
+            else if (c instanceof TextField){
+                ((TextField) c).setPlaceholder(rb.getString(c.getId()));
+            }
+            else if(c instanceof Grid){
+                ((Grid) c).getDefaultHeaderRow().getComponents().forEach(o -> {
+                    if(o.getId() != null)
+                        o.setCaption(rb.getString(o.getId()));
+                });
             }
             else if (c instanceof Button){
                 if (c.getCaption().endsWith(":*")){

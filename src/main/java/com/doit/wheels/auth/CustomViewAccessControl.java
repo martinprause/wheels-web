@@ -19,7 +19,8 @@ public class CustomViewAccessControl implements ViewAccessControl {
         Set<UserRoleEnum> roles = new HashSet<>();
         if (beanName.equals("homeView") ||
                 beanName.equals("landingView") ||
-                beanName.equals("userManagementView")) {
+                beanName.equals("userManagementView") ||
+                beanName.equals("generalPropertiesView")) {
             roles.add(UserRoleEnum.ADMIN);
             roles.add(UserRoleEnum.ENGINEER);
             return SecurityUtils.hasRole(roles);

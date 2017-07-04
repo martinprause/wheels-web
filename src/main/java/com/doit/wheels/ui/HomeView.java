@@ -115,7 +115,7 @@ public class HomeView extends HorizontalLayout implements View{
     private void addAccess(){
         Country country1 = new Country();
         country1.setDescription("Ukraine");
-        countryService.saveCountry(country1);
+        countryService.save(country1);
 
 
         User user = new User();
