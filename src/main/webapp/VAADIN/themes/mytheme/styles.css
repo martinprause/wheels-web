@@ -13156,10 +13156,12 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .user-management-menubar{
-    width: 70%;
-    height: 100px;
-    margin-left: 15%;
-    align-items: center;
+    /*width: 70%;*/
+    /*height: 100px;*/
+    /*margin-left: 15%;*/
+    /*align-items: center;*/
+	display: flex;
+	justify-content: center;
 }
 
 .mytheme .user-management-menubar .create-user-button{
@@ -13210,10 +13212,12 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .user-management-data-horizontal{
-    height: 100%;
-    width: 70%;
+    /*height: 100%;*/
+    /*width: 70%;*/
     /*background-color: #00ace0;*/
-    margin-left: 15%;
+    /*margin-left: 15%;*/
+	display: flex;
+	justify-content: center;
 }
 
 .mytheme .v-slot .v-slot-user-management-menubar{
@@ -13227,13 +13231,13 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .user-management-data-left{
     width:100%;
     height: 100%;
-    text-align:center;
+    text-align:right;
 }
 
 .mytheme .user-management-data-right{
     width: 100%;
     height:100%;
-    text-align:center;
+    text-align:left;
 }
 
 .mytheme .v-slot-user-management-data-horizontal .v-spacing{
@@ -13276,17 +13280,11 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .user-management-footer{
-    width: 70%;
+	display: flex;
+	justify-content: center;
+    /*width: 70%;*/
     height: 75px;
-    margin-left: 15%;
-}
-
-.mytheme .header-item-right{
-
-}
-
-.mytheme .header-item-left{
-
+    /*margin-left: 15%;*/
 }
 
 .mytheme .header {
@@ -13296,12 +13294,13 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .header-item-left {
 	margin-right: auto;
-	width: 17%;
+	width: 200px;
 }
 
 .mytheme .header-item-right {
 	margin-left: auto;
 }
+
 .mytheme .general-properties-menu-bar {
 	width: 100%;
 	height: 100px;
