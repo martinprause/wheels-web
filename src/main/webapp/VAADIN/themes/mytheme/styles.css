@@ -13399,3 +13399,7 @@ div.v-layout.v-horizontal.v-widget {
 	flex-flow: row wrap;
 	justify-content: center;
 }
+
+.mytheme .user-management-data-left .v-caption {
+	position: absolute;
+}
