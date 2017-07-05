@@ -1,6 +1,6 @@
 package com.doit.wheels.ui.nested;
 
-import com.doit.wheels.dao.entities.Description;
+import com.doit.wheels.dao.entities.basic.Description;
 import com.doit.wheels.services.GenericService;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.vaadin.data.Binder;

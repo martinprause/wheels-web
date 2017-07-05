@@ -106,7 +106,7 @@ public class HomeView extends HorizontalLayout implements View{
 
     private void saveCustomer() {
         try {
-            userService.saveUser(user);
+            userService.addNewUser(user);
         } catch (UserException e) {
             e.printStackTrace();
         }
@@ -125,7 +125,7 @@ public class HomeView extends HorizontalLayout implements View{
         user.setRole(UserRoleEnum.DRIVER);
         user.setCountry(country1);
         try {
-            userService.saveUser(user);
+            userService.addNewUser(user);
         } catch (UserException e) {
             e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class HomeView extends HorizontalLayout implements View{
 //        AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevelType(accessEnums.getSelectedItem().get());
 //        user.addAccessLevel(accessLevel);
 ////        accessLevel.getUsers().add(user);
-//        userService.saveUser(user);
+//        userService.addNewUser(user);
 //        updateForm();
     }
 

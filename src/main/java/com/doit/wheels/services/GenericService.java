@@ -1,10 +1,11 @@
 package com.doit.wheels.services;
 
-import com.doit.wheels.dao.entities.Description;
+import com.doit.wheels.dao.entities.basic.AbstractModel;
 
 import java.util.List;
 
-public interface GenericService<T extends Description> {
+public interface GenericService<T extends AbstractModel> {
+
     T save(T t);
 
     T update(T t);

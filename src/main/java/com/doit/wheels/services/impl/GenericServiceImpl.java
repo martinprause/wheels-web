@@ -1,6 +1,6 @@
 package com.doit.wheels.services.impl;
 
-import com.doit.wheels.dao.entities.Description;
+import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.dao.repositories.GenericRepository;
 import com.doit.wheels.services.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @Service
-public class GenericServiceImpl<T extends Description> implements GenericService<T> {
+public class GenericServiceImpl<T extends AbstractModel> implements GenericService<T> {
     private final GenericRepository<T> genericRepository;
 
     @Autowired

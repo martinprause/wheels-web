@@ -1,5 +1,6 @@
 package com.doit.wheels.dao.entities;
 
+import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.utils.AccessLevelType;
 
 import javax.persistence.*;

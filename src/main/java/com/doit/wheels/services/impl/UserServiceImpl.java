@@ -1,6 +1,7 @@
 package com.doit.wheels.services.impl;
 
 import com.doit.wheels.dao.entities.User;
+import com.doit.wheels.dao.repositories.GenericRepository;
 import com.doit.wheels.dao.repositories.UserRepository;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.utils.exceptions.UserException;
@@ -12,13 +13,17 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends GenericServiceImpl<User> implements UserService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(GenericRepository<User> genericRepository) {
+        super(genericRepository);
+    }
 
     @Override
     public User getUser(long id) {
@@ -27,8 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public User saveUser(User user) throws UserException {
-
+    public User addNewUser(User user) throws UserException {
         if (findUserByUsername(user.getUsername()) != null){
             throw new UserException();
         }

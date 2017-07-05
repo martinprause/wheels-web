@@ -1,5 +1,6 @@
 package com.doit.wheels.dao.entities;
 
+import com.doit.wheels.dao.entities.basic.Contact;
 import com.doit.wheels.utils.UserRoleEnum;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="users")
-public class User extends Contact{
+public class User extends Contact {
 
     private String username;
 

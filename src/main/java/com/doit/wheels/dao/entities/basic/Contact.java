@@ -1,14 +1,12 @@
-package com.doit.wheels.dao.entities;
+package com.doit.wheels.dao.entities.basic;
+
+import com.doit.wheels.dao.entities.Country;
 
 import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Contact {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.TABLE)
-    protected Integer id;
+public abstract class Contact extends AbstractModel {
 
     private String customerNo;
     private String firstname;
@@ -120,13 +118,5 @@ public abstract class Contact {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }

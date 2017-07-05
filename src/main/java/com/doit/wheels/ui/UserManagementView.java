@@ -234,7 +234,7 @@ public class UserManagementView extends VerticalLayout implements View {
             }
         }
         user.setAccesses(accessLevels);
-        userService.updateUser(user);
+        userService.save(user);
     }
 
     private void deleteUser() {
@@ -419,7 +419,7 @@ public class UserManagementView extends VerticalLayout implements View {
         try {
             binder.validate();
             binder.writeBean(user);
-            userService.saveUser(user);
+            userService.addNewUser(user);
 
             showAddNotification();
         } catch (ValidationException e) {

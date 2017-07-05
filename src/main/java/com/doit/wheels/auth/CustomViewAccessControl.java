@@ -20,7 +20,8 @@ public class CustomViewAccessControl implements ViewAccessControl {
         if (beanName.equals("homeView") ||
                 beanName.equals("landingView") ||
                 beanName.equals("userManagementView") ||
-                beanName.equals("generalPropertiesView")) {
+                beanName.equals("generalPropertiesView") ||
+                beanName.equals("createCustomerView")) {
             roles.add(UserRoleEnum.ADMIN);
             roles.add(UserRoleEnum.ENGINEER);
             return SecurityUtils.hasRole(roles);

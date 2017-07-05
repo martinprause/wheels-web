@@ -1,4 +1,4 @@
-package com.doit.wheels.dao.entities;
+package com.doit.wheels.dao.entities.basic;
 
 import javax.persistence.MappedSuperclass;
 
