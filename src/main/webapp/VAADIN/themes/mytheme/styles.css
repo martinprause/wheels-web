@@ -13287,6 +13287,36 @@ div.v-layout.v-horizontal.v-widget {
     /*margin-left: 15%;*/
 }
 
+.mytheme .user-access{
+    margin-left: 5%;
+}
+
+
+.mytheme .user-access-user-list{
+    background-color: #0d6cda;
+}
+
+
+.mytheme .v-slot .v-slot-user-access{
+    height: 80% !important;
+}
+
+.mytheme .v-slot .v-slot-user-access-user-list{
+    height: 90% !important;
+}
+
+.mytheme .accesses-wrapper{
+
+}
+
+.mytheme .v-slot .v-slot-accesses-wrapper{
+    width:20% !important;
+}
+
+.mytheme .v-slot .v-slot-user-access .v-slot{
+    /*width: 80% !important;*/
+}
+
 .mytheme .header {
 	display: flex;
 	align-items: center;
@@ -13358,6 +13388,10 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
+}
+
+.mytheme .v-horizontallayout .v-layout .v-horizontal .v-widget .user-access .v-horizontallayout-user-access .v-has-width .v-has-height .v-expand .v-slot{
+    width: 80%;
 }
 
 .mytheme .general-properties-content {

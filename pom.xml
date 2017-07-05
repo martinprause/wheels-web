@@ -9,7 +9,7 @@
 	<packaging>war</packaging>
 
 	<name>wheels</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Application for FELGEN WIE NEU</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

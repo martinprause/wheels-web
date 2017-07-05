@@ -2,10 +2,8 @@ package com.doit.wheels.dao.entities;
 
 import com.doit.wheels.utils.UserRoleEnum;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="users")
@@ -22,8 +20,8 @@ public class User extends Contact{
 
     private String comment;
 
-//    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
-//    private Set<AccessLevel> accessLevels = new HashSet<>();
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<AccessLevel> accesses;
 
     public User() {
 
@@ -74,16 +72,34 @@ public class User extends Contact{
         this.comment = comment;
     }
 
-//    public Set<AccessLevel> getAccessLevels() {
-//        return accessLevels;
-//    }
-//
-//    public void setAccessLevels(Set<AccessLevel> accessLevels) {
-//        this.accessLevels = accessLevels;
-//    }
-//
-//    public void addAccessLevel(AccessLevel accessLevel) {
-//        accessLevels.add(accessLevel);
-//        accessLevel.getUsers().add(this);
-//    }
+    public Set<AccessLevel> getAccesses() {
+        return accesses;
+    }
+
+    public void setAccesses(Set<AccessLevel> accesses) {
+        this.accesses = accesses;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof User){
+            if (((User) obj).getId().equals(this.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = this.getId();
+        result = 31 * result + getUsername().hashCode();
+        return result;
+    }
 }

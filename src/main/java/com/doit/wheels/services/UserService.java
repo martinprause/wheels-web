@@ -12,6 +12,8 @@ public interface UserService {
 
     User saveUser(User user) throws UserException;
 
+    User updateUser(User user);
+
     List<User> findAll();
 
     User findUserByUsername(String username);

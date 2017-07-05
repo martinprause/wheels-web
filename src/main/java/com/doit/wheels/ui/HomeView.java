@@ -54,6 +54,7 @@ public class HomeView extends HorizontalLayout implements View{
         updateGrid();
         users.setColumns("username", "role", "comment");
         users.addSelectionListener(e -> updateForm());
+        users.setCaption("Caption");
         userTableCaption.setId("user.table");
         userTableCaption.setValue(messageService.getMessage("user.table"));
         addComponent(userTableCaption);

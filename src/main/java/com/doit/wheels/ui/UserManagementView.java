@@ -1,10 +1,13 @@
 package com.doit.wheels.ui;
 
+import com.doit.wheels.dao.entities.AccessLevel;
 import com.doit.wheels.dao.entities.Country;
 import com.doit.wheels.dao.entities.User;
+import com.doit.wheels.services.AccessLevelService;
 import com.doit.wheels.services.CountryService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
+import com.doit.wheels.utils.AccessLevelType;
 import com.doit.wheels.utils.UserRoleEnum;
 import com.doit.wheels.utils.exceptions.UserException;
 import com.doit.wheels.utils.validators.EmailValidatorAllowEmpty;
@@ -23,6 +26,10 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 @Configurable
 @SpringComponent
 @SpringView(name = "user-management")
@@ -30,12 +37,31 @@ public class UserManagementView extends VerticalLayout implements View {
 
     private static String mandatory = ":*";
 
+    @Autowired
+    MessageByLocaleServiceImpl messageService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    CountryService countryService;
+
+    @Autowired
+    AccessLevelService accessLevelService;
+
     private CssLayout menubar;
-    private HorizontalLayout userData;
-    private VerticalLayout userDataBlockLeft;
-    private VerticalLayout userDataBlockRight;
-    private VerticalLayout userDataWrapper;
-    private HorizontalLayout footerLayout;
+
+    private VerticalLayout userCreateDataWrapper;
+
+    private HorizontalLayout userCreateData;
+
+    private VerticalLayout userCreateDataBlockLeft;
+
+    private VerticalLayout userCreateDataBlockRight;
+
+    private HorizontalLayout userCreateFooterLayout;
+
+    private HorizontalLayout userAccessWrapper;
 
     @PropertyId("username")
     private final TextField loginName = new TextField();
@@ -72,18 +98,22 @@ public class UserManagementView extends VerticalLayout implements View {
     private User user;
     Binder<User> binder;
 
-    @Autowired
-    MessageByLocaleServiceImpl messageService;
+    Button editUserButton;
+    Button deleteUserButton;
 
-    @Autowired
-    UserService userService;
+    Grid<User> userGrid;
 
-    @Autowired
-    CountryService countryService;
+    private HashMap<AccessLevelType, CheckBox> accessCheckboxes;
+
+    private CheckBox deleteOrderCheckbox;
+    private CheckBox createOrderCheckBox;
+    private CheckBox createUserCheckbox;
+    private CheckBox deleteUserCheckbox;
+    private CheckBox reportsCheckbox;
+    private Button saveAccessButton;
 
     private void init(){
         setSizeFull();
-
         menubar = new CssLayout();
         menubar.addStyleName("user-management-menubar");
         Button createUserButton = new Button(messageService.getMessage("userManagement.createUser"));
@@ -91,8 +121,13 @@ public class UserManagementView extends VerticalLayout implements View {
         createUserButton.addStyleName("create-user-button");
         createUserButton.setIcon(new ThemeResource("img/ico/new-user.png"));
         createUserButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        createUserButton.addClickListener(e -> {
+            user = new User();
+            binder.setBean(user);
+            userAccessWrapper.setVisible(false);
+            userCreateDataWrapper.setVisible(true);
+        });
         createUserButton.addStyleName("clear-button");
-        createUserButton.addClickListener(e -> userDataWrapper.setVisible(true));
 
         Button manageUserAccessButton = new Button(messageService.getMessage("userManagement.manageUserAccess"));
         manageUserAccessButton.setId("userManagement.manageUserAccess");
@@ -100,151 +135,284 @@ public class UserManagementView extends VerticalLayout implements View {
         manageUserAccessButton.setIcon(new ThemeResource("img/ico/settings.png"));
         manageUserAccessButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         manageUserAccessButton.addStyleName("clear-button");
-        manageUserAccessButton.addClickListener(e -> userDataWrapper.setVisible(false));
+        manageUserAccessButton.addClickListener(e -> {
+            userCreateDataWrapper.setVisible(false);
+            userAccessWrapper.setVisible(true);
+        });
 
         menubar.addComponent(createUserButton);
         menubar.addComponent(manageUserAccessButton);
         this.addComponent(menubar);
-        userDataWrapper = new VerticalLayout();
-        userDataWrapper.setSizeFull();
-        userDataWrapper.addStyleName("user-management");
+        initUserCreateView();
+        initUserAccessWrapper();
+    }
 
-        userData = new HorizontalLayout();
-        userData.addStyleName("user-management-data-horizontal");
+    private void initUserAccessWrapper(){
+        userAccessWrapper = new HorizontalLayout();
+        userAccessWrapper.setWidth("90%");
+        userAccessWrapper.setHeight("100%");
+        userAccessWrapper.addStyleName("user-access");
+        this.addComponent(userAccessWrapper);
+        userAccessWrapper.setVisible(false);
 
-        userDataBlockLeft = new VerticalLayout();
-        userDataBlockLeft.addStyleName("user-management-data-left");
-        userData.addComponent(userDataBlockLeft);
+        VerticalLayout gridWrapper = new VerticalLayout();
+        gridWrapper.setWidth("100%");
+        gridWrapper.setHeight("100%");
 
-        userDataBlockRight = new VerticalLayout();
-        userDataBlockRight.addStyleName("user-management-data-right");
-        userData.addComponent(userDataBlockRight);
-        userDataWrapper.addComponent(userData);
-        this.addComponent(userDataWrapper);
-        HorizontalLayout footerLayout = new HorizontalLayout();
-        footerLayout.addStyleName("user-management-footer");
-        Button saveUser = new Button("Save User");
-        saveUser.addClickListener(e -> saveUser());
-        footerLayout.addComponent(saveUser);
-        userDataWrapper.addComponent(footerLayout);
-        initLeftPart();
-        initRightPart();
+        Panel panel = new Panel();
+        panel.setSizeFull();
+        panel.addStyleName("user-access-user-list");
+
+        userGrid = new Grid<>(User.class);
+        userGrid.addSelectionListener(e -> selectUserFromGrid());
+        userGrid.setItems(userService.findAll());
+
+//        userGrid.setCaption("sdfsdf");
+        userGrid.setColumns("username", "firstname", "lastname", "email", "phone", "mobile");
+        userGrid.setSizeFull();
+        userGrid.setId("userManagement.userlist.grid");
+//        userGrid.getDefaultHeaderRow().getCell("username").setComponent(new Label(""));
+        panel.setContent(userGrid);
+        gridWrapper.addComponent(panel);
+
+        HorizontalLayout userListButtonLayout = new HorizontalLayout();
+
+        editUserButton = new Button();
+        editUserButton.setCaption("Edit user");
+        editUserButton.addClickListener(e -> addAccesses());
+        userListButtonLayout.addComponent(editUserButton);
+
+        deleteUserButton = new Button();
+        deleteUserButton.setCaption("Delete User");
+        deleteUserButton.addClickListener(e -> deleteUser());
+        userListButtonLayout.addComponent(deleteUserButton);
+        gridWrapper.addComponent(userListButtonLayout);
+
+        userAccessWrapper.addComponent(gridWrapper);
+
+        VerticalLayout accessesWrapper = new VerticalLayout();
+        accessesWrapper.setWidth("20%");
+        accessesWrapper.addStyleName("accesses-wrapper");
+
+        deleteOrderCheckbox = new CheckBox("Delete Order");
+        createOrderCheckBox = new CheckBox("Create Order");
+        createUserCheckbox = new CheckBox("Create User");
+        deleteUserCheckbox = new CheckBox("Delete User");
+        reportsCheckbox = new CheckBox("Reports");
+
+        accessCheckboxes = new HashMap<>();
+        accessCheckboxes.put(AccessLevelType.DeleteOrder, deleteOrderCheckbox);
+        accessCheckboxes.put(AccessLevelType.CreateOrder, createOrderCheckBox);
+        accessCheckboxes.put(AccessLevelType.CreateUser, createUserCheckbox);
+        accessCheckboxes.put(AccessLevelType.DeleteUser, deleteUserCheckbox);
+        accessCheckboxes.put(AccessLevelType.Reports, reportsCheckbox);
+
+        saveAccessButton = new Button();
+        saveAccessButton.setCaption("Save access rights");
+        saveAccessButton.addClickListener(e -> saveAccesses());
+
+        accessesWrapper.addComponent(deleteOrderCheckbox);
+        accessesWrapper.addComponent(createOrderCheckBox);
+        accessesWrapper.addComponent(createUserCheckbox);
+        accessesWrapper.addComponent(deleteUserCheckbox);
+        accessesWrapper.addComponent(reportsCheckbox);
+        accessesWrapper.addComponent(saveAccessButton);
+        userAccessWrapper.addComponent(accessesWrapper);
+
+    }
+
+    private void saveAccesses() {
+        Set<AccessLevel> accessLevels = new HashSet<>();
+        for (AccessLevelType accessLevelType : accessCheckboxes.keySet()) {
+            AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevel(accessLevelType);
+            if (accessCheckboxes.get(accessLevelType).getValue().equals(Boolean.TRUE)){
+                accessLevel.getUsers().add(user);
+                accessLevels.add(accessLevel);
+            } else {
+                accessLevel.getUsers().remove(user);
+                accessLevelService.save(accessLevel);
+            }
+        }
+        user.setAccesses(accessLevels);
+        userService.updateUser(user);
+    }
+
+    private void deleteUser() {
+        if (user != null){
+
+        }
+    }
+
+    private void selectUserFromGrid(){
+        resetCheckboxes();
+        user = userGrid.asSingleSelect().getValue();
+        Set<AccessLevel> accessLevels = new HashSet<>(user.getAccesses());
+        if (accessLevels.size() != 0){
+            for (AccessLevel accessLevel : accessLevels){
+                accessCheckboxes.get(accessLevel.getAccessLevel()).setValue(true);
+            }
+
+        }
+    }
+
+    private void resetCheckboxes(){
+        for (CheckBox checkBox : accessCheckboxes.values()) {
+            checkBox.setValue(false);
+        }
+    }
+
+    private void addAccesses(){
+//        User user = userService.findUserByUsername("user");
+        AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevel(AccessLevelType.CreateUser);
+        user.getAccesses().remove(accessLevel);
+        accessLevel.getUsers().remove(user);
+        userService.updateUser(user);
+    }
+
+    private void initUserCreateView(){
+        userCreateDataWrapper = new VerticalLayout();
+        userCreateDataWrapper.setSizeFull();
+        userCreateDataWrapper.addStyleName("user-management");
+
+        userCreateData = new HorizontalLayout();
+        userCreateData.addStyleName("user-management-data-horizontal");
+
+        userCreateDataBlockLeft = new VerticalLayout();
+        userCreateDataBlockLeft.addStyleName("user-management-data-left");
+        userCreateData.addComponent(userCreateDataBlockLeft);
+
+        userCreateDataBlockRight = new VerticalLayout();
+        userCreateDataBlockRight.addStyleName("user-management-data-right");
+        userCreateData.addComponent(userCreateDataBlockRight);
+        userCreateDataWrapper.addComponent(userCreateData);
+        this.addComponent(userCreateDataWrapper);
+        initUserCreateLeftPart();
+        initUserCreateRightPart();
+        initCreateUserFooter();
         initBinderAndValidation();
     }
 
-    private void initLeftPart(){
+    private void initUserCreateLeftPart(){
         HorizontalLayout employeeNumberLayout = new HorizontalLayout();
         Label employeeNumberLabel = new Label(messageService.getMessage("userManagement.emoloyeeNumber.label") + mandatory);
         employeeNumberLabel.addStyleName("user-management-label");
         employeeNumberLabel.setId("userManagement.emoloyeeNumber.label");
         employeeNumberLayout.addComponents(employeeNumberLabel, employeeNumber);
-        userDataBlockLeft.addComponent(employeeNumberLayout);
+        userCreateDataBlockLeft.addComponent(employeeNumberLayout);
 
         HorizontalLayout loginNameLayout = new HorizontalLayout();
         Label loginNameLabel = new Label(messageService.getMessage("userManagement.loginName.label") + mandatory);
         loginNameLabel.addStyleName("user-management-label");
         loginNameLabel.setId("userManagement.loginName.label");
         loginNameLayout.addComponents(loginNameLabel, loginName);
-        userDataBlockLeft.addComponent(loginNameLayout);
+        userCreateDataBlockLeft.addComponent(loginNameLayout);
 
         HorizontalLayout passwordLayout = new HorizontalLayout();
         Label passwordLabel = new Label(messageService.getMessage("userManagement.password.label") + mandatory);
         passwordLabel.addStyleName("user-management-label");
         passwordLabel.setId("userManagement.password.label");
         passwordLayout.addComponents(passwordLabel, password);
-        userDataBlockLeft.addComponent(passwordLayout);
+        userCreateDataBlockLeft.addComponent(passwordLayout);
 
         HorizontalLayout roleLayout = new HorizontalLayout();
         Label roleLabel = new Label(messageService.getMessage("userManagement.role.label") + mandatory);
         roleLabel.addStyleName("user-management-label");
         roleLabel.setId("userManagement.role.label");
         roleLayout.addComponents(roleLabel, role);
-        userDataBlockLeft.addComponent(roleLayout);
+        userCreateDataBlockLeft.addComponent(roleLayout);
 
         HorizontalLayout emailLayout = new HorizontalLayout();
         Label emailLabel = new Label(messageService.getMessage("userManagement.email.label"));
         emailLabel.addStyleName("user-management-label");
         emailLabel.setId("userManagement.email.label");
         emailLayout.addComponents(emailLabel, email);
-        userDataBlockLeft.addComponent(emailLayout);
+        userCreateDataBlockLeft.addComponent(emailLayout);
 
         HorizontalLayout phoneLayout = new HorizontalLayout();
         Label phoneLabel = new Label(messageService.getMessage("userManagement.phone.label"));
         phoneLabel.addStyleName("user-management-label");
         phoneLabel.setId("userManagement.phone.label");
         phoneLayout.addComponents(phoneLabel, phone);
-        userDataBlockLeft.addComponent(phoneLayout);
+        userCreateDataBlockLeft.addComponent(phoneLayout);
 
         HorizontalLayout mobileLayout = new HorizontalLayout();
         Label mobileLabel = new Label(messageService.getMessage("userManagement.mobile.label"));
         mobileLabel.addStyleName("user-management-label");
         mobileLabel.setId("userManagement.mobile.label");
         mobileLayout.addComponents(mobileLabel, mobile);
-        userDataBlockLeft.addComponent(mobileLayout);
+        userCreateDataBlockLeft.addComponent(mobileLayout);
 
         role.setItems(UserRoleEnum.values());
     }
 
-    private void initRightPart(){
+    private void initUserCreateRightPart(){
         HorizontalLayout firstnameLayout = new HorizontalLayout();
         Label firstnameLabel = new Label(messageService.getMessage("userManagement.firstname.label") + mandatory);
         firstnameLabel.addStyleName("user-management-label");
         firstnameLabel.setId("userManagement.firstname.label");
         firstnameLayout.addComponents(firstnameLabel, firstname);
-        userDataBlockRight.addComponent(firstnameLayout);
+        userCreateDataBlockRight.addComponent(firstnameLayout);
 
         HorizontalLayout lastnameLayout = new HorizontalLayout();
         Label lastnameLabel = new Label(messageService.getMessage("userManagement.lastname.label") + mandatory);
         lastnameLabel.addStyleName("user-management-label");
         lastnameLabel.setId("userManagement.lastname.label");
         lastnameLayout.addComponents(lastnameLabel, lastname);
-        userDataBlockRight.addComponent(lastnameLayout);
+        userCreateDataBlockRight.addComponent(lastnameLayout);
 
         HorizontalLayout address1Layout = new HorizontalLayout();
         Label addressLabel = new Label(messageService.getMessage("userManagement.address.label"));
         addressLabel.addStyleName("user-management-label");
         addressLabel.setId("userManagement.address.label");
         address1Layout.addComponents(addressLabel, address1);
-        userDataBlockRight.addComponent(address1Layout);
+        userCreateDataBlockRight.addComponent(address1Layout);
 
         HorizontalLayout address2Layout = new HorizontalLayout();
         Label address2Label = new Label();
         address2Label.addStyleName("user-management-label");
         address2Layout.addComponents(address2Label, address2);
-        userDataBlockRight.addComponent(address2Layout);
+        userCreateDataBlockRight.addComponent(address2Layout);
 
         HorizontalLayout zipLayout = new HorizontalLayout();
         Label zipLabel = new Label(messageService.getMessage("userManagement.zip.label"));
         zipLabel.addStyleName("user-management-label");
         zipLabel.setId("userManagement.zip.label");
         zipLayout.addComponents(zipLabel, zipCode);
-        userDataBlockRight.addComponent(zipLayout);
+        userCreateDataBlockRight.addComponent(zipLayout);
 
         HorizontalLayout cityLayout = new HorizontalLayout();
         Label cityLabel = new Label(messageService.getMessage("userManagement.city.label"));
         cityLabel.addStyleName("user-management-label");
         cityLabel.setId("userManagement.city.label");
         cityLayout.addComponents(cityLabel, city);
-        userDataBlockRight.addComponent(cityLayout);
+        userCreateDataBlockRight.addComponent(cityLayout);
 
         HorizontalLayout countryLayout = new HorizontalLayout();
         Label countryLabel = new Label(messageService.getMessage("userManagement.country.label"));
         countryLabel.addStyleName("user-management-label");
         countryLabel.setId("userManagement.country.label");
         countryLayout.addComponents(countryLabel, country);
-        userDataBlockRight.addComponent(countryLayout);
+        userCreateDataBlockRight.addComponent(countryLayout);
 
         HorizontalLayout commentLayout = new HorizontalLayout();
         Label commentLabel = new Label(messageService.getMessage("userManagement.comment.label"));
         commentLabel.addStyleName("user-management-label");
         commentLabel.setId("userManagement.comment.label");
         commentLayout.addComponents(commentLabel, comment);
-        userDataBlockRight.addComponent(commentLayout);
+        userCreateDataBlockRight.addComponent(commentLayout);
 
         country.setItems(countryService.findAll());
         country.setItemCaptionGenerator(Country::getDescription);
     }
 
+    private void initCreateUserFooter(){
+        userCreateFooterLayout = new HorizontalLayout();
+        userCreateFooterLayout.addStyleName("user-management-footer");
+        Button saveUser = new Button("Save User");
+        saveUser.addClickListener(e -> saveUser());
+        userCreateFooterLayout.addComponent(saveUser);
+        userCreateDataWrapper.addComponent(userCreateFooterLayout);
+    }
 
     private void saveUser(){
         binder.readBean(user);
@@ -252,6 +420,7 @@ public class UserManagementView extends VerticalLayout implements View {
             binder.validate();
             binder.writeBean(user);
             userService.saveUser(user);
+
             showAddNotification();
         } catch (ValidationException e) {
             e.printStackTrace();
@@ -268,7 +437,7 @@ public class UserManagementView extends VerticalLayout implements View {
     }
 
     private void loginErrorNotification(){
-        Notification loginNotification = new Notification("Login name is already busy!", Notification.Type.ERROR_MESSAGE);
+        Notification loginNotification = new Notification("Login name is already in use!", Notification.Type.ERROR_MESSAGE);
         loginNotification.setDelayMsec(3000);
         loginNotification.show(Page.getCurrent());
     }
