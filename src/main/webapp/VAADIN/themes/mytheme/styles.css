@@ -13359,3 +13359,9 @@ div.v-layout.v-horizontal.v-widget {
 	-moz-box-shadow: none;
 	box-shadow: none;
 }
+
+.mytheme .general-properties-content {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}

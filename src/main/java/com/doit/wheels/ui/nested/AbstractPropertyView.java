@@ -27,7 +27,7 @@ public class AbstractPropertyView<T extends Description> extends HorizontalLayou
 
     private void init(){
         setSizeFull();
-
+//        this.addStyleName("general-properties-content");
         VerticalLayout leftPart = new VerticalLayout();
         Label entityName = new Label(messageByLocaleService.getMessage(getLabelCodeByType()));
         entityName.setId(getLabelCodeByType());
@@ -94,6 +94,7 @@ public class AbstractPropertyView<T extends Description> extends HorizontalLayou
         initBinder();
 
         HorizontalLayout layout = new HorizontalLayout();
+        layout.addStyleName("general-properties-content");
         layout.addComponent(leftPart);
         layout.addComponent(middlePart);
         layout.addComponent(rightPart);
