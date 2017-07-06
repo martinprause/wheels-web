@@ -1,12 +1,14 @@
 package com.doit.wheels.services.impl;
 
 import com.doit.wheels.services.MessageByLocaleService;
+import com.doit.wheels.utils.UTF8Control;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -20,12 +22,16 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
     @Override
     public String getMessage(String id) {
         Locale locale = VaadinSession.getCurrent().getLocale();
-        return messageSource.getMessage(id, null, locale);
+        try {
+            return new String(messageSource.getMessage(id, null, locale).getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
     }
 
     @Override
     public void updateLocale(final HasComponents ui, Locale locale) {
-        final ResourceBundle rb = ResourceBundle.getBundle("locale/messages", locale);
+        final ResourceBundle rb = ResourceBundle.getBundle("locale/messages", locale, new UTF8Control());
         // locale may not be null, howvever the current UI Locale may be null!
         if (locale.equals(VaadinSession.getCurrent().getLocale())) {
             return;
