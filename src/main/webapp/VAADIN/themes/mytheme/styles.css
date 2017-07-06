@@ -13403,3 +13403,22 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .user-management-data-left .v-caption {
 	position: absolute;
 }
+
+.mytheme #grid-wrapper .v-slot:first-of-type {
+    height: auto !important;
+}
+
+.mytheme .user-access-caption{
+    font-weight: bolder;
+}
+
+.mytheme .manage-user-access-buttons{
+    background:#5b99e2 !important;
+    color: #ffffff;
+    border-radius: 5px;
+    border:0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    width: 200px !important;
+}

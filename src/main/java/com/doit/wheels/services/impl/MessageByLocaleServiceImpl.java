@@ -42,14 +42,14 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
                 return;
             }
             if (c instanceof Label){
-                if (((Label) c).getValue().endsWith(":*")){
-                    ((Label) c).setValue(rb.getString(c.getId()) + ":*");
-                }
-                else ((Label) c).setValue(rb.getString(c.getId()));
+                ((Label) c).setValue(rb.getString(c.getId()));
             }
             else if (c instanceof TextField){
                 ((TextField) c).setPlaceholder(rb.getString(c.getId()));
             }
+//            else if (c instanceof PasswordField){
+//                ((PasswordField) c).setPlaceholder(rb.getString(c.getId()));
+//            }
             else if(c instanceof Grid){
                 ((Grid) c).getDefaultHeaderRow().getComponents().forEach(o -> {
                     if(o.getId() != null)
@@ -57,10 +57,13 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
                 });
             }
             else if (c instanceof Button){
-                if (c.getCaption().endsWith(":*")){
-                    c.setCaption(rb.getString(c.getId()) + ":*");
-                }
-                else c.setCaption(rb.getString(c.getId()));
+                c.setCaption(rb.getString(c.getId()));
+            }
+            else if (c instanceof CheckBox){
+                c.setCaption(rb.getString(c.getId()));
+            }
+            else if (c instanceof Notification){
+                c.setCaption(rb.getString(c.getStyleName()));
             }
         });
     }

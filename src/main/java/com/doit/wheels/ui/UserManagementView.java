@@ -9,11 +9,13 @@ import com.doit.wheels.services.UserService;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
 import com.doit.wheels.utils.AccessLevelType;
 import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.doit.wheels.utils.exceptions.UserException;
 import com.doit.wheels.utils.validators.EmailValidatorAllowEmpty;
 import com.vaadin.annotations.PropertyId;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.data.Validator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -35,7 +37,7 @@ import java.util.Set;
 @SpringView(name = "user-management")
 public class UserManagementView extends VerticalLayout implements View {
 
-    private static String mandatory = ":*";
+    private boolean editMode;
 
     @Autowired
     MessageByLocaleServiceImpl messageService;
@@ -62,6 +64,13 @@ public class UserManagementView extends VerticalLayout implements View {
     private HorizontalLayout userCreateFooterLayout;
 
     private HorizontalLayout userAccessWrapper;
+
+    private Button createUserButton;
+
+    private Button manageUserAccessButton;
+
+    private Label editModeLabel;
+
 
     @PropertyId("username")
     private final TextField loginName = new TextField();
@@ -112,11 +121,22 @@ public class UserManagementView extends VerticalLayout implements View {
     private CheckBox reportsCheckbox;
     private Button saveAccessButton;
 
+    private Label gridCaption;
+    private Label accessCaption;
+
+    StringLengthValidator passwordValidator;
+
     private void init(){
+        editMode = false;
         setSizeFull();
         menubar = new CssLayout();
         menubar.addStyleName("user-management-menubar");
-        Button createUserButton = new Button(messageService.getMessage("userManagement.createUser"));
+
+        editModeLabel = new Label("Edit user");
+        editModeLabel.setVisible(editMode);
+        menubar.addComponent(editModeLabel);
+
+        createUserButton = new Button(messageService.getMessage("userManagement.createUser"));
         createUserButton.setId("userManagement.createUser");
         createUserButton.addStyleName("create-user-button");
         createUserButton.setIcon(new ThemeResource("img/ico/new-user.png"));
@@ -126,10 +146,12 @@ public class UserManagementView extends VerticalLayout implements View {
             binder.setBean(user);
             userAccessWrapper.setVisible(false);
             userCreateDataWrapper.setVisible(true);
+            binder.forField(password).withValidator(passwordValidator).bind(User::getPassword, User::setPassword);
+            password.setPlaceholder(null);
         });
         createUserButton.addStyleName("clear-button");
 
-        Button manageUserAccessButton = new Button(messageService.getMessage("userManagement.manageUserAccess"));
+        manageUserAccessButton = new Button(messageService.getMessage("userManagement.manageUserAccess"));
         manageUserAccessButton.setId("userManagement.manageUserAccess");
         manageUserAccessButton.addStyleName("manage-user-access-button");
         manageUserAccessButton.setIcon(new ThemeResource("img/ico/settings.png"));
@@ -145,128 +167,6 @@ public class UserManagementView extends VerticalLayout implements View {
         this.addComponent(menubar);
         initUserCreateView();
         initUserAccessWrapper();
-    }
-
-    private void initUserAccessWrapper(){
-        userAccessWrapper = new HorizontalLayout();
-        userAccessWrapper.setWidth("90%");
-        userAccessWrapper.setHeight("100%");
-        userAccessWrapper.addStyleName("user-access");
-        this.addComponent(userAccessWrapper);
-        userAccessWrapper.setVisible(false);
-
-        VerticalLayout gridWrapper = new VerticalLayout();
-        gridWrapper.setWidth("100%");
-        gridWrapper.setHeight("100%");
-
-        Panel panel = new Panel();
-        panel.setSizeFull();
-        panel.addStyleName("user-access-user-list");
-
-        userGrid = new Grid<>(User.class);
-        userGrid.addSelectionListener(e -> selectUserFromGrid());
-        userGrid.setItems(userService.findAll());
-
-//        userGrid.setCaption("sdfsdf");
-        userGrid.setColumns("username", "firstname", "lastname", "email", "phone", "mobile");
-        userGrid.setSizeFull();
-        userGrid.setId("userManagement.userlist.grid");
-//        userGrid.getDefaultHeaderRow().getCell("username").setComponent(new Label(""));
-        panel.setContent(userGrid);
-        gridWrapper.addComponent(panel);
-
-        HorizontalLayout userListButtonLayout = new HorizontalLayout();
-
-        editUserButton = new Button();
-        editUserButton.setCaption("Edit user");
-        editUserButton.addClickListener(e -> addAccesses());
-        userListButtonLayout.addComponent(editUserButton);
-
-        deleteUserButton = new Button();
-        deleteUserButton.setCaption("Delete User");
-        deleteUserButton.addClickListener(e -> deleteUser());
-        userListButtonLayout.addComponent(deleteUserButton);
-        gridWrapper.addComponent(userListButtonLayout);
-
-        userAccessWrapper.addComponent(gridWrapper);
-
-        VerticalLayout accessesWrapper = new VerticalLayout();
-        accessesWrapper.setWidth("20%");
-        accessesWrapper.addStyleName("accesses-wrapper");
-
-        deleteOrderCheckbox = new CheckBox("Delete Order");
-        createOrderCheckBox = new CheckBox("Create Order");
-        createUserCheckbox = new CheckBox("Create User");
-        deleteUserCheckbox = new CheckBox("Delete User");
-        reportsCheckbox = new CheckBox("Reports");
-
-        accessCheckboxes = new HashMap<>();
-        accessCheckboxes.put(AccessLevelType.DeleteOrder, deleteOrderCheckbox);
-        accessCheckboxes.put(AccessLevelType.CreateOrder, createOrderCheckBox);
-        accessCheckboxes.put(AccessLevelType.CreateUser, createUserCheckbox);
-        accessCheckboxes.put(AccessLevelType.DeleteUser, deleteUserCheckbox);
-        accessCheckboxes.put(AccessLevelType.Reports, reportsCheckbox);
-
-        saveAccessButton = new Button();
-        saveAccessButton.setCaption("Save access rights");
-        saveAccessButton.addClickListener(e -> saveAccesses());
-
-        accessesWrapper.addComponent(deleteOrderCheckbox);
-        accessesWrapper.addComponent(createOrderCheckBox);
-        accessesWrapper.addComponent(createUserCheckbox);
-        accessesWrapper.addComponent(deleteUserCheckbox);
-        accessesWrapper.addComponent(reportsCheckbox);
-        accessesWrapper.addComponent(saveAccessButton);
-        userAccessWrapper.addComponent(accessesWrapper);
-
-    }
-
-    private void saveAccesses() {
-        Set<AccessLevel> accessLevels = new HashSet<>();
-        for (AccessLevelType accessLevelType : accessCheckboxes.keySet()) {
-            AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevel(accessLevelType);
-            if (accessCheckboxes.get(accessLevelType).getValue().equals(Boolean.TRUE)){
-                accessLevel.getUsers().add(user);
-                accessLevels.add(accessLevel);
-            } else {
-                accessLevel.getUsers().remove(user);
-                accessLevelService.save(accessLevel);
-            }
-        }
-        user.setAccesses(accessLevels);
-        userService.save(user);
-    }
-
-    private void deleteUser() {
-        if (user != null){
-
-        }
-    }
-
-    private void selectUserFromGrid(){
-        resetCheckboxes();
-        user = userGrid.asSingleSelect().getValue();
-        Set<AccessLevel> accessLevels = new HashSet<>(user.getAccesses());
-        if (accessLevels.size() != 0){
-            for (AccessLevel accessLevel : accessLevels){
-                accessCheckboxes.get(accessLevel.getAccessLevel()).setValue(true);
-            }
-
-        }
-    }
-
-    private void resetCheckboxes(){
-        for (CheckBox checkBox : accessCheckboxes.values()) {
-            checkBox.setValue(false);
-        }
-    }
-
-    private void addAccesses(){
-//        User user = userService.findUserByUsername("user");
-        AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevel(AccessLevelType.CreateUser);
-        user.getAccesses().remove(accessLevel);
-        accessLevel.getUsers().remove(user);
-        userService.updateUser(user);
     }
 
     private void initUserCreateView(){
@@ -294,30 +194,31 @@ public class UserManagementView extends VerticalLayout implements View {
 
     private void initUserCreateLeftPart(){
         HorizontalLayout employeeNumberLayout = new HorizontalLayout();
-        Label employeeNumberLabel = new Label(messageService.getMessage("userManagement.emoloyeeNumber.label") + mandatory);
+        Label employeeNumberLabel = new Label(messageService.getMessage("userManagement.emoloyeeNumber.label"));
         employeeNumberLabel.addStyleName("user-management-label");
         employeeNumberLabel.setId("userManagement.emoloyeeNumber.label");
         employeeNumberLayout.addComponents(employeeNumberLabel, employeeNumber);
         userCreateDataBlockLeft.addComponent(employeeNumberLayout);
 
         HorizontalLayout loginNameLayout = new HorizontalLayout();
-        Label loginNameLabel = new Label(messageService.getMessage("userManagement.loginName.label") + mandatory);
+        Label loginNameLabel = new Label(messageService.getMessage("userManagement.loginName.label"));
         loginNameLabel.addStyleName("user-management-label");
         loginNameLabel.setId("userManagement.loginName.label");
         loginNameLayout.addComponents(loginNameLabel, loginName);
         userCreateDataBlockLeft.addComponent(loginNameLayout);
 
         HorizontalLayout passwordLayout = new HorizontalLayout();
-        Label passwordLabel = new Label(messageService.getMessage("userManagement.password.label") + mandatory);
+        Label passwordLabel = new Label(messageService.getMessage("userManagement.password.label"));
         passwordLabel.addStyleName("user-management-label");
         passwordLabel.setId("userManagement.password.label");
         passwordLayout.addComponents(passwordLabel, password);
         userCreateDataBlockLeft.addComponent(passwordLayout);
 
         HorizontalLayout roleLayout = new HorizontalLayout();
-        Label roleLabel = new Label(messageService.getMessage("userManagement.role.label") + mandatory);
+        Label roleLabel = new Label(messageService.getMessage("userManagement.role.label"));
         roleLabel.addStyleName("user-management-label");
         roleLabel.setId("userManagement.role.label");
+        role.setEmptySelectionAllowed(false);
         roleLayout.addComponents(roleLabel, role);
         userCreateDataBlockLeft.addComponent(roleLayout);
 
@@ -343,18 +244,19 @@ public class UserManagementView extends VerticalLayout implements View {
         userCreateDataBlockLeft.addComponent(mobileLayout);
 
         role.setItems(UserRoleEnum.values());
+        role.setSelectedItem(UserRoleEnum.ENGINEER);
     }
 
     private void initUserCreateRightPart(){
         HorizontalLayout firstnameLayout = new HorizontalLayout();
-        Label firstnameLabel = new Label(messageService.getMessage("userManagement.firstname.label") + mandatory);
+        Label firstnameLabel = new Label(messageService.getMessage("userManagement.firstname.label"));
         firstnameLabel.addStyleName("user-management-label");
         firstnameLabel.setId("userManagement.firstname.label");
         firstnameLayout.addComponents(firstnameLabel, firstname);
         userCreateDataBlockRight.addComponent(firstnameLayout);
 
         HorizontalLayout lastnameLayout = new HorizontalLayout();
-        Label lastnameLabel = new Label(messageService.getMessage("userManagement.lastname.label") + mandatory);
+        Label lastnameLabel = new Label(messageService.getMessage("userManagement.lastname.label"));
         lastnameLabel.addStyleName("user-management-label");
         lastnameLabel.setId("userManagement.lastname.label");
         lastnameLayout.addComponents(lastnameLabel, lastname);
@@ -408,25 +310,138 @@ public class UserManagementView extends VerticalLayout implements View {
     private void initCreateUserFooter(){
         userCreateFooterLayout = new HorizontalLayout();
         userCreateFooterLayout.addStyleName("user-management-footer");
-        Button saveUser = new Button("Save User");
+        Button saveUser = new Button(messageService.getMessage("userManagement.saveUser.button"));
+        saveUser.setId("userManagement.saveUser.button");
         saveUser.addClickListener(e -> saveUser());
+        saveUser.addStyleName("manage-user-access-buttons");
         userCreateFooterLayout.addComponent(saveUser);
         userCreateDataWrapper.addComponent(userCreateFooterLayout);
     }
 
+    private void initUserAccessWrapper(){
+        userAccessWrapper = new HorizontalLayout();
+        userAccessWrapper.setWidth("90%");
+        userAccessWrapper.setHeight("100%");
+        userAccessWrapper.addStyleName("user-access");
+        this.addComponent(userAccessWrapper);
+        userAccessWrapper.setVisible(false);
+
+        VerticalLayout gridWrapper = new VerticalLayout();
+        gridWrapper.setWidth("100%");
+        gridWrapper.setHeight("100%");
+        gridWrapper.setId("grid-wrapper");
+
+        gridCaption = new Label(messageService.getMessage("userManagement.userlist.grid"));
+        gridCaption.setId("userManagement.userlist.grid");
+        gridCaption.addStyleName("user-access-caption");
+        gridWrapper.addComponent(gridCaption);
+
+        Panel panel = new Panel();
+        panel.setSizeFull();
+        panel.addStyleName("user-access-user-list");
+
+        userGrid = new Grid<>(User.class);
+        userGrid.addSelectionListener(e -> selectUserFromGrid());
+        updateUsersGrid();
+
+        userGrid.setColumns("username", "firstname", "lastname", "email", "phone", "mobile");
+        userGrid.setSizeFull();
+        panel.setContent(userGrid);
+        gridWrapper.addComponent(panel);
+
+        HorizontalLayout userListButtonLayout = new HorizontalLayout();
+
+        editUserButton = new Button();
+        editUserButton.setCaption(messageService.getMessage("userManagement.editUser.button"));
+        editUserButton.setId("userManagement.editUser.button");
+        editUserButton.addClickListener(e -> editUser());
+        editUserButton.addStyleName("manage-user-access-buttons");
+        userListButtonLayout.addComponent(editUserButton);
+
+        deleteUserButton = new Button();
+        deleteUserButton.setCaption(messageService.getMessage("userManagement.deleteUser.button"));
+        deleteUserButton.setId("userManagement.deleteUser.button");
+        deleteUserButton.addClickListener(e -> deleteUser());
+        deleteUserButton.addStyleName("manage-user-access-buttons");
+        userListButtonLayout.addComponent(deleteUserButton);
+        gridWrapper.addComponent(userListButtonLayout);
+
+        userAccessWrapper.addComponent(gridWrapper);
+
+        VerticalLayout accessesWrapper = new VerticalLayout();
+        accessesWrapper.setWidth("20%");
+        accessesWrapper.addStyleName("accesses-wrapper");
+
+        createOrderCheckBox = new CheckBox(messageService.getMessage("userManagement.createOrder.checkbox"));
+        createOrderCheckBox.setId("userManagement.createOrder.checkbox");
+
+        deleteOrderCheckbox = new CheckBox(messageService.getMessage("userManagement.deleteOrder.checkbox"));
+        deleteOrderCheckbox.setId("userManagement.deleteOrder.checkbox");
+
+        createUserCheckbox = new CheckBox(messageService.getMessage("userManagement.createUser.checkbox"));
+        createUserCheckbox.setId("userManagement.createUser.checkbox");
+
+        deleteUserCheckbox = new CheckBox(messageService.getMessage("userManagement.deleteUser.checkbox"));
+        deleteUserCheckbox.setId("userManagement.deleteUser.checkbox");
+
+        reportsCheckbox = new CheckBox(messageService.getMessage("userManagement.reports.checkbox"));
+        reportsCheckbox.setId("userManagement.reports.checkbox");
+
+        accessCheckboxes = new HashMap<>();
+        accessCheckboxes.put(AccessLevelType.CreateOrder, createOrderCheckBox);
+        accessCheckboxes.put(AccessLevelType.DeleteOrder, deleteOrderCheckbox);
+        accessCheckboxes.put(AccessLevelType.CreateUser, createUserCheckbox);
+        accessCheckboxes.put(AccessLevelType.DeleteUser, deleteUserCheckbox);
+        accessCheckboxes.put(AccessLevelType.Reports, reportsCheckbox);
+
+        saveAccessButton = new Button();
+        saveAccessButton.setCaption(messageService.getMessage("userManagement.saveAccessRights.button"));
+        saveAccessButton.setId("userManagement.saveAccessRights.button");
+        saveAccessButton.addClickListener(e -> saveAccesses());
+        saveAccessButton.addStyleName("manage-user-access-buttons");
+        accessCaption = new Label(messageService.getMessage("userManagement.accessRights.label"));
+        accessCaption.setId("userManagement.accessRights.label");
+        accessCaption.addStyleName("user-access-caption");
+
+        accessesWrapper.addComponent(accessCaption);
+        accessesWrapper.addComponent(createOrderCheckBox);
+        accessesWrapper.addComponent(deleteOrderCheckbox);
+        accessesWrapper.addComponent(createUserCheckbox);
+        accessesWrapper.addComponent(deleteUserCheckbox);
+        accessesWrapper.addComponent(reportsCheckbox);
+        accessesWrapper.addComponent(saveAccessButton);
+        userAccessWrapper.addComponent(accessesWrapper);
+
+        changeButtonsEnable(false);
+    }
+
     private void saveUser(){
         binder.readBean(user);
-        try {
-            binder.validate();
-            binder.writeBean(user);
-            userService.addNewUser(user);
-
-            showAddNotification();
-        } catch (ValidationException e) {
-            e.printStackTrace();
-        } catch (UserException e) {
-            loginErrorNotification();
+        if (editMode){
+            userService.updateUser(user);
+            editMode = false;
+            changeMenubarButtonsVisible();
+            gotoAccesses();
+        } else {
+            try {
+                binder.validate();
+                binder.writeBean(user);
+                userService.addNewUser(user);
+                gotoAccesses();
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            } catch (UserException e) {
+                loginErrorNotification();
+            }
         }
+    }
+
+    private void gotoAccesses(){
+        User tmpUser = user;
+        userGrid.setItems(userService.findAll());
+        userGrid.select(tmpUser);
+        userCreateDataWrapper.setVisible(false);
+        userAccessWrapper.setVisible(true);
 
     }
 
@@ -437,13 +452,27 @@ public class UserManagementView extends VerticalLayout implements View {
     }
 
     private void loginErrorNotification(){
-        Notification loginNotification = new Notification("Login name is already in use!", Notification.Type.ERROR_MESSAGE);
+        Notification loginNotification = new Notification(messageService.getMessage("userManagement.login.notification"), Notification.Type.ERROR_MESSAGE);
+        loginNotification.setStyleName("userManagement.login.notification");
         loginNotification.setDelayMsec(3000);
         loginNotification.show(Page.getCurrent());
+
+    }
+
+    private void permissionDeniedNotification(){
+        Notification permissionNotification = new Notification(messageService.getMessage("userManagement.permissionDenied.notification"), Notification.Type.ERROR_MESSAGE);
+        permissionNotification.setStyleName("userManagement.permissionDenied.notification");
+        permissionNotification.setDelayMsec(3000);
+        permissionNotification.show(Page.getCurrent());
     }
 
     private void initBinderAndValidation(){
         binder = new Binder<>(User.class);
+
+
+        passwordValidator = new StringLengthValidator(
+                "Password must contain at least 6 characters!",
+                1, 50);
 
         StringLengthValidator notEmptyValidator = new StringLengthValidator(
                 messageService.getMessage("userManagement.validation.notEmpty"), 1, 50);
@@ -460,15 +489,100 @@ public class UserManagementView extends VerticalLayout implements View {
                 "Login must be between 4 and 20 characters long!",
                 4, 20)).bind(User::getUsername, User::setUsername);
 
-        binder.forField(password).withValidator(new StringLengthValidator(
-                "Password must contain at least 6 characters!",
-                1, 50)).bind(User::getPassword, User::setPassword);
+        binder.forField(password).withValidator(passwordValidator).bind(User::getPassword, User::setPassword);
 
         binder.forField(firstname).withValidator(notEmptyValidator).bind(User::getFirstname, User::setFirstname);
         binder.forField(lastname).withValidator(notEmptyValidator).bind(User::getLastname, User::setLastname);
 
         user = new User();
         binder.setBean(user);
+    }
+
+    private void updateUsersGrid(){
+        userGrid.setItems(userService.findAll());
+    }
+
+    private void saveAccesses() {
+        if (user != null) {
+            Set<AccessLevel> accessLevels = new HashSet<>();
+            for (AccessLevelType accessLevelType : accessCheckboxes.keySet()) {
+                AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevel(accessLevelType);
+                if (accessCheckboxes.get(accessLevelType).getValue().equals(Boolean.TRUE)){
+                    accessLevel.getUsers().add(user);
+                    accessLevels.add(accessLevel);
+                } else {
+                    accessLevel.getUsers().remove(user);
+                    accessLevelService.save(accessLevel);
+                }
+            }
+            user.setAccesses(accessLevels);
+            userService.save(user);
+        }
+        updateUsersGrid();
+    }
+
+    private void deleteUser() {
+        if (user != null){
+            try {
+                userService.removeUserWithAccesses(user);
+                updateUsersGrid();
+            } catch (NoPermissionsException e) {
+                permissionDeniedNotification();
+            }
+        }
+    }
+
+    private void selectUserFromGrid(){
+        resetCheckboxes();
+        user = userGrid.asSingleSelect().getValue();
+        if (user != null){
+            if  (user.getAccesses() != null){
+                Set<AccessLevel> accessLevels = new HashSet<>(user.getAccesses());
+                if (accessLevels.size() != 0){
+                    for (AccessLevel accessLevel : accessLevels){
+                        accessCheckboxes.get(accessLevel.getAccessLevel()).setValue(true);
+                    }
+                }
+            }
+            changeButtonsEnable(true);
+        }
+        else {
+            changeButtonsEnable(false);
+        }
+    }
+
+    private void changeButtonsEnable(boolean enable){
+        editUserButton.setEnabled(enable);
+        deleteUserButton.setEnabled(enable);
+        saveAccessButton.setEnabled(enable);
+    }
+
+    private void changeMenubarButtonsVisible(){
+        createUserButton.setVisible(!editMode);
+        manageUserAccessButton.setVisible(!editMode);
+        editModeLabel.setVisible(editMode);
+        changePasswordPresentation();
+    }
+
+    private void resetCheckboxes(){
+        for (CheckBox checkBox : accessCheckboxes.values()) {
+            checkBox.setValue(false);
+        }
+    }
+
+    private void editUser(){
+        binder.setBean(user);
+        userAccessWrapper.setVisible(false);
+        userCreateDataWrapper.setVisible(true);
+        editMode = true;
+        changeMenubarButtonsVisible();
+    }
+
+    private void changePasswordPresentation(){
+        password.clear();
+        password.setPlaceholder(messageService.getMessage("userManagement.password.placeholder"));
+        password.setId("userManagement.password.placeholder");
+        binder.forField(password).withValidator(Validator.alwaysPass()).bind(User::getPassword, User::setPassword);
     }
 
     @Override
