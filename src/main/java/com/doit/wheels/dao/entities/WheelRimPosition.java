@@ -35,8 +35,10 @@ public class WheelRimPosition extends AbstractModel {
     private Integer width;
     private Integer height;
     private Integer diameter;
-    private Integer index;
+    private Integer indexVal;
     private String speed;
+
+    public WheelRimPosition() {}
 
     public String getPositionNo() {
         return positionNo;
@@ -134,12 +136,12 @@ public class WheelRimPosition extends AbstractModel {
         this.diameter = diameter;
     }
 
-    public Integer getIndex() {
-        return index;
+    public Integer getIndexVal() {
+        return indexVal;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setIndexVal(Integer indexVal) {
+        this.indexVal = indexVal;
     }
 
     public String getSpeed() {
