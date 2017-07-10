@@ -2,7 +2,7 @@ package com.doit.wheels.ui;
 
 import com.doit.wheels.dao.entities.*;
 import com.doit.wheels.services.*;
-import com.doit.wheels.ui.nested.AbstractPropertyView;
+import com.doit.wheels.ui.nested.AbstractPropertyLayout;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
@@ -98,16 +98,16 @@ public class GeneralPropertiesView extends VerticalLayout implements View {
         menuBar.addComponent(valveTypeButton);
         menuBar.addComponent(guideLineButton);
 
-        AbstractPropertyView<Country> countryView = new AbstractPropertyView<>(messageService, countryService, Country.class);
+        AbstractPropertyLayout<Country> countryView = new AbstractPropertyLayout<>(messageService, countryService, Country.class);
 
         lastUsedComponent = countryView;
 
-        countryButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyView<>(messageService, countryService, Country.class)));
-        manufacturerButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyView<>(messageService, manufacturerService, Manufacturer.class)));
-        modelButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyView<>(messageService, modelService, Model.class)));
-        modelTypeButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyView<>(messageService, modelTypeService, ModelType.class)));
-        valveTypeButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyView<>(messageService, valveTypeService, ValveType.class)));
-        guideLineButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyView<>(messageService, guidelineService, Guideline.class)));
+        countryButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, countryService, Country.class)));
+        manufacturerButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, manufacturerService, Manufacturer.class)));
+        modelButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, modelService, Model.class)));
+        modelTypeButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, modelTypeService, ModelType.class)));
+        valveTypeButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, valveTypeService, ValveType.class)));
+        guideLineButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, guidelineService, Guideline.class)));
 
         this.addComponent(menuBar);
         this.addComponent(countryView);

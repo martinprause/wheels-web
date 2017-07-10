@@ -6,7 +6,7 @@ import com.doit.wheels.services.MessageByLocaleService;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.*;
 
-public class AbstractPropertyView<T extends Description> extends HorizontalLayout {
+public class AbstractPropertyLayout<T extends Description> extends HorizontalLayout {
 
     private GenericService<T> entityService;
     private MessageByLocaleService messageByLocaleService;
@@ -17,7 +17,7 @@ public class AbstractPropertyView<T extends Description> extends HorizontalLayou
 
     private Binder<T> entityBinder;
 
-    public AbstractPropertyView(MessageByLocaleService messageByLocaleService, GenericService<T> entityService, Class<T> type) {
+    public AbstractPropertyLayout(MessageByLocaleService messageByLocaleService, GenericService<T> entityService, Class<T> type) {
         this.messageByLocaleService = messageByLocaleService;
         this.type = type;
         this.entityService = entityService;
