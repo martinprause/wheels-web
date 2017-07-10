@@ -13404,6 +13404,33 @@ div.v-layout.v-horizontal.v-widget {
 	position: absolute;
 }
 
+.order-list-button:hover, .customer-list-button:hover {
+	color:#00ace0;
+}
+.order-list-button:hover img {
+	content: url(img/ico/orders-blue.png) !important;
+}
+.customer-list-button:hover img {
+	content: url(img/ico/customers-blue.png) !important;
+}
+.edit-customer-button {
+	margin-right: 8% !important;
+}
+.delete-customer-button {
+	margin-left: 8% !important;
+}
+
+.edit-customer-button,
+.delete-customer-button {
+	background:#5b99e2 !important;
+	color: #ffffff !important;
+	border-radius: 5px !important;
+	border:0 !important;
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+}
+
 .mytheme #grid-wrapper .v-slot:first-of-type {
     height: auto !important;
 }

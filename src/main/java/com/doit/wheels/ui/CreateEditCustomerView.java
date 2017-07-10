@@ -23,8 +23,13 @@ import java.util.ArrayList;
 @SuppressWarnings("FieldCanBeLocal")
 @Configurable
 @SpringComponent
-@SpringView(name = "create-customer")
-public class CreateCustomerView extends VerticalLayout implements View {
+@SpringView(name = "create-edit-customer")
+public class CreateEditCustomerView extends VerticalLayout implements View {
+
+    private String CURRENT_MODE ;
+
+    private final String CREATE = "Create";
+    private final String EDIT = "Edit";
 
     private final String mandatory = ":*";
     private final CustomerService customerService;
@@ -64,8 +69,8 @@ public class CreateCustomerView extends VerticalLayout implements View {
 
 
     @Autowired
-    public CreateCustomerView(CustomerService customerService, CountryService countryService,
-                              MessageByLocaleService messageByLocaleService) {
+    public CreateEditCustomerView(CustomerService customerService, CountryService countryService,
+                                  MessageByLocaleService messageByLocaleService) {
         this.customerService = customerService;
         this.countryService = countryService;
         this.messageByLocaleService = messageByLocaleService;
@@ -74,8 +79,21 @@ public class CreateCustomerView extends VerticalLayout implements View {
     private void init() {
         setSizeFull();
 
-        customer = new Customer();
-        customer.setCustomerContacts(new ArrayList<>());
+        if(getUI().getData() != null || getUI().getData().toString().length() > 0) {
+            try {
+                customer = (Customer) getUI().getData();
+                CURRENT_MODE = EDIT;
+            } catch (ClassCastException e) {
+                customer = new Customer();
+                customer.setCustomerContacts(new ArrayList<>());
+                CURRENT_MODE = CREATE;
+            }
+            getUI().setData(null);
+        } else {
+            customer = new Customer();
+            customer.setCustomerContacts(new ArrayList<>());
+            CURRENT_MODE = CREATE;
+        }
 
         VerticalLayout customerLayout = new VerticalLayout();
         Label newCustomerLabel = new Label(messageByLocaleService.getMessage("customerView.customer.new"));
@@ -97,8 +115,10 @@ public class CreateCustomerView extends VerticalLayout implements View {
         layout.setComponentAlignment(customerContactsGridLayout, Alignment.TOP_RIGHT);
         layout.setWidth("100%");
 
-        Button createCustomerButton = new Button(messageByLocaleService.getMessage("customerView.customer.create"));
-        createCustomerButton.setId("customerView.customer.create");
+        String createButtonCode = CURRENT_MODE.equals(CREATE) ? "customerView.customer.create" : "customerView.customer.save";
+
+        Button createCustomerButton = new Button(messageByLocaleService.getMessage(createButtonCode));
+        createCustomerButton.setId(createButtonCode);
         createCustomerButton.setWidth("165px");
         createCustomerButton.addClickListener(clickEvent -> saveCustomer());
 
