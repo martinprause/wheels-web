@@ -13449,3 +13449,30 @@ div.v-layout.v-horizontal.v-widget {
     box-shadow: none;
     width: 200px !important;
 }
+
+.mytheme .order-details-layout{
+    height: 100%;
+    background-color: #93bbed;
+}
+
+.mytheme .order-menubar{
+    height:100px;
+    background-color: #2d9f19;
+}
+
+.mytheme .v-slot-order-menubar{
+    height: 100px !important;
+}
+
+.mytheme .order-details-label{
+    width: 120px;
+    font-weight: bolder;
+}
+
+.mytheme .v-slot .v-slot-order-details-layout{
+    height: auto !important;
+}
+
+.mytheme .customer-button{
+    float:right;
+}

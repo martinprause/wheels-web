@@ -17,6 +17,9 @@ public class Customer extends Contact {
     @Cascade(CascadeType.ALL)
     private List<CustomerContact> customerContacts;
 
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
+
     public Customer() {
     }
 
@@ -34,5 +37,13 @@ public class Customer extends Contact {
 
     public void setCustomerContacts(List<CustomerContact> customerContacts) {
         this.customerContacts = customerContacts;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

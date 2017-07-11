@@ -21,7 +21,13 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
 
     @Override
     public String getMessage(String id) {
-        Locale locale = VaadinSession.getCurrent().getLocale();
+
+        Locale locale = null;
+        try {
+            locale = VaadinSession.getCurrent().getLocale();
+        } catch (NullPointerException e) {
+            locale = Locale.ENGLISH;
+        }
         try {
             return new String(messageSource.getMessage(id, null, locale).getBytes("ISO-8859-1"), "UTF-8");
         } catch (UnsupportedEncodingException e) {

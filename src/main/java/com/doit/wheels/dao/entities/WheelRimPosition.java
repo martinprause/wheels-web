@@ -38,6 +38,9 @@ public class WheelRimPosition extends AbstractModel {
     private Integer indexVal;
     private String speed;
 
+    @ManyToOne
+    private Order orderVal;
+
     public WheelRimPosition() {}
 
     public String getPositionNo() {

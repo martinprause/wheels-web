@@ -13,7 +13,7 @@ public class GuidelinesLayout extends VerticalLayout{
         init();
     }
 
-    private void init() {
+    public void init() {
         Label orderLabel = new Label(messageByLocaleService.getMessage("order.menubar.guidelinesAndPictures.button"));
         orderLabel.setId("order.menubar.guidelinesAndPictures.button");
         this.addComponent(orderLabel);

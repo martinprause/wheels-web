@@ -4,6 +4,7 @@ import com.doit.wheels.dao.entities.basic.Contact;
 import com.doit.wheels.utils.UserRoleEnum;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,6 +24,16 @@ public class User extends Contact {
 
     @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<AccessLevel> accesses;
+
+    @OneToMany(mappedBy = "createdByUser")
+    private List<Order> createdOrders;
+
+    @OneToMany(mappedBy = "lastUpdatedByUser")
+    private List<Order> lastUpdatedOrders;
+
+    @OneToMany(mappedBy = "driver")
+    private List<Order> driverOrders;
+
 
     public User() {
 
@@ -102,5 +113,29 @@ public class User extends Contact {
         int result = this.getId();
         result = 31 * result + getUsername().hashCode();
         return result;
+    }
+
+    public List<Order> getCreatedOrders() {
+        return createdOrders;
+    }
+
+    public void setCreatedOrders(List<Order> createdOrders) {
+        this.createdOrders = createdOrders;
+    }
+
+    public List<Order> getLastUpdatedOrders() {
+        return lastUpdatedOrders;
+    }
+
+    public void setLastUpdatedOrders(List<Order> lastUpdatedOrders) {
+        this.lastUpdatedOrders = lastUpdatedOrders;
+    }
+
+    public List<Order> getDriverOrders() {
+        return driverOrders;
+    }
+
+    public void setDriverOrders(List<Order> driverOrders) {
+        this.driverOrders = driverOrders;
     }
 }

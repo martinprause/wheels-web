@@ -23,7 +23,9 @@ public class CustomViewAccessControl implements ViewAccessControl {
                 beanName.equals("generalPropertiesView") ||
                 beanName.equals("createEditCustomerView") ||
                 beanName.equals("customersOrdersListView") ||
-                beanName.equals("orderView")
+                beanName.equals("orderView") ||
+                beanName.equals("orderDetailsView") ||
+                beanName.equals("guidelinesView")
                 ) {
             roles.add(UserRoleEnum.ADMIN);
             roles.add(UserRoleEnum.ENGINEER);
