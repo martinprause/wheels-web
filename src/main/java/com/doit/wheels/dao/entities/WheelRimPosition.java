@@ -22,13 +22,16 @@ public class WheelRimPosition extends AbstractModel {
     @ManyToOne
     private ModelType modelType;
     private Integer size;
-    private Integer hubCover;
+    private Boolean hubCover;
 
     @ManyToOne
     private ValveType valveType;
 
     @ManyToOne
     private Manufacturer manufacturerRim;
+
+    @ManyToOne
+    private Order order;
 
     @Enumerated(EnumType.STRING)
     private StatusTypeEnum status;
@@ -83,11 +86,11 @@ public class WheelRimPosition extends AbstractModel {
         this.size = size;
     }
 
-    public Integer getHubCover() {
+    public Boolean getHubCover() {
         return hubCover;
     }
 
-    public void setHubCover(Integer hubCover) {
+    public void setHubCover(Boolean hubCover) {
         this.hubCover = hubCover;
     }
 
@@ -153,5 +156,13 @@ public class WheelRimPosition extends AbstractModel {
 
     public void setSpeed(String speed) {
         this.speed = speed;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

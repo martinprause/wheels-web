@@ -13476,3 +13476,14 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .customer-button{
     float:right;
 }
+.v-slot.v-slot-wheel-rim-layout {
+	background-color: #fafafa;
+	background-image: -webkit-linear-gradient(top, #fafafa 2%, #efefef 98%);
+	background-image: linear-gradient(to bottom, #fafafa 2%, #efefef 98%);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+	border: 1px solid #d4d4d4;
+}
+
+.mytheme .hub-cover-layout{
+	height:32px !important;
+}

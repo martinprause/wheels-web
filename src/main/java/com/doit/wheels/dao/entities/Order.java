@@ -2,8 +2,12 @@ package com.doit.wheels.dao.entities;
 
 import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.utils.StatusTypeEnum;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +51,7 @@ public class Order extends AbstractModel {
     private byte[] signaturePicture;
 
     @OneToMany(mappedBy = "orderVal")
+    @Cascade(CascadeType.ALL)
     private List<WheelRimPosition> wheelRimPositions;
 
     public String getOrderNo() {
@@ -151,5 +156,13 @@ public class Order extends AbstractModel {
 
     public void setLastUpdatedByUser(User lastUpdatedByUser) {
         this.lastUpdatedByUser = lastUpdatedByUser;
+    }
+
+    public List<WheelRimPosition> getWheelRimPositions() {
+        return wheelRimPositions;
+    }
+
+    public void setWheelRimPositions(List<WheelRimPosition> wheelRimPositions) {
+        this.wheelRimPositions = wheelRimPositions;
     }
 }

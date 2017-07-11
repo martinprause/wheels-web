@@ -1,6 +1,10 @@
 package com.doit.wheels.ui;
 
-import com.doit.wheels.services.MessageByLocaleService;
+import com.doit.wheels.dao.entities.*;
+import com.doit.wheels.dao.entities.basic.AbstractModel;
+import com.doit.wheels.services.*;
+import com.doit.wheels.ui.nested.WheelRimPositionsLayout;
+import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -11,6 +15,11 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 @SpringComponent
@@ -23,7 +32,28 @@ public class OrderView extends VerticalLayout implements View {
     @Autowired
     private MessageByLocaleService messageByLocaleService;
 
+    @Autowired
+    private WheelRimPositionService wheelRimPositionService;
+
+    @Autowired
+    private ManufacturerService manufacturerService;
+
+    @Autowired
+    private ModelService modelService;
+
+    @Autowired
+    private ModelTypeService modelTypeService;
+
+    @Autowired
+    private ValveTypeService valveTypeService;
+
+    private final Binder<Order> SHARED_BINDER = new Binder<>(Order.class);
+
     private void init(){
+        Order bean = new Order();
+        bean.setWheelRimPositions(new ArrayList<>());
+        SHARED_BINDER.setBean(bean);
+
         HorizontalLayout menuBar = new HorizontalLayout();
         menuBar.addStyleName("order-menubar");
 
@@ -50,6 +80,16 @@ public class OrderView extends VerticalLayout implements View {
 
         OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService);
         previousLayout = orderDetailsLayout;
+
+        positionsButton.addClickListener(clickEvent -> {
+            Map<Class, List<? extends AbstractModel>> args = new HashMap<>();
+            args.put(Manufacturer.class, manufacturerService.findAll());
+            args.put(Model.class, modelService.findAll());
+            args.put(ModelType.class, modelTypeService.findAll());
+            args.put(ValveType.class, valveTypeService.findAll());
+            replaceComponent(new WheelRimPositionsLayout(messageByLocaleService, SHARED_BINDER, args));
+        });
+
         this.addComponent(orderDetailsLayout);
 
     }
