@@ -72,11 +72,13 @@ public class WheelRimPositionsLayout extends VerticalLayout {
 
         addPositionButton = new Button(messageByLocaleService.getMessage("newOrderView.position.add"));
         addPositionButton.setId("newOrderView.position.add");
+        addPositionButton.addStyleName("manage-user-access-buttons");
         addPositionButton.addClickListener(clickEvent -> onNewPositionAdded());
         addPositionButton.setWidth(BUTTON_PREFERRED_SIZE);
 
         saveChangedPositionButton = new Button(messageByLocaleService.getMessage("customerView.customer.save"));
         saveChangedPositionButton.setId("customerView.customer.save");
+        saveChangedPositionButton.addStyleName("manage-user-access-buttons");
         saveChangedPositionButton.addClickListener(clickEvent -> onSaveChangedPosition());
         saveChangedPositionButton.setVisible(false);
         saveChangedPositionButton.setWidth(BUTTON_PREFERRED_SIZE);
@@ -138,6 +140,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         VerticalLayout wheelLayout = new VerticalLayout();
         Label caption = new Label(messageByLocaleService.getMessage("newOrderView.position.wheel"));
         caption.setId("newOrderView.position.wheel");
+        caption.addStyleName("bold-label");
         wheelLayout.addComponent(caption);
         wheelLayout.addStyleName("wheel-rim-layout");
 
@@ -188,6 +191,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         VerticalLayout rimLayout = new VerticalLayout();
         Label caption = new Label(messageByLocaleService.getMessage("newOrderView.position.rim"));
         caption.setId("newOrderView.position.rim");
+        caption.addStyleName("bold-label");
         rimLayout.addComponent(caption);
         rimLayout.addStyleName("wheel-rim-layout");
 
@@ -239,16 +243,19 @@ public class WheelRimPositionsLayout extends VerticalLayout {
 
         duplicateButton = new Button(messageByLocaleService.getMessage("newOrderView.position.buttons.duplicate"));
         duplicateButton.setId("newOrderView.position.buttons.duplicate");
+        duplicateButton.addStyleName("manage-user-access-buttons");
         duplicateButton.addClickListener(clickEvent -> onDuplicatePosition());
         duplicateButton.setWidth(BUTTON_PREFERRED_SIZE);
 
         editButton = new Button(messageByLocaleService.getMessage("newOrderView.position.buttons.edit"));
         editButton.setId("newOrderView.position.buttons.edit");
+        editButton.addStyleName("manage-user-access-buttons");
         editButton.addClickListener(clickEvent -> onEditPosition());
         editButton.setWidth(BUTTON_PREFERRED_SIZE);
 
         deleteButton = new Button(messageByLocaleService.getMessage("newOrderView.position.buttons.delete"));
         deleteButton.setId("newOrderView.position.buttons.delete");
+        deleteButton.addStyleName("manage-user-access-buttons");
         deleteButton.addClickListener(clickEvent -> onDeletePosition());
         deleteButton.setWidth(BUTTON_PREFERRED_SIZE);
 

@@ -55,7 +55,7 @@ public class LandingView extends CssLayout implements View {
         searchButton.addStyleName("landing-center-menu-bar-buttons");
         searchButton.setIcon(new ThemeResource("img/ico/loupe.png"));
         searchButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
-        searchButton.addClickListener(enter -> getUI().getNavigator().navigateTo("new-order"));
+        searchButton.addClickListener(enter -> getUI().getNavigator().navigateTo("customer-orders-list"));
 
         Button generaLPropertiesButton = new Button(messageService.getMessage("landing.generalProperties"));
         generaLPropertiesButton.setId("landing.generalProperties");

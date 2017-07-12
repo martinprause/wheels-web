@@ -17,6 +17,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -189,7 +190,7 @@ public class OrderDetailsLayout extends VerticalLayout{
                         (order2, deadlineDelivery1) -> order2.setCreated(formatToDate(deadlineDelivery1)));
 
         order = new Order();
-//        order = orderService.findAll().get(0);
+        order.setWheelRimPositions(new ArrayList<>());
         binder.setBean(order);
         status.setValue(order.getStatus().name());
 

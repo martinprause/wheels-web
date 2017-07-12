@@ -3,6 +3,7 @@ package com.doit.wheels.ui;
 import com.doit.wheels.dao.entities.*;
 import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.services.*;
+import com.doit.wheels.ui.nested.CommentsSubmitLayout;
 import com.doit.wheels.ui.nested.WheelRimPositionsLayout;
 import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
@@ -33,9 +34,6 @@ public class OrderView extends VerticalLayout implements View {
 
     @Autowired
     private MessageByLocaleService messageByLocaleService;
-
-    @Autowired
-    private WheelRimPositionService wheelRimPositionService;
 
     @Autowired
     private ManufacturerService manufacturerService;
@@ -100,6 +98,7 @@ public class OrderView extends VerticalLayout implements View {
         printButton.setIcon(new ThemeResource("img/ico/star.png"));
         printButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         printButton.addStyleName("order-menubar-buttons");
+        printButton.addClickListener(clickEvent -> replaceComponent(new CommentsSubmitLayout(messageByLocaleService, orderService, SHARED_BINDER)));
         menuBar.addComponent(printButton);
 
 
@@ -116,7 +115,7 @@ public class OrderView extends VerticalLayout implements View {
             args.put(ValveType.class, valveTypeService.findAll());
             replaceComponent(new WheelRimPositionsLayout(messageByLocaleService, SHARED_BINDER, args));
         });
-
+        orderDetailsLayout.setHeight("100%");
         this.addComponent(orderDetailsLayout);
 
     }
