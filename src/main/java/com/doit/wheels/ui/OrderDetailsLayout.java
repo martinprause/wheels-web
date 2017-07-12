@@ -98,11 +98,10 @@ public class OrderDetailsLayout extends VerticalLayout{
         customer.setEmptySelectionAllowed(false);
         customer.setWidth("250px");
         Button createCustomerButton = new Button();
-        createCustomerButton.setIcon(new ThemeResource("img/ico/add.png"));
+        createCustomerButton.setIcon(new ThemeResource("img/ico/add-16.png"));
         createCustomerButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
 
-        createCustomerButton.addClickListener(e -> binder.validate());
-//        UI.getCurrent().getNavigator().navigateTo("create-edit-customer")
+        createCustomerButton.addClickListener(e -> UI.getCurrent().getNavigator().navigateTo("create-edit-customer"));
         customerLayout.addComponents(customerLabel,createCustomerButton, customer);
         this.addComponent(customerLayout);
 
