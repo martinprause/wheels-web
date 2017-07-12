@@ -56,6 +56,9 @@ public class OrderView extends VerticalLayout implements View {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private GuidelineService guidelineService;
+
     private final Binder<Order> SHARED_BINDER = new Binder<>(Order.class);
 
     private void init(){
@@ -85,7 +88,7 @@ public class OrderView extends VerticalLayout implements View {
 
         Button guidelines = new Button(messageByLocaleService.getMessage("order.menubar.guidelinesAndPictures.button"));
         guidelines.setId("order.menubar.guidelinesAndPictures.button");
-        guidelines.addClickListener(e -> replaceComponent(new GuidelinesLayout(messageByLocaleService)));
+        guidelines.addClickListener(e -> replaceComponent(new GuidelinesLayout(messageByLocaleService, guidelineService, SHARED_BINDER)));
         guidelines.addStyleName("clear-button");
         guidelines.setIcon(new ThemeResource("img/ico/star.png"));
         guidelines.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
