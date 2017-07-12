@@ -13475,6 +13475,27 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .customer-button{
     float:right;
 }
+
+.mytheme .user-access .v-expand .v-slot:first-child {
+	width: 80% !important;
+}
+
+.mytheme .user-management .v-slot-edit-mode {
+	height: auto !important;
+	text-align: left;
+	margin-left: auto;
+	width: 683px;
+	margin-right: auto;
+}
+
+.mytheme .user-access .v-horizontallayout {
+	display: flex;
+	justify-content: space-between;
+}
+
+.mytheme .user-access .v-slot-accesses-wrapper {
+	float: right;
+}
 .v-slot.v-slot-wheel-rim-layout {
 	background-color: #fafafa;
 	background-image: -webkit-linear-gradient(top, #fafafa 2%, #efefef 98%);

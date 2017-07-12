@@ -132,9 +132,9 @@ public class UserManagementView extends VerticalLayout implements View {
         menubar = new CssLayout();
         menubar.addStyleName("user-management-menubar");
 
-        editModeLabel = new Label("Edit user");
-        editModeLabel.setVisible(editMode);
-        menubar.addComponent(editModeLabel);
+//        editModeLabel = new Label("Edit user");
+//        editModeLabel.setVisible(editMode);
+//        menubar.addComponent(editModeLabel);
 
         createUserButton = new Button(messageService.getMessage("userManagement.createUser"));
         createUserButton.setId("userManagement.createUser");
@@ -173,6 +173,11 @@ public class UserManagementView extends VerticalLayout implements View {
         userCreateDataWrapper = new VerticalLayout();
         userCreateDataWrapper.setSizeFull();
         userCreateDataWrapper.addStyleName("user-management");
+
+        editModeLabel = new Label("Edit user");
+        editModeLabel.setVisible(editMode);
+        userCreateDataWrapper.addComponent(editModeLabel);
+        editModeLabel.addStyleName("edit-mode");
 
         userCreateData = new HorizontalLayout();
         userCreateData.addStyleName("user-management-data-horizontal");
@@ -369,7 +374,7 @@ public class UserManagementView extends VerticalLayout implements View {
         userAccessWrapper.addComponent(gridWrapper);
 
         VerticalLayout accessesWrapper = new VerticalLayout();
-        accessesWrapper.setWidth("20%");
+//        accessesWrapper.setWidth("20%");
         accessesWrapper.addStyleName("accesses-wrapper");
 
         createOrderCheckBox = new CheckBox(messageService.getMessage("userManagement.createOrder.checkbox"));
@@ -402,6 +407,7 @@ public class UserManagementView extends VerticalLayout implements View {
         accessCaption = new Label(messageService.getMessage("userManagement.accessRights.label"));
         accessCaption.setId("userManagement.accessRights.label");
         accessCaption.addStyleName("user-access-caption");
+//        userListButtonLayout.addComponent(saveAccessButton);
 
         accessesWrapper.addComponent(accessCaption);
         accessesWrapper.addComponent(createOrderCheckBox);
