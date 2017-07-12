@@ -13381,7 +13381,7 @@ div.v-layout.v-horizontal.v-widget {
 #generalProperties\.buttons\.add,
 #generalProperties\.buttons\.edit,
 #generalProperties\.buttons\.delete {
-	background:#5b99e2 !important;
+	background:#5e9de5 !important;
 	color: #ffffff;
 	border-radius: 5px;
 	border:0;
@@ -13405,7 +13405,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .order-list-button:hover, .customer-list-button:hover {
-	color:#00ace0;
+	color:#5e9de5;
 }
 .order-list-button:hover img {
 	content: url(img/ico/orders-blue.png) !important;
@@ -13422,7 +13422,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .edit-customer-button,
 .delete-customer-button {
-	background:#5b99e2 !important;
+	background:#5e9de5 !important;
 	color: #ffffff !important;
 	border-radius: 5px !important;
 	border:0 !important;
@@ -13439,8 +13439,8 @@ div.v-layout.v-horizontal.v-widget {
     font-weight: bolder;
 }
 
-.mytheme .manage-user-access-buttons{
-    background:#5b99e2 !important;
+.mytheme .manage-user-access-buttons {
+    background:#5e9de5 !important;
     color: #ffffff;
     border-radius: 5px;
     border:0;
@@ -13452,6 +13452,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .order-details-layout{
     height: 100%;
+    background-color: #5e9de5;
 }
 
 .mytheme .order-menubar{
@@ -13538,4 +13539,10 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme #order\.menubar\.guidelinesAndPictures\.button:hover img,
 .mytheme #order\.printAndClose\.button:hover img {
     content: url(img/ico/star-blue.png);
+}
+
+
+.bold-label {
+	font-weight: 600;
+	font-size: 16px;
 }
