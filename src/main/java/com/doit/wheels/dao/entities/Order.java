@@ -28,7 +28,7 @@ public class Order extends AbstractModel {
     private User lastUpdatedByUser;
 
     @Enumerated(EnumType.STRING)
-    private StatusTypeEnum status;
+    private StatusTypeEnum status = StatusTypeEnum.CREATED;
 
     @ManyToOne
     private Customer customer;
@@ -39,6 +39,7 @@ public class Order extends AbstractModel {
 
     private Date deadlineDelivery;
 
+    @Column(length = 1000)
     private String comment;
 
     @ManyToOne
@@ -156,6 +157,14 @@ public class Order extends AbstractModel {
 
     public void setLastUpdatedByUser(User lastUpdatedByUser) {
         this.lastUpdatedByUser = lastUpdatedByUser;
+    }
+
+    public StatusTypeEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusTypeEnum status) {
+        this.status = status;
     }
 
     public List<WheelRimPosition> getWheelRimPositions() {

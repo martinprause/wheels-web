@@ -7,12 +7,14 @@ import com.doit.wheels.ui.nested.WheelRimPositionsLayout;
 import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -47,6 +49,15 @@ public class OrderView extends VerticalLayout implements View {
     @Autowired
     private ValveTypeService valveTypeService;
 
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private UserService userService;
+
     private final Binder<Order> SHARED_BINDER = new Binder<>(Order.class);
 
     private void init(){
@@ -59,26 +70,42 @@ public class OrderView extends VerticalLayout implements View {
 
         Button detailsButton = new Button(messageByLocaleService.getMessage("order.menubar.customerAndOrder.button"));
         detailsButton.setId("order.menubar.customerAndOrder.button");
-        detailsButton.addClickListener(e -> replaceComponent(new OrderDetailsLayout(messageByLocaleService)));
+        detailsButton.addClickListener(e -> replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService)));
+        detailsButton.addStyleName("clear-button");
+        detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
+        detailsButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        detailsButton.addStyleName("order-menubar-buttons");
         menuBar.addComponent(detailsButton);
 
         Button positionsButton = new Button(messageByLocaleService.getMessage("order.positions.button"));
         positionsButton.setId("order.positions.button");
+        positionsButton.addStyleName("clear-button");
+        positionsButton.setIcon(new ThemeResource("img/ico/star.png"));
+        positionsButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        positionsButton.addStyleName("order-menubar-buttons");
         menuBar.addComponent(positionsButton);
 
         Button guidelines = new Button(messageByLocaleService.getMessage("order.menubar.guidelinesAndPictures.button"));
         guidelines.setId("order.menubar.guidelinesAndPictures.button");
         guidelines.addClickListener(e -> replaceComponent(new GuidelinesLayout(messageByLocaleService)));
+        guidelines.addStyleName("clear-button");
+        guidelines.setIcon(new ThemeResource("img/ico/star.png"));
+        guidelines.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        guidelines.addStyleName("order-menubar-buttons");
         menuBar.addComponent(guidelines);
 
         Button printButton = new Button(messageByLocaleService.getMessage("order.printAndClose.button"));
         printButton.setId("order.printAndClose.button");
+        printButton.addStyleName("clear-button");
+        printButton.setIcon(new ThemeResource("img/ico/star.png"));
+        printButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        printButton.addStyleName("order-menubar-buttons");
         menuBar.addComponent(printButton);
 
 
         this.addComponent(menuBar);
 
-        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService);
+        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService);
         previousLayout = orderDetailsLayout;
 
         positionsButton.addClickListener(clickEvent -> {

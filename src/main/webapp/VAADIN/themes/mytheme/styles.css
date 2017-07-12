@@ -13452,16 +13452,15 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .order-details-layout{
     height: 100%;
-    background-color: #93bbed;
 }
 
 .mytheme .order-menubar{
-    height:100px;
-    background-color: #2d9f19;
+    display: flex;
+    justify-content: space-around;
 }
 
 .mytheme .v-slot-order-menubar{
-    height: 100px !important;
+    height: 70px !important;
 }
 
 .mytheme .order-details-label{
@@ -13486,4 +13485,36 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .hub-cover-layout{
 	height:32px !important;
+}
+
+.mytheme .order-details-input-elem{
+    width: 300px;
+}
+
+.mytheme .order-menubar-buttons{
+    width: 230px;
+}
+
+.mytheme #order\.menubar\.customerAndOrder\.button:hover:after,
+.mytheme #order\.positions\.button:hover:after,
+.mytheme #order\.menubar\.guidelinesAndPictures\.button:hover:after,
+.mytheme #order\.printAndClose\.button:hover:after{
+    background-color: transparent;
+}
+
+.mytheme #order\.menubar\.customerAndOrder\.button:hover,
+.mytheme #order\.positions\.button:hover,
+.mytheme #order\.menubar\.guidelinesAndPictures\.button:hover,
+.mytheme #order\.printAndClose\.button:hover{
+    color:#00ace0;
+}
+
+.mytheme #order\.menubar\.customerAndOrder\.button:hover img{
+    content: url(img/ico/home-blue.png);
+}
+
+.mytheme #order\.positions\.button:hover img,
+.mytheme #order\.menubar\.guidelinesAndPictures\.button:hover img,
+.mytheme #order\.printAndClose\.button:hover img {
+    content: url(img/ico/star-blue.png);
 }

@@ -7,6 +7,7 @@ import com.doit.wheels.dao.repositories.UserRepository;
 import com.doit.wheels.services.AccessLevelService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.utils.AccessLevelType;
+import com.doit.wheels.utils.UserRoleEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.doit.wheels.utils.exceptions.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,11 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
             }
             delete(user);
         } else throw new NoPermissionsException("Permission for user + " + currentUser.getUsername() + " denied!");
+    }
+
+    @Override
+    public List<User> findAllByRole(UserRoleEnum role) {
+        return userRepository.findAllByRole(role);
     }
 
 }

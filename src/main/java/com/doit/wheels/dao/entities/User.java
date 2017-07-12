@@ -138,4 +138,8 @@ public class User extends Contact {
     public void setDriverOrders(List<Order> driverOrders) {
         this.driverOrders = driverOrders;
     }
+
+    public String getDriverFullName(){
+        return this.getFirstname() + " " + this.getLastname() + " (" + this.getUsername() + ")";
+    }
 }

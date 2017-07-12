@@ -79,7 +79,7 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
     private void init() {
         setSizeFull();
 
-        if(getUI().getData() != null || getUI().getData().toString().length() > 0) {
+        if(getUI().getData() != null && getUI().getData().toString().length() > 0) {
             try {
                 customer = (Customer) getUI().getData();
                 CURRENT_MODE = EDIT;

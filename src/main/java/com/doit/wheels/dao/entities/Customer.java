@@ -46,4 +46,8 @@ public class Customer extends Contact {
     public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
+
+    public String getFullName(){
+        return this.getFirstname() + " " + this.getLastname();
+    }
 }
