@@ -13558,6 +13558,46 @@ div.v-layout.v-horizontal.v-widget {
 	font-size: 16px;
 }
 
+.mytheme .v-panel-content .customer-content .v-expand:first-child {
+	display:flex;
+	justify-content: center;
+}
+
+.mytheme .v-panel-content .customer-content .v-slot-customer-column {
+	/*display: flex;*/
+	/*flex-flow: row wrap;*/
+	width: auto !important;
+}
+
+.mytheme .v-panel-content .v-slot-customer-content {
+	height: auto !important;
+}
+
+.mytheme .v-panel-content .customer-content .v-align-center .customer-column {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.mytheme .v-panel-content .customer-content .v-align-center .customer-column .v-slot-contact-label {
+	position: absolute;
+}
+.mytheme .v-panel-content .customer-content .v-align-center .customer-column .v-slot-main-layout {
+	padding-top: 35px;
+}
+.mytheme .v-panel-content .customer-content .v-align-center .customer-column .contact-grid {
+	padding-top: 0;
+}
+.mytheme .v-panel-content .customer-content .v-expand .v-verticallayout .v-expand:first-child {
+	display: block !important;
+}
+
+/*.mytheme .v-panel-content .v-slot-customer-column {*/
+	/*display: flex;*/
+	/*flex-flow: row wrap;*/
+	/*width: auto !important;*/
+/*}*/
+
+
 .mytheme .guideline-delete-layout{
     width: 95%;
     text-align: right;

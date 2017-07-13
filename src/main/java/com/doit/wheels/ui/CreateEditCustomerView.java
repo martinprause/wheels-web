@@ -77,7 +77,7 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
     }
 
     private void init() {
-        setSizeFull();
+//        setSizeFull();
 
         if(getUI().getData() != null && getUI().getData().toString().length() > 0) {
             try {
@@ -105,6 +105,10 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
         Label customerContactLabel = new Label(messageByLocaleService.getMessage("customerView.customerContact.title"));
         customerContactLabel.setId("customerView.customerContact.title");
         customerContactLayout.addComponents(customerContactLabel, initCustomerContactForm());
+        customerContactLayout.addStyleName("customer-column");
+        customerLayout.addStyleName("customer-column");
+        customerContactLabel.addStyleName("contact-label");
+
 
 
         HorizontalLayout layout = new HorizontalLayout();
@@ -114,6 +118,9 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
         layout.setComponentAlignment(customerContactLayout, Alignment.TOP_CENTER);
         layout.setComponentAlignment(customerContactsGridLayout, Alignment.TOP_RIGHT);
         layout.setWidth("100%");
+        layout.addStyleName("customer-content");
+        customerContactLayout.addComponent(customerContactsGridLayout);
+        customerContactsGridLayout.addStyleName("contact-grid");
 
         String createButtonCode = CURRENT_MODE.equals(CREATE) ? "customerView.customer.create" : "customerView.customer.save";
 
@@ -274,6 +281,8 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
         contactEmail = new TextField();
         contactPhone = new TextField();
         contactMobile = new TextField();
+
+        mainLayout.addStyleName("main-layout");
 
         HorizontalLayout firstnamelayout = new HorizontalLayout();
         Label firstnameLabel = new Label(messageByLocaleService.getMessage("customerView.customer.firstName") + mandatory);
