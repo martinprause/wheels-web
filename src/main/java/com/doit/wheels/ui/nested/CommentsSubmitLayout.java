@@ -81,7 +81,6 @@ public class CommentsSubmitLayout extends VerticalLayout {
         submitOrderButton.addStyleName("manage-user-access-buttons");
         submitOrderButton.addClickListener(clickEvent -> submitOrder());
         VerticalLayout buttonLayout = new VerticalLayout();
-        buttonLayout.setHeight("400px");
 
         buttonLayout.addComponent(submitOrderButton);
         buttonLayout.setComponentAlignment(submitOrderButton, Alignment.BOTTOM_CENTER);

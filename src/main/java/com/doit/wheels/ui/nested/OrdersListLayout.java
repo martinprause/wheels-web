@@ -9,6 +9,7 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import org.vaadin.dialogs.ConfirmDialog;
 
 public class OrdersListLayout extends VerticalLayout {
+
     private MessageByLocaleService messageByLocaleService;
     private OrderService orderService;
 
@@ -17,6 +18,7 @@ public class OrdersListLayout extends VerticalLayout {
     private Grid<Order> orderGrid;
 
     private Button editOrderButton;
+    private Button printOrderButton;
     private Button deleteOrderButton;
 
     public OrdersListLayout(MessageByLocaleService messageByLocaleService, OrderService orderService) {
@@ -50,6 +52,7 @@ public class OrdersListLayout extends VerticalLayout {
 
     private void enableManagingButtons(boolean flag) {
         editOrderButton.setEnabled(flag);
+        printOrderButton.setEnabled(flag);
         deleteOrderButton.setEnabled(flag);
     }
 
@@ -69,24 +72,28 @@ public class OrdersListLayout extends VerticalLayout {
     private HorizontalLayout initButtonsLayout(){
         editOrderButton = new Button(messageByLocaleService.getMessage("orderView.order.buttons.editOrder"));
         editOrderButton.setId("orderView.order.buttons.editOrder");
-        editOrderButton.addStyleName("create-user-button");
-        editOrderButton.addStyleName("edit-customer-button");
+        editOrderButton.addStyleName("manage-order-button");
         editOrderButton.addClickListener(clickEvent -> {
             getUI().setData(selectedOrder);
             getUI().getNavigator().navigateTo("new-order");
         });
 
+        printOrderButton = new Button(messageByLocaleService.getMessage("orderView.order.buttons.print"));
+        printOrderButton.setId("orderView.order.buttons.print");
+        printOrderButton.addStyleName("manage-order-button");
+        printOrderButton.addClickListener(clickEvent -> Notification.show("HERE WILL BE PRINT!", Notification.Type.HUMANIZED_MESSAGE));
+
         deleteOrderButton = new Button(messageByLocaleService.getMessage("orderView.order.buttons.deleteOrder"));
         deleteOrderButton.setId("orderView.order.buttons.deleteOrder");
-        deleteOrderButton.addStyleName("manage-user-access-button");
-        deleteOrderButton.addStyleName("delete-customer-button");
+        deleteOrderButton.addStyleName("manage-order-button");
         deleteOrderButton.addClickListener(clickEvent -> deleteSelectedOrder());
 
         enableManagingButtons(false);
 
-        HorizontalLayout bottomMenuLayout = new HorizontalLayout(editOrderButton, deleteOrderButton);
+        HorizontalLayout bottomMenuLayout = new HorizontalLayout();
+        bottomMenuLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+        bottomMenuLayout.addComponents(editOrderButton, printOrderButton, deleteOrderButton);
         bottomMenuLayout.setWidth("99%");
-        bottomMenuLayout.addStyleName("user-management-menubar");
         return bottomMenuLayout;
     }
 

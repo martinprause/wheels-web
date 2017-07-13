@@ -64,15 +64,12 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         initBinders();
 
         HorizontalLayout wheelRimTablesLayout = new HorizontalLayout();
-        wheelRimTablesLayout.setHeight("99%");
 
         VerticalLayout wheelTableLayout = generateWheelLayout();
         wheelRimTablesLayout.setHeight("100%");
         VerticalLayout rimLayout = generateRimLayout();
         rimLayout.setHeight("100%");
 
-        VerticalLayout buttonLayout = new VerticalLayout();
-        buttonLayout.setHeight("100%");
 
         addPositionButton = new Button(messageByLocaleService.getMessage("newOrderView.position.add"));
         addPositionButton.setId("newOrderView.position.add");
@@ -87,13 +84,12 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         saveChangedPositionButton.setVisible(false);
         saveChangedPositionButton.setWidth(BUTTON_PREFERRED_SIZE);
 
-        buttonLayout.addComponent(addPositionButton);
-        buttonLayout.addComponent(saveChangedPositionButton);
-        buttonLayout.setDefaultComponentAlignment(Alignment.BOTTOM_CENTER);
 
         wheelRimTablesLayout.addComponent(wheelTableLayout);
         wheelRimTablesLayout.addComponent(rimLayout);
-        wheelRimTablesLayout.addComponent(buttonLayout);
+        wheelRimTablesLayout.addComponents(addPositionButton, saveChangedPositionButton);
+        wheelRimTablesLayout.setComponentAlignment(addPositionButton, Alignment.BOTTOM_LEFT);
+        wheelRimTablesLayout.setComponentAlignment(saveChangedPositionButton, Alignment.BOTTOM_LEFT);
 
         initGrid();
 
