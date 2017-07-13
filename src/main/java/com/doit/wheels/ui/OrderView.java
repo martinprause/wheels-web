@@ -19,16 +19,17 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configurable
 @SpringComponent
 @SpringView(name = OrderView.VIEW_NAME)
 public class OrderView extends VerticalLayout implements View {
     static final String VIEW_NAME = "new-order";
+    private String CURRENT_MODE;
+
+    private final String CREATE = "Create";
+    private final String EDIT = "Edit";
 
     private Layout previousLayout;
 
@@ -59,9 +60,24 @@ public class OrderView extends VerticalLayout implements View {
     private final Binder<Order> SHARED_BINDER = new Binder<>(Order.class);
 
     private void init(){
-        Order bean = new Order();
-        bean.setWheelRimPositions(new ArrayList<>());
-        SHARED_BINDER.setBean(bean);
+        Order order;
+
+        if(getUI().getData() != null && getUI().getData().toString().length() > 0) {
+            try {
+                order = (Order) getUI().getData();
+                CURRENT_MODE = EDIT;
+            } catch (ClassCastException e) {
+                order = new Order();
+                order.setWheelRimPositions(new HashSet<>());
+                CURRENT_MODE = CREATE;
+            }
+            getUI().setData(null);
+        } else {
+            order = new Order();
+            order.setWheelRimPositions(new HashSet<>());
+            CURRENT_MODE = CREATE;
+        }
+        SHARED_BINDER.setBean(order);
 
         HorizontalLayout menuBar = new HorizontalLayout();
         menuBar.addStyleName("order-menubar");

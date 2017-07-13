@@ -3,9 +3,10 @@ package com.doit.wheels.dao.entities;
 import com.doit.wheels.dao.entities.basic.Contact;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -13,8 +14,9 @@ import java.util.List;
 public class Customer extends Contact {
     private String comment;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer")
     @Cascade(CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<CustomerContact> customerContacts;
 
     @OneToMany(mappedBy = "customer")
