@@ -2,14 +2,10 @@ package com.doit.wheels.dao.entities;
 
 import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.utils.StatusTypeEnum;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -51,9 +47,9 @@ public class Order extends AbstractModel {
     @Lob
     private byte[] signaturePicture;
 
-    @OneToMany(mappedBy = "orderVal")
-    @Cascade(CascadeType.ALL)
-    private List<WheelRimPosition> wheelRimPositions;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "orders_wheel_rim_positions",joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "wheel_rim_position_id") })
+    private Set<WheelRimPosition> wheelRimPositions;
 
     public String getOrderNo() {
         return orderNo;
@@ -167,11 +163,11 @@ public class Order extends AbstractModel {
         this.status = status;
     }
 
-    public List<WheelRimPosition> getWheelRimPositions() {
+    public Set<WheelRimPosition> getWheelRimPositions() {
         return wheelRimPositions;
     }
 
-    public void setWheelRimPositions(List<WheelRimPosition> wheelRimPositions) {
+    public void setWheelRimPositions(Set<WheelRimPosition> wheelRimPositions) {
         this.wheelRimPositions = wheelRimPositions;
     }
 }

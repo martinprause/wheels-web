@@ -17,8 +17,8 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class OrderDetailsLayout extends VerticalLayout{
@@ -188,8 +188,12 @@ public class OrderDetailsLayout extends VerticalLayout{
                 .bind(order1 -> formatToLocalDate(order1.getDeadlineDelivery()),
                         (order2, deadlineDelivery1) -> order2.setCreated(formatToDate(deadlineDelivery1)));
 
-        order = new Order();
-        order.setWheelRimPositions(new ArrayList<>());
+        if(binder.getBean() == null){
+            order = new Order();
+            order.setWheelRimPositions(new HashSet<>());
+        } else {
+            order = binder.getBean();
+        }
         binder.setBean(order);
         status.setValue(order.getStatus().name());
 
@@ -207,6 +211,5 @@ public class OrderDetailsLayout extends VerticalLayout{
             return null;
         }
         return (Date.from(localDate.atStartOfDay(ZoneId.of("Europe/Berlin")).toInstant()));
-
     }
 }

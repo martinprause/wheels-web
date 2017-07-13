@@ -30,9 +30,6 @@ public class WheelRimPosition extends AbstractModel {
     @ManyToOne
     private Manufacturer manufacturerRim;
 
-    @ManyToOne
-    private Order order;
-
     @Enumerated(EnumType.STRING)
     private StatusTypeEnum status;
     private Integer width;
@@ -40,9 +37,6 @@ public class WheelRimPosition extends AbstractModel {
     private Integer diameter;
     private Integer indexVal;
     private String speed;
-
-    @ManyToOne
-    private Order orderVal;
 
     public WheelRimPosition() {}
 
@@ -156,13 +150,5 @@ public class WheelRimPosition extends AbstractModel {
 
     public void setSpeed(String speed) {
         this.speed = speed;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 }

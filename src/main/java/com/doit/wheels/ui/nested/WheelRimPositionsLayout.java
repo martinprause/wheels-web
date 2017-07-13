@@ -5,6 +5,7 @@ import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
@@ -16,6 +17,7 @@ import java.util.Objects;
 public class WheelRimPositionsLayout extends VerticalLayout {
 
     private final String BUTTON_PREFERRED_SIZE = "175px";
+    private int POSITIONS_COUNTER;
 
     private MessageByLocaleService messageByLocaleService;
 
@@ -52,6 +54,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         this.sharedBinder = sharedBinder;
         localBinder = new Binder<>();
         necessaryEntities = args;
+        POSITIONS_COUNTER = 0;
         init();
     }
 
@@ -327,6 +330,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         positionsGrid.addColumn(WheelRimPosition::getDiameter).setId("diameter");
         positionsGrid.addColumn(WheelRimPosition::getIndexVal).setId("indexVal");
         positionsGrid.addColumn(WheelRimPosition::getSpeed).setId("speed");
+        positionsGrid.setSortOrder(GridSortOrder.asc(positionsGrid.getColumn("positionNo")));
 
         HeaderRow gridHeaderRow = positionsGrid.getDefaultHeaderRow();
 
@@ -396,12 +400,10 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         if (validateBindedValues()) {
             WheelRimPosition position = localBinder.getBean();
             Order order = sharedBinder.getBean();
-            position.setOrder(order);
             order.getWheelRimPositions().add(position);
-            position.setPositionNo(String.valueOf(order.getWheelRimPositions().indexOf(position) + 1));
+            position.setPositionNo(String.valueOf(++POSITIONS_COUNTER));
             positionsGrid.setItems(order.getWheelRimPositions());
             WheelRimPosition newPosition = new WheelRimPosition();
-            newPosition.setOrder(order);
             localBinder.setBean(newPosition);
         }
     }
@@ -410,7 +412,6 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         Order bean = sharedBinder.getBean();
         WheelRimPosition wheelRimPosition = positionsGrid.getSelectionModel().getFirstSelectedItem().get();
         WheelRimPosition duplicatedPosition = new WheelRimPosition();
-        duplicatedPosition.setOrder(bean);
         duplicatedPosition.setManufacturerWheel(wheelRimPosition.getManufacturerWheel());
         duplicatedPosition.setModel(wheelRimPosition.getModel());
         duplicatedPosition.setModelType(wheelRimPosition.getModelType());
@@ -424,8 +425,9 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         duplicatedPosition.setIndexVal(wheelRimPosition.getIndexVal());
         duplicatedPosition.setSpeed(wheelRimPosition.getSpeed());
         bean.getWheelRimPositions().add(duplicatedPosition);
-        duplicatedPosition.setPositionNo(String.valueOf(bean.getWheelRimPositions().indexOf(duplicatedPosition) + 1));
+        duplicatedPosition.setPositionNo(String.valueOf(Integer.valueOf(wheelRimPosition.getPositionNo()) + 1));
         positionsGrid.setItems(bean.getWheelRimPositions());
+        POSITIONS_COUNTER++;
     }
 
     private void onEditPosition() {
@@ -439,10 +441,6 @@ public class WheelRimPositionsLayout extends VerticalLayout {
 
     private void onSaveChangedPosition() {
         if (validateBindedValues()) {
-            WheelRimPosition positionToSave = localBinder.getBean();
-            List<WheelRimPosition> orderPositions = sharedBinder.getBean().getWheelRimPositions();
-            orderPositions.set(Integer.valueOf(positionToSave.getPositionNo()) - 1, positionToSave);
-            sharedBinder.getBean().setWheelRimPositions(orderPositions);
             positionsGrid.setItems(sharedBinder.getBean().getWheelRimPositions());
             saveChangedPositionButton.setVisible(false);
             addPositionButton.setCaption(messageByLocaleService.getMessage("newOrderView.position.add"));
