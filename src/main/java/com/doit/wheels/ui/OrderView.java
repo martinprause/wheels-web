@@ -4,6 +4,8 @@ import com.doit.wheels.dao.entities.*;
 import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.services.*;
 import com.doit.wheels.ui.nested.CommentsSubmitLayout;
+import com.doit.wheels.ui.nested.GuidelinesLayout;
+import com.doit.wheels.ui.nested.OrderDetailsLayout;
 import com.doit.wheels.ui.nested.WheelRimPositionsLayout;
 import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
@@ -104,7 +106,7 @@ public class OrderView extends VerticalLayout implements View {
 
         Button guidelines = new Button(messageByLocaleService.getMessage("order.menubar.guidelinesAndPictures.button"));
         guidelines.setId("order.menubar.guidelinesAndPictures.button");
-        guidelines.addClickListener(e -> replaceComponent(new GuidelinesLayout(messageByLocaleService, guidelineService, SHARED_BINDER)));
+        guidelines.addClickListener(e -> replaceComponent(new GuidelinesLayout(messageByLocaleService, guidelineService, SHARED_BINDER, orderService)));
         guidelines.addStyleName("clear-button");
         guidelines.setIcon(new ThemeResource("img/ico/star.png"));
         guidelines.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);

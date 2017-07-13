@@ -1,4 +1,4 @@
-package com.doit.wheels.ui;
+package com.doit.wheels.ui.nested;
 
 import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.dao.entities.Order;
@@ -200,16 +200,10 @@ public class OrderDetailsLayout extends VerticalLayout{
     }
 
     private LocalDate formatToLocalDate(Date date){
-        if (date == null){
-            return null;
-        }
-        return date.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDate();
+        return date == null ? null : date.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDate();
     }
 
     private Date formatToDate(LocalDate localDate){
-        if (localDate == null){
-            return null;
-        }
-        return (Date.from(localDate.atStartOfDay(ZoneId.of("Europe/Berlin")).toInstant()));
+        return localDate == null ? null : (Date.from(localDate.atStartOfDay(ZoneId.of("Europe/Berlin")).toInstant()));
     }
 }

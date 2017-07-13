@@ -2,8 +2,46 @@ package com.doit.wheels.dao.entities;
 
 import com.doit.wheels.dao.entities.basic.Description;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Guideline extends Description {
+
+    @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinTable(name = "orders_guidelines",
+            joinColumns = {@JoinColumn(name = "guideline_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")})
+    private Set<Order> orders;
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof Guideline){
+            if (((Guideline) obj).getId().equals(this.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = this.getId();
+        result = 31 * result + getDescription().hashCode();
+        return result;
+    }
 }

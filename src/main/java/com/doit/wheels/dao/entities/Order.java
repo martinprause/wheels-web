@@ -5,6 +5,7 @@ import com.doit.wheels.utils.StatusTypeEnum;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -50,6 +51,9 @@ public class Order extends AbstractModel {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "orders_wheel_rim_positions",joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "wheel_rim_position_id") })
     private Set<WheelRimPosition> wheelRimPositions;
+
+    @ManyToMany(mappedBy = "orders", cascade = javax.persistence.CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Guideline> guidelines = new HashSet<>();
 
     public String getOrderNo() {
         return orderNo;
@@ -146,7 +150,7 @@ public class Order extends AbstractModel {
     public void setSignaturePicture(byte[] signaturePicture) {
         this.signaturePicture = signaturePicture;
     }
-//
+
     public User getLastUpdatedByUser() {
         return lastUpdatedByUser;
     }
@@ -169,5 +173,13 @@ public class Order extends AbstractModel {
 
     public void setWheelRimPositions(Set<WheelRimPosition> wheelRimPositions) {
         this.wheelRimPositions = wheelRimPositions;
+    }
+
+    public Set<Guideline> getGuidelines() {
+        return guidelines;
+    }
+
+    public void setGuidelines(Set<Guideline> guidelines) {
+        this.guidelines = guidelines;
     }
 }

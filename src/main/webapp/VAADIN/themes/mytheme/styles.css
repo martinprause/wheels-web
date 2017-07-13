@@ -13452,7 +13452,6 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .order-details-layout{
     height: 100%;
-    background-color: #5e9de5;
 }
 
 .mytheme .order-menubar{
@@ -13541,17 +13540,25 @@ div.v-layout.v-horizontal.v-widget {
     content: url(img/ico/star-blue.png);
 }
 
-.mytheme .guidelines{
-    background-color: #2d9f19;
-}
-
-.mytheme .guidelines-table{
-    background-color: #00ace0;
+.mytheme .v-slot-guidelines-table{
     width: 40% !important;
 }
 
+.mytheme .v-slot-guideline-picture-layout{
+    width: 29% !important;
+}
+
+
+.mytheme .v-slot-guideline-signature-layout{
+    width: 29% !important;
+}
 
 .bold-label {
 	font-weight: 600;
 	font-size: 16px;
+}
+
+.mytheme .guideline-delete-layout{
+    width: 95%;
+    text-align: right;
 }
