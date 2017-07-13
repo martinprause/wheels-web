@@ -1,6 +1,5 @@
 package com.doit.wheels.ui;
 
-import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.services.CustomerService;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
@@ -12,7 +11,10 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -28,14 +30,6 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
     private final OrderService orderService;
 
     private Component lastUsedComponent;
-
-
-    private Grid<Customer> customerGrid;
-
-    private Button editCustomerButton;
-    private Button deleteCustomerButton;
-
-    private Customer selectedCustomer;
 
     @Autowired
     public CustomersOrdersListView(MessageByLocaleService messageByLocaleService, CustomerService customerService,
@@ -61,6 +55,7 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
         ordersNavigationButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         ordersNavigationButton.addStyleName("clear-button");
         ordersNavigationButton.addStyleName("order-list-button");
+        ordersNavigationButton.addClickListener(clickEvent -> replaceComponent(new OrdersListLayout(messageByLocaleService, orderService)));
 
         Button customersNavigationButton = new Button(messageByLocaleService.getMessage("orderView.navigation.customer"));
         customersNavigationButton.setId("orderView.navigation.customer");

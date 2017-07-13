@@ -35,43 +35,51 @@ public class OrderView extends VerticalLayout implements View {
 
     private Layout previousLayout;
 
-    @Autowired
-    private MessageByLocaleService messageByLocaleService;
+    private final MessageByLocaleService messageByLocaleService;
 
-    @Autowired
-    private ManufacturerService manufacturerService;
+    private final ManufacturerService manufacturerService;
 
-    @Autowired
-    private ModelService modelService;
+    private final ModelService modelService;
 
-    @Autowired
-    private ModelTypeService modelTypeService;
+    private final ModelTypeService modelTypeService;
 
-    @Autowired
-    private ValveTypeService valveTypeService;
+    private final ValveTypeService valveTypeService;
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private GuidelineService guidelineService;
+    private final GuidelineService guidelineService;
 
     private final Binder<Order> SHARED_BINDER = new Binder<>(Order.class);
 
+    @Autowired
+    public OrderView(MessageByLocaleService messageByLocaleService, ManufacturerService manufacturerService,
+                     ModelService modelService, ModelTypeService modelTypeService, ValveTypeService valveTypeService,
+                     OrderService orderService, CustomerService customerService, UserService userService,
+                     GuidelineService guidelineService) {
+        this.messageByLocaleService = messageByLocaleService;
+        this.manufacturerService = manufacturerService;
+        this.modelService = modelService;
+        this.modelTypeService = modelTypeService;
+        this.valveTypeService = valveTypeService;
+        this.orderService = orderService;
+        this.customerService = customerService;
+        this.userService = userService;
+        this.guidelineService = guidelineService;
+    }
+
     private void init(){
         Order order;
+        Object data = getUI().getData();
 
-        if(getUI().getData() != null && getUI().getData().toString().length() > 0) {
-            try {
-                order = (Order) getUI().getData();
-                CURRENT_MODE = EDIT;
-            } catch (ClassCastException e) {
+        if(data != null && data.toString().length() > 0) {
+            if(data instanceof Order){
+                order = (Order) data;
+                CURRENT_MODE = ((Order) data).getId() == null ? CREATE : EDIT;
+            } else {
                 order = new Order();
                 order.setWheelRimPositions(new HashSet<>());
                 CURRENT_MODE = CREATE;
@@ -119,7 +127,7 @@ public class OrderView extends VerticalLayout implements View {
         printButton.setIcon(new ThemeResource("img/ico/star.png"));
         printButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         printButton.addStyleName("order-menubar-buttons");
-        printButton.addClickListener(clickEvent -> replaceComponent(new CommentsSubmitLayout(messageByLocaleService, orderService, SHARED_BINDER)));
+        printButton.addClickListener(clickEvent -> replaceComponent(new CommentsSubmitLayout(messageByLocaleService, orderService, SHARED_BINDER, CURRENT_MODE.equals(EDIT))));
         menuBar.addComponent(printButton);
 
 

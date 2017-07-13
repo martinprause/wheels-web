@@ -138,9 +138,7 @@ public class GuidelinesLayout extends HorizontalLayout{
     private void deleteGuideline() {
         if (guidelinesTable.getSelectedItems().iterator().hasNext()){
             Guideline selectedGuideline = guidelinesTable.getSelectedItems().iterator().next();
-            selectedGuideline.getOrders().remove(order);
             order.getGuidelines().remove(selectedGuideline);
-            guidelineService.save(selectedGuideline);
             updateGuidelinesGrid();
         }
 
@@ -148,9 +146,7 @@ public class GuidelinesLayout extends HorizontalLayout{
 
     private void addGuideline() {
         Guideline selectedGuideline = guidelineComboBox.getSelectedItem().get();
-        selectedGuideline.getOrders().add(order);
         order.getGuidelines().add(selectedGuideline);
-        guidelineService.save(selectedGuideline);
         updateGuidelinesGrid();
     }
 

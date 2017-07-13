@@ -28,8 +28,6 @@ public class OrderDetailsLayout extends VerticalLayout{
 
     private Binder<Order> binder;
 
-    private OrderService orderService;
-
     private CustomerService customerService;
 
     private Order order;
@@ -57,7 +55,6 @@ public class OrderDetailsLayout extends VerticalLayout{
                               CustomerService customerService,
                               UserService userService) {
         this.messageService = messageByLocaleService;
-        this.orderService = orderService;
         this.customerService = customerService;
         this.userService = userService;
         binder = sharedBinder;
@@ -102,7 +99,10 @@ public class OrderDetailsLayout extends VerticalLayout{
         createCustomerButton.setIcon(new ThemeResource("img/ico/add-16.png"));
         createCustomerButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
 
-        createCustomerButton.addClickListener(e -> UI.getCurrent().getNavigator().navigateTo("create-edit-customer"));
+        createCustomerButton.addClickListener(e -> {
+            getUI().setData(binder.getBean());
+            UI.getCurrent().getNavigator().navigateTo("create-edit-customer");
+        });
         customerLayout.addComponents(customerLabel,createCustomerButton, customer);
         this.addComponent(customerLayout);
 
@@ -157,7 +157,6 @@ public class OrderDetailsLayout extends VerticalLayout{
     }
 
     private void initBinderAndValidation(){
-
 
         binder.forField(orderNo).bind(Order::getOrderNo, Order::setOrderNo);
 

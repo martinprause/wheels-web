@@ -3,6 +3,7 @@ package com.doit.wheels.ui;
 import com.doit.wheels.dao.entities.Country;
 import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.dao.entities.CustomerContact;
+import com.doit.wheels.dao.entities.Order;
 import com.doit.wheels.services.CountryService;
 import com.doit.wheels.services.CustomerService;
 import com.doit.wheels.services.MessageByLocaleService;
@@ -79,17 +80,19 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
     private void init() {
 //        setSizeFull();
 
-        if(getUI().getData() != null && getUI().getData().toString().length() > 0) {
-            try {
-                customer = (Customer) getUI().getData();
+        Object data = getUI().getData();
+        if(data != null && data.toString().length() > 0) {
+            if(data instanceof Customer){
+                customer = (Customer) data;
                 CURRENT_MODE = EDIT;
-            } catch (ClassCastException e) {
+                getUI().setData(null);
+            } else if(data instanceof Order) {
                 customer = new Customer();
                 customer.setCustomerContacts(new ArrayList<>());
                 CURRENT_MODE = CREATE;
             }
-            getUI().setData(null);
         } else {
+            // atm we have only two state, maybe in future we will have more, that's why this block isn't collapsed
             customer = new Customer();
             customer.setCustomerContacts(new ArrayList<>());
             CURRENT_MODE = CREATE;
@@ -246,6 +249,13 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
             customerBinder.setBean(emptyCustomer);
             contactGrid.setItems(emptyCustomer.getCustomerContacts());
             showAddNotification();
+            if (getUI().getData() != null) {
+                if(getUI().getData() instanceof Order) {
+                    getUI().getNavigator().navigateTo("new-order");
+                }
+            } else {
+                getUI().getNavigator().navigateTo("customer-orders-list");
+            }
         } catch (ValidationException e) {
             e.printStackTrace();
         }

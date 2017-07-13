@@ -15,11 +15,16 @@ public class CommentsSubmitLayout extends VerticalLayout {
     private Binder<Order> sharedBinder;
     private TextArea commentArea;
     private CheckBox printImmediatelyCheck;
+    private final boolean isInEdit;
 
-    public CommentsSubmitLayout(MessageByLocaleService messageByLocaleService, OrderService orderService, Binder<Order> sharedBinder) {
+    public CommentsSubmitLayout(MessageByLocaleService messageByLocaleService,
+                                OrderService orderService,
+                                Binder<Order> sharedBinder,
+                                boolean isInEdit) {
         this.messageByLocaleService = messageByLocaleService;
         this.orderService = orderService;
         this.sharedBinder = sharedBinder;
+        this.isInEdit = isInEdit;
 
         init();
     }
@@ -32,6 +37,7 @@ public class CommentsSubmitLayout extends VerticalLayout {
         VerticalLayout buttonLayout = initSubmitButtonLayout();
 
         this.addComponents(commentFieldLayout, barCodeCheckLayout, buttonLayout);
+        sharedBinder.forField(commentArea).bind(Order::getComment, Order::setComment);
     }
 
     private HorizontalLayout initCommentFieldLayout() {
@@ -53,7 +59,7 @@ public class CommentsSubmitLayout extends VerticalLayout {
         return layout;
     }
 
-    private HorizontalLayout initBarcodeCheckBoxLayout(){
+    private HorizontalLayout initBarcodeCheckBoxLayout() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth("100%");
         Label barcodeCheckBoxLabel = new Label(messageByLocaleService.getMessage("commentSubmitView.barcode.label"));
@@ -69,8 +75,9 @@ public class CommentsSubmitLayout extends VerticalLayout {
     }
 
     private VerticalLayout initSubmitButtonLayout() {
-        Button submitOrderButton = new Button(messageByLocaleService.getMessage("commentSubmitView.submit.button"));
-        submitOrderButton.setId("commentSubmitView.submit.button");
+        String submitOrderButtonLabel = isInEdit ? "commentSubmitView.edit.submit.button" : "commentSubmitView.create.submit.button";
+        Button submitOrderButton = new Button(messageByLocaleService.getMessage(submitOrderButtonLabel));
+        submitOrderButton.setId(submitOrderButtonLabel);
         submitOrderButton.addStyleName("manage-user-access-buttons");
         submitOrderButton.addClickListener(clickEvent -> submitOrder());
         VerticalLayout buttonLayout = new VerticalLayout();
