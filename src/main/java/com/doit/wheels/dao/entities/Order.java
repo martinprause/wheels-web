@@ -25,7 +25,7 @@ public class Order extends AbstractModel {
     private User lastUpdatedByUser;
 
     @Enumerated(EnumType.STRING)
-    private StatusTypeEnum status = StatusTypeEnum.CREATED;
+    private StatusTypeEnum status = StatusTypeEnum.IN_CREATION;
 
     @ManyToOne
     private Customer customer;
@@ -52,7 +52,10 @@ public class Order extends AbstractModel {
     @JoinTable(name = "orders_wheel_rim_positions",joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "wheel_rim_position_id") })
     private Set<WheelRimPosition> wheelRimPositions;
 
-    @ManyToMany(mappedBy = "orders", cascade = javax.persistence.CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "orders_guidelines",
+            joinColumns = {@JoinColumn(name = "order_id")},
+            inverseJoinColumns = {@JoinColumn(name = "guideline_id")})
     private Set<Guideline> guidelines = new HashSet<>();
 
     public String getOrderNo() {

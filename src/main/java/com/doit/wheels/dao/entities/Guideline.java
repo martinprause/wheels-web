@@ -8,10 +8,10 @@ import java.util.Set;
 @Entity
 public class Guideline extends Description {
 
-    @ManyToMany(cascade={CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade={CascadeType.MERGE,CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinTable(name = "orders_guidelines",
-            joinColumns = {@JoinColumn(name = "guideline_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "guideline_id")},
+            inverseJoinColumns = {@JoinColumn(name = "order_id")})
     private Set<Order> orders;
 
     public Set<Order> getOrders() {
