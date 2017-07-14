@@ -76,6 +76,7 @@ public class OrdersListLayout extends VerticalLayout {
         editOrderButton.addClickListener(clickEvent -> {
             getUI().setData(selectedOrder);
             getUI().getNavigator().navigateTo("new-order");
+            UI.getCurrent().getSession().setAttribute("previousView", "customer-orders-list");
         });
 
         printOrderButton = new Button(messageByLocaleService.getMessage("orderView.order.buttons.print"));

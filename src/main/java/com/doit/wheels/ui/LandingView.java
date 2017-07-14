@@ -35,7 +35,10 @@ public class LandingView extends CssLayout implements View {
         newOrderButton.setIcon(new ThemeResource("img/ico/newOrder.png"));
         newOrderButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         newOrderButton.addStyleName("landing-center-menu-bar-buttons");
-        newOrderButton.addClickListener(e -> getUI().getNavigator().navigateTo("new-order"));
+        newOrderButton.addClickListener(e -> {
+            getSession().getSession().setAttribute("previousView", getUI().getNavigator().getState());
+            getUI().getNavigator().navigateTo("new-order");
+        });
 
         Button userManagementButton = new Button(messageService.getMessage("landing.userManagement"));
         userManagementButton.setId("landing.userManagement");

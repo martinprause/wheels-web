@@ -156,6 +156,7 @@ public class GeneralPropertiesView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         init();
+        getSession().setAttribute("previousView", "landing");
     }
 
     private void replaceComponent(Component newComponent) {

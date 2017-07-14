@@ -44,6 +44,8 @@ public class ApplicationUI extends UI implements View{
 
     private Button changeLocale;
 
+    private Button backButton;
+
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -118,6 +120,7 @@ public class ApplicationUI extends UI implements View{
         logoutButton.setId("header.logout");
         logoutButton.addClickListener(e -> logout());
         logoutButton.setStyleName("headerButton");
+        logoutButton.setVisible(false);
         header.addComponent(logoutButton);
 
         CssLayout headerRight = new CssLayout();
@@ -136,9 +139,47 @@ public class ApplicationUI extends UI implements View{
         Navigator navigator = new Navigator(this, viewContainer);
         navigator.addProvider(viewProvider);
         viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
-        navigator.navigateTo("landing");
+        navigator.navigateTo(navigator.getState()==null || navigator.getState().equals("") ? "landing" : navigator.getState());
+
+        Button backButton = new Button(messageService.getMessage("header.back"));
+        backButton.setId("header.back");
+        backButton.addStyleName("headerButton");
+        if (navigator.getState().equals("landing")){
+            backButton.setVisible(false);
+            logoutButton.setVisible(true);
+        }
+        backButton.addClickListener(e -> back());
+        headerRight.addComponent(backButton);
+
+        navigator.addViewChangeListener(new ViewChangeListener() {
+            @Override
+            public boolean beforeViewChange(ViewChangeEvent viewChangeEvent) {
+                if (!viewChangeEvent.getViewName().equals("landing")){
+                    logoutButton.setVisible(false);
+                    backButton.setVisible(true);
+                }
+                else {
+                    logoutButton.setVisible(true);
+                    backButton.setVisible(false);
+                }
+                return true;
+            }
+
+            @Override
+            public void afterViewChange(ViewChangeEvent event) {
+//                if (!event.getViewName().equals("landing")){
+//                    logoutButton.setVisible(false);
+//                    backButton.setVisible(true);
+//                }
+            }
+        });
         updateHeaderUser();
     }
+
+    private void back() {
+        this.getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+    }
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
 

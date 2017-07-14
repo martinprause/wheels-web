@@ -48,16 +48,19 @@ public class OrderDetailsLayout extends VerticalLayout{
 
     private final ComboBox<User> driver = new ComboBox<>();
 
+    private final boolean isEditMode;
 
     public OrderDetailsLayout(MessageByLocaleService messageByLocaleService,
                               Binder<Order> sharedBinder,
                               OrderService orderService,
                               CustomerService customerService,
-                              UserService userService) {
+                              UserService userService,
+                              boolean isEditMode) {
         this.messageService = messageByLocaleService;
         this.customerService = customerService;
         this.userService = userService;
         binder = sharedBinder;
+        this.isEditMode = isEditMode;
         init();
     }
 
@@ -100,9 +103,12 @@ public class OrderDetailsLayout extends VerticalLayout{
         createCustomerButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
 
         createCustomerButton.addClickListener(e -> {
-            getUI().setData(binder.getBean());
+            UI.getCurrent().setData(binder.getBean());
+            UI.getCurrent().getSession().setAttribute("previousView", "new-order");
+            UI.getCurrent().getSession().setAttribute("notSavedOrder", binder.getBean());
             UI.getCurrent().getNavigator().navigateTo("create-edit-customer");
         });
+
         customerLayout.addComponents(customerLabel,createCustomerButton, customer);
         this.addComponent(customerLayout);
 

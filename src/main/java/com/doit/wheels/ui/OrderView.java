@@ -103,7 +103,7 @@ public class OrderView extends VerticalLayout implements View {
         detailsButton.setId("order.menubar.customerAndOrder.button");
         detailsButton.addClickListener(e -> {
             makeButtonSelected(detailsButton);
-            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService));
+            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService,CURRENT_MODE.equals(EDIT)));
         });
         detailsButton.addStyleName("clear-button");
         detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
@@ -155,7 +155,7 @@ public class OrderView extends VerticalLayout implements View {
 
         this.addComponent(menuBar);
 
-        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService);
+        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService, CURRENT_MODE.equals(EDIT) );
         previousLayout = orderDetailsLayout;
 
         orderDetailsLayout.setHeight("100%");
@@ -177,5 +177,11 @@ public class OrderView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         init();
+        String previousView = CURRENT_MODE.equals(EDIT) ? "customer-orders-list" : "landing";
+        getSession().setAttribute("previousView", previousView);
+        if (viewChangeEvent.getOldView() instanceof CreateEditCustomerView){
+            SHARED_BINDER.setBean((Order) getSession().getAttribute("notSavedOrder"));
+        }
+
     }
 }

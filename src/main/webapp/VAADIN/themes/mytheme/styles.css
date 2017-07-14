@@ -13096,6 +13096,13 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .headerButton {
     margin-right: 10px;
     margin-top: 5px;
+    background:#5b99e2 !important;
+    color: #ffffff;
+    border-radius: 5px;
+    border:0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
     width: 100px !important;
 }
 

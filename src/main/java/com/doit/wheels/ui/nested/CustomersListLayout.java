@@ -54,6 +54,7 @@ public class CustomersListLayout extends VerticalLayout {
         editCustomerButton.addClickListener(clickEvent -> {
             getUI().setData(selectedCustomer);
             getUI().getNavigator().navigateTo("create-edit-customer");
+            UI.getCurrent().getSession().setAttribute("previousView", "customer-orders-list");
         });
 
         deleteCustomerButton = new Button(messageByLocaleService.getMessage("orderView.buttons.deleteCustomer"));
