@@ -8,10 +8,16 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configurable
 @SpringComponent
@@ -20,28 +26,44 @@ public class GeneralPropertiesView extends VerticalLayout implements View {
 
     private CssLayout menuBar;
 
-    @Autowired
-    private MessageByLocaleService messageService;
+    private final MessageByLocaleService messageService;
 
-    @Autowired
-    private CountryService countryService;
+    private final CountryService countryService;
 
-    @Autowired
-    private ManufacturerService manufacturerService;
+    private final ManufacturerService manufacturerService;
 
-    @Autowired
-    private ModelService modelService;
+    private final ModelService modelService;
 
-    @Autowired
-    private ModelTypeService modelTypeService;
+    private final ModelTypeService modelTypeService;
 
-    @Autowired
-    private ValveTypeService valveTypeService;
+    private final ValveTypeService valveTypeService;
 
-    @Autowired
-    private GuidelineService guidelineService;
+    private final GuidelineService guidelineService;
 
     private Component lastUsedComponent;
+    private Button countryButton;
+    private Button manufacturerButton;
+    private Button modelButton;
+    private Button modelTypeButton;
+    private Button valveTypeButton;
+    private Button guideLineButton;
+
+    @Autowired
+    public GeneralPropertiesView(MessageByLocaleService messageService,
+                                 CountryService countryService,
+                                 ManufacturerService manufacturerService,
+                                 ModelService modelService,
+                                 ModelTypeService modelTypeService,
+                                 ValveTypeService valveTypeService,
+                                 GuidelineService guidelineService) {
+        this.messageService = messageService;
+        this.countryService = countryService;
+        this.manufacturerService = manufacturerService;
+        this.modelService = modelService;
+        this.modelTypeService = modelTypeService;
+        this.valveTypeService = valveTypeService;
+        this.guidelineService = guidelineService;
+    }
 
     private void init(){
         setSizeFull();
@@ -49,42 +71,42 @@ public class GeneralPropertiesView extends VerticalLayout implements View {
         menuBar = new CssLayout();
         menuBar.setStyleName("general-properties-menu-bar");
 
-        Button countryButton = new Button(messageService.getMessage("generalProperties.country"));
+        countryButton = new Button(messageService.getMessage("generalProperties.country"));
         countryButton.setId("generalProperties.country");
         countryButton.addStyleName("menu-button");
         countryButton.setIcon(new ThemeResource("img/ico/country.png"));
         countryButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         countryButton.addStyleName("clear-button");
 
-        Button manufacturerButton = new Button(messageService.getMessage("generalProperties.manufacturer"));
+        manufacturerButton = new Button(messageService.getMessage("generalProperties.manufacturer"));
         manufacturerButton.setId("generalProperties.manufacturer");
         manufacturerButton.addStyleName("menu-button");
         manufacturerButton.setIcon(new ThemeResource("img/ico/settings.png"));
         manufacturerButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         manufacturerButton.addStyleName("clear-button");
 
-        Button modelButton = new Button(messageService.getMessage("generalProperties.model"));
+        modelButton = new Button(messageService.getMessage("generalProperties.model"));
         modelButton.setId("generalProperties.model");
         modelButton.addStyleName("menu-button");
         modelButton.setIcon(new ThemeResource("img/ico/model.png"));
         modelButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         modelButton.addStyleName("clear-button");
 
-        Button modelTypeButton = new Button(messageService.getMessage("generalProperties.modelType"));
+        modelTypeButton = new Button(messageService.getMessage("generalProperties.modelType"));
         modelTypeButton.setId("generalProperties.modelType");
         modelTypeButton.addStyleName("menu-button");
         modelTypeButton.setIcon(new ThemeResource("img/ico/model-type.png"));
         modelTypeButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         modelTypeButton.addStyleName("clear-button");
 
-        Button valveTypeButton = new Button(messageService.getMessage("generalProperties.valveType"));
+        valveTypeButton = new Button(messageService.getMessage("generalProperties.valveType"));
         valveTypeButton.setId("generalProperties.valveType");
         valveTypeButton.addStyleName("menu-button");
         valveTypeButton.setIcon(new ThemeResource("img/ico/valve-type.png"));
         valveTypeButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         valveTypeButton.addStyleName("clear-button");
 
-        Button guideLineButton = new Button(messageService.getMessage("generalProperties.guideline"));
+        guideLineButton = new Button(messageService.getMessage("generalProperties.guideline"));
         guideLineButton.setId("generalProperties.guideline");
         guideLineButton.addStyleName("menu-button");
         guideLineButton.setIcon(new ThemeResource("img/ico/guideline.png"));
@@ -102,12 +124,30 @@ public class GeneralPropertiesView extends VerticalLayout implements View {
 
         lastUsedComponent = countryView;
 
-        countryButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, countryService, Country.class)));
-        manufacturerButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, manufacturerService, Manufacturer.class)));
-        modelButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, modelService, Model.class)));
-        modelTypeButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, modelTypeService, ModelType.class)));
-        valveTypeButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, valveTypeService, ValveType.class)));
-        guideLineButton.addClickListener(clickEvent -> replaceComponent(new AbstractPropertyLayout<>(messageService, guidelineService, Guideline.class)));
+        countryButton.addClickListener(clickEvent -> {
+            makeButtonSelected(countryButton);
+            replaceComponent(new AbstractPropertyLayout<>(messageService, countryService, Country.class));
+        });
+        manufacturerButton.addClickListener(clickEvent ->{
+            makeButtonSelected(manufacturerButton);
+            replaceComponent(new AbstractPropertyLayout<>(messageService, manufacturerService, Manufacturer.class));
+        });
+        modelButton.addClickListener(clickEvent -> {
+            makeButtonSelected(modelButton);
+            replaceComponent(new AbstractPropertyLayout<>(messageService, modelService, Model.class));
+        });
+        modelTypeButton.addClickListener(clickEvent -> {
+            makeButtonSelected(modelTypeButton);
+            replaceComponent(new AbstractPropertyLayout<>(messageService, modelTypeService, ModelType.class));
+        });
+        valveTypeButton.addClickListener(clickEvent -> {
+            makeButtonSelected(valveTypeButton);
+            replaceComponent(new AbstractPropertyLayout<>(messageService, valveTypeService, ValveType.class));
+        });
+        guideLineButton.addClickListener(clickEvent -> {
+            makeButtonSelected(guideLineButton);
+            replaceComponent(new AbstractPropertyLayout<>(messageService, guidelineService, Guideline.class));
+        });
 
         this.addComponent(menuBar);
         this.addComponent(countryView);
@@ -121,5 +161,11 @@ public class GeneralPropertiesView extends VerticalLayout implements View {
     private void replaceComponent(Component newComponent) {
         replaceComponent(lastUsedComponent, newComponent);
         lastUsedComponent = newComponent;
+    }
+
+    private void makeButtonSelected(Button buttonToSelect) {
+        List<Button> buttons = Arrays.asList(countryButton, manufacturerButton, modelButton, modelTypeButton, guideLineButton, valveTypeButton);
+        buttons.forEach(button -> button.removeStyleName("selected"));
+        buttonToSelect.addStyleName("selected");
     }
 }

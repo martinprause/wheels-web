@@ -30,6 +30,8 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
     private final OrderService orderService;
 
     private Component lastUsedComponent;
+    private Button customersNavigationButton;
+    private Button ordersNavigationButton;
 
     @Autowired
     public CustomersOrdersListView(MessageByLocaleService messageByLocaleService, CustomerService customerService,
@@ -48,23 +50,29 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
         CssLayout menubar = new CssLayout();
         menubar.addStyleName("user-management-menubar");
 
-        Button ordersNavigationButton = new Button(messageByLocaleService.getMessage("orderView.navigation.order"));
+        ordersNavigationButton = new Button(messageByLocaleService.getMessage("orderView.navigation.order"));
         ordersNavigationButton.setId("orderView.navigation.order");
         ordersNavigationButton.addStyleName("create-user-button");
         ordersNavigationButton.setIcon(new ThemeResource("img/ico/orders.png"));
         ordersNavigationButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         ordersNavigationButton.addStyleName("clear-button");
         ordersNavigationButton.addStyleName("order-list-button");
-        ordersNavigationButton.addClickListener(clickEvent -> replaceComponent(new OrdersListLayout(messageByLocaleService, orderService)));
+        ordersNavigationButton.addClickListener(clickEvent -> {
+            makeButtonSelected(ordersNavigationButton);
+            replaceComponent(new OrdersListLayout(messageByLocaleService, orderService));
+        });
 
-        Button customersNavigationButton = new Button(messageByLocaleService.getMessage("orderView.navigation.customer"));
+        customersNavigationButton = new Button(messageByLocaleService.getMessage("orderView.navigation.customer"));
         customersNavigationButton.setId("orderView.navigation.customer");
         customersNavigationButton.addStyleName("manage-user-access-button");
         customersNavigationButton.setIcon(new ThemeResource("img/ico/customers.png"));
         customersNavigationButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         customersNavigationButton.addStyleName("clear-button");
         customersNavigationButton.addStyleName("customer-list-button");
-        customersNavigationButton.addClickListener(clickEvent -> replaceComponent(new CustomersListLayout(messageByLocaleService, customerService)));
+        customersNavigationButton.addClickListener(clickEvent -> {
+            makeButtonSelected(customersNavigationButton);
+            replaceComponent(new CustomersListLayout(messageByLocaleService, customerService));
+        });
 
         menubar.addComponents(ordersNavigationButton, customersNavigationButton);
 
@@ -77,5 +85,15 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
     private void replaceComponent(Component newComponent) {
         replaceComponent(lastUsedComponent, newComponent);
         lastUsedComponent = newComponent;
+    }
+
+    private void makeButtonSelected(Button buttonToSelect) {
+        if(buttonToSelect == ordersNavigationButton) {
+            ordersNavigationButton.addStyleName("selected");
+            customersNavigationButton.removeStyleName("selected");
+        } else {
+            ordersNavigationButton.removeStyleName("selected");
+            customersNavigationButton.addStyleName("selected");
+        }
     }
 }

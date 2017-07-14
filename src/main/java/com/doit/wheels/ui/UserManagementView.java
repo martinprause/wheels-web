@@ -148,6 +148,7 @@ public class UserManagementView extends VerticalLayout implements View {
             userCreateDataWrapper.setVisible(true);
             binder.forField(password).withValidator(passwordValidator).bind(User::getPassword, User::setPassword);
             password.setPlaceholder(null);
+            makeButtonSelected(createUserButton);
         });
         createUserButton.addStyleName("clear-button");
 
@@ -158,6 +159,7 @@ public class UserManagementView extends VerticalLayout implements View {
         manageUserAccessButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         manageUserAccessButton.addStyleName("clear-button");
         manageUserAccessButton.addClickListener(e -> {
+            makeButtonSelected(manageUserAccessButton);
             userCreateDataWrapper.setVisible(false);
             userAccessWrapper.setVisible(true);
         });
@@ -589,6 +591,16 @@ public class UserManagementView extends VerticalLayout implements View {
         password.setPlaceholder(messageService.getMessage("userManagement.password.placeholder"));
         password.setId("userManagement.password.placeholder");
         binder.forField(password).withValidator(Validator.alwaysPass()).bind(User::getPassword, User::setPassword);
+    }
+
+    private void makeButtonSelected(Button buttonToSelect) {
+        if(buttonToSelect == createUserButton) {
+            createUserButton.addStyleName("selected");
+            manageUserAccessButton.removeStyleName("selected");
+        } else {
+            createUserButton.removeStyleName("selected");
+            manageUserAccessButton.addStyleName("selected");
+        }
     }
 
     @Override

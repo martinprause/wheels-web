@@ -54,6 +54,10 @@ public class OrderView extends VerticalLayout implements View {
     private final GuidelineService guidelineService;
 
     private final Binder<Order> SHARED_BINDER = new Binder<>(Order.class);
+    private Button detailsButton;
+    private Button positionsButton;
+    private Button guidelines;
+    private Button printButton;
 
     @Autowired
     public OrderView(MessageByLocaleService messageByLocaleService, ManufacturerService manufacturerService,
@@ -95,39 +99,57 @@ public class OrderView extends VerticalLayout implements View {
         HorizontalLayout menuBar = new HorizontalLayout();
         menuBar.addStyleName("order-menubar");
 
-        Button detailsButton = new Button(messageByLocaleService.getMessage("order.menubar.customerAndOrder.button"));
+        detailsButton = new Button(messageByLocaleService.getMessage("order.menubar.customerAndOrder.button"));
         detailsButton.setId("order.menubar.customerAndOrder.button");
-        detailsButton.addClickListener(e -> replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService)));
+        detailsButton.addClickListener(e -> {
+            makeButtonSelected(detailsButton);
+            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService));
+        });
         detailsButton.addStyleName("clear-button");
         detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
         detailsButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         detailsButton.addStyleName("order-menubar-buttons");
         menuBar.addComponent(detailsButton);
 
-        Button positionsButton = new Button(messageByLocaleService.getMessage("order.positions.button"));
+        positionsButton = new Button(messageByLocaleService.getMessage("order.positions.button"));
         positionsButton.setId("order.positions.button");
+        positionsButton.addClickListener(clickEvent -> {
+            makeButtonSelected(positionsButton);
+            Map<Class, List<? extends AbstractModel>> args = new HashMap<>();
+            args.put(Manufacturer.class, manufacturerService.findAll());
+            args.put(Model.class, modelService.findAll());
+            args.put(ModelType.class, modelTypeService.findAll());
+            args.put(ValveType.class, valveTypeService.findAll());
+            replaceComponent(new WheelRimPositionsLayout(messageByLocaleService, SHARED_BINDER, args));
+        });
         positionsButton.addStyleName("clear-button");
         positionsButton.setIcon(new ThemeResource("img/ico/star.png"));
         positionsButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         positionsButton.addStyleName("order-menubar-buttons");
         menuBar.addComponent(positionsButton);
 
-        Button guidelines = new Button(messageByLocaleService.getMessage("order.menubar.guidelinesAndPictures.button"));
+        guidelines = new Button(messageByLocaleService.getMessage("order.menubar.guidelinesAndPictures.button"));
         guidelines.setId("order.menubar.guidelinesAndPictures.button");
-        guidelines.addClickListener(e -> replaceComponent(new GuidelinesLayout(messageByLocaleService, guidelineService, SHARED_BINDER, orderService)));
+        guidelines.addClickListener(e -> {
+            makeButtonSelected(guidelines);
+            replaceComponent(new GuidelinesLayout(messageByLocaleService, guidelineService, SHARED_BINDER, orderService));
+        });
         guidelines.addStyleName("clear-button");
         guidelines.setIcon(new ThemeResource("img/ico/star.png"));
         guidelines.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         guidelines.addStyleName("order-menubar-buttons");
         menuBar.addComponent(guidelines);
 
-        Button printButton = new Button(messageByLocaleService.getMessage("order.printAndClose.button"));
+        printButton = new Button(messageByLocaleService.getMessage("order.printAndClose.button"));
         printButton.setId("order.printAndClose.button");
         printButton.addStyleName("clear-button");
         printButton.setIcon(new ThemeResource("img/ico/star.png"));
         printButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         printButton.addStyleName("order-menubar-buttons");
-        printButton.addClickListener(clickEvent -> replaceComponent(new CommentsSubmitLayout(messageByLocaleService, orderService, SHARED_BINDER, CURRENT_MODE.equals(EDIT))));
+        printButton.addClickListener(clickEvent -> {
+            makeButtonSelected(printButton);
+            replaceComponent(new CommentsSubmitLayout(messageByLocaleService, orderService, SHARED_BINDER, CURRENT_MODE.equals(EDIT)));
+        });
         menuBar.addComponent(printButton);
 
 
@@ -136,14 +158,6 @@ public class OrderView extends VerticalLayout implements View {
         OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService);
         previousLayout = orderDetailsLayout;
 
-        positionsButton.addClickListener(clickEvent -> {
-            Map<Class, List<? extends AbstractModel>> args = new HashMap<>();
-            args.put(Manufacturer.class, manufacturerService.findAll());
-            args.put(Model.class, modelService.findAll());
-            args.put(ModelType.class, modelTypeService.findAll());
-            args.put(ValveType.class, valveTypeService.findAll());
-            replaceComponent(new WheelRimPositionsLayout(messageByLocaleService, SHARED_BINDER, args));
-        });
         orderDetailsLayout.setHeight("100%");
         this.addComponent(orderDetailsLayout);
 
@@ -152,6 +166,12 @@ public class OrderView extends VerticalLayout implements View {
     private void replaceComponent(Layout layoutToReplace){
         replaceComponent(previousLayout, layoutToReplace);
         previousLayout = layoutToReplace;
+    }
+
+    private void makeButtonSelected(Button buttonToSelect){
+        List<Button> buttons = Arrays.asList(detailsButton, positionsButton, printButton, guidelines);
+        buttons.forEach(button -> button.removeStyleName("selected"));
+        buttonToSelect.addStyleName("selected");
     }
 
     @Override

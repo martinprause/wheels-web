@@ -13191,24 +13191,25 @@ div.v-layout.v-horizontal.v-widget {
     background-color: transparent;
 }
 
-.mytheme .user-management-menubar .create-user-button:hover{
-    color:#00ace0;
+.mytheme .user-management-menubar .create-user-button:hover,
+.mytheme .user-management-menubar .manage-user-access-button:hover,
+.mytheme .user-management-menubar .create-user-button.selected,
+.mytheme .user-management-menubar .manage-user-access-button.selected {
+	color: #00ace0;
 }
 
-.mytheme .user-management-menubar .create-user-button:hover img{
-    content: url(img/ico/new-user-blue.png);
+.mytheme .user-management-menubar .create-user-button:hover img,
+.mytheme .user-management-menubar .create-user-button.selected img {
+	content: url(img/ico/new-user-blue.png);
 }
 
-.mytheme .user-management-menubar .manage-user-access-button:hover:after{
-    background-color: transparent;
+.mytheme .user-management-menubar .manage-user-access-button:hover:after {
+	background-color: transparent;
 }
 
-.mytheme .user-management-menubar .manage-user-access-button:hover{
-    color:#00ace0;
-}
-
-.mytheme .user-management-menubar .manage-user-access-button:hover img{
-    content: url(img/ico/settings-blue.png);
+.mytheme .user-management-menubar .manage-user-access-button:hover img,
+.mytheme .user-management-menubar .manage-user-access-button.selected img {
+	content: url(img/ico/settings-blue.png);
 }
 
 .mytheme .user-management-data-horizontal{
@@ -13350,30 +13351,37 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: transparent;
 }
 
-.mytheme .menu-button:hover{
+.mytheme .menu-button:hover,
+.mytheme .menu-button.selected {
 	color:#00ace0;
 }
 
-#generalProperties\.country:hover img {
+#generalProperties\.country:hover img,
+#generalProperties\.country.selected img {
 	content: url(img/ico/country-blue.png);
 }
 
-#generalProperties\.manufacturer:hover img {
+#generalProperties\.manufacturer:hover img,
+#generalProperties\.manufacturer.selected img {
 	content: url(img/ico/settings-blue.png);
 }
-#generalProperties\.model:hover img {
+#generalProperties\.model:hover img,
+#generalProperties\.model.selected img {
 	content: url(img/ico/model-blue.png);
 }
 
-#generalProperties\.modelType:hover img {
+#generalProperties\.modelType:hover img,
+#generalProperties\.modelType.selected img {
 	content: url(img/ico/model-type-blue.png);
 }
 
-#generalProperties\.valveType:hover img {
+#generalProperties\.valveType:hover img,
+#generalProperties\.valveType.selected img{
 	content: url(img/ico/valve-type-blue.png);
 }
 
-#generalProperties\.guideline:hover img {
+#generalProperties\.guideline:hover img,
+#generalProperties\.guideline.selected img{
 	content: url(img/ico/guideline-blue.png);
 }
 
@@ -13404,13 +13412,16 @@ div.v-layout.v-horizontal.v-widget {
 	position: absolute;
 }
 
-.order-list-button:hover, .customer-list-button:hover {
+.order-list-button:hover, .customer-list-button:hover,
+.order-list-button.selected, .customer-list-button.selected{
 	color:#00ace0;
 }
-.order-list-button:hover img {
+.order-list-button:hover img,
+.order-list-button.selected img {
 	content: url(img/ico/orders-blue.png) !important;
 }
-.customer-list-button:hover img {
+.customer-list-button:hover img,
+.customer-list-button.selected img {
 	content: url(img/ico/customers-blue.png) !important;
 }
 .edit-customer-button {
@@ -13526,17 +13537,25 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme #order\.menubar\.customerAndOrder\.button:hover,
 .mytheme #order\.positions\.button:hover,
 .mytheme #order\.menubar\.guidelinesAndPictures\.button:hover,
-.mytheme #order\.printAndClose\.button:hover{
-    color:#00ace0;
+.mytheme #order\.printAndClose\.button:hover,
+.mytheme #order\.menubar\.customerAndOrder\.button.selected,
+.mytheme #order\.positions\.button.selected,
+.mytheme #order\.menubar\.guidelinesAndPictures\.button.selected,
+.mytheme #order\.printAndClose\.button.selected {
+	color: #00ace0;
 }
 
-.mytheme #order\.menubar\.customerAndOrder\.button:hover img{
+.mytheme #order\.menubar\.customerAndOrder\.button:hover img,
+.mytheme #order\.menubar\.customerAndOrder\.button.selected img {
     content: url(img/ico/home-blue.png);
 }
 
 .mytheme #order\.positions\.button:hover img,
 .mytheme #order\.menubar\.guidelinesAndPictures\.button:hover img,
-.mytheme #order\.printAndClose\.button:hover img {
+.mytheme #order\.printAndClose\.button:hover img,
+.mytheme #order\.positions\.button.selected img,
+.mytheme #order\.menubar\.guidelinesAndPictures\.button.selected img,
+.mytheme #order\.printAndClose\.button.selected img {
     content: url(img/ico/star-blue.png);
 }
 
