@@ -24,6 +24,7 @@ import com.vaadin.server.ThemeResource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
+import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -352,6 +353,33 @@ public class UserManagementView extends VerticalLayout implements View {
         updateUsersGrid();
 
         userGrid.setColumns("username", "firstname", "lastname", "email", "phone", "mobile");
+
+        HeaderRow defaultHeaderRow = userGrid.getDefaultHeaderRow();
+
+        Label usernameLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.username"));
+        usernameLabel.setId("userManagement.userAccess.grid.username");
+        defaultHeaderRow.getCell("username").setComponent(usernameLabel);
+
+        Label firstnameLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.firstname"));
+        firstnameLabel.setId("userManagement.userAccess.grid.firstname");
+        defaultHeaderRow.getCell("firstname").setComponent(firstnameLabel);
+
+        Label lastnameLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.lastname"));
+        lastnameLabel.setId("userManagement.userAccess.grid.lastname");
+        defaultHeaderRow.getCell("lastname").setComponent(lastnameLabel);
+
+        Label emailLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.email"));
+        emailLabel.setId("userManagement.userAccess.grid.email");
+        defaultHeaderRow.getCell("email").setComponent(emailLabel);
+
+        Label phoneLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.phone"));
+        phoneLabel.setId("userManagement.userAccess.grid.phone");
+        defaultHeaderRow.getCell("phone").setComponent(phoneLabel);
+
+        Label mobileLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.mobile"));
+        mobileLabel.setId("userManagement.userAccess.grid.mobile");
+        defaultHeaderRow.getCell("mobile").setComponent(mobileLabel);
+
         userGrid.setSizeFull();
         panel.setContent(userGrid);
         gridWrapper.addComponent(panel);
