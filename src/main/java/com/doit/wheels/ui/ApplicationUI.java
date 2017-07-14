@@ -151,33 +151,28 @@ public class ApplicationUI extends UI implements View{
         backButton.addClickListener(e -> back());
         headerRight.addComponent(backButton);
 
-        navigator.addViewChangeListener(new ViewChangeListener() {
-            @Override
-            public boolean beforeViewChange(ViewChangeEvent viewChangeEvent) {
-                if (!viewChangeEvent.getViewName().equals("landing")){
-                    logoutButton.setVisible(false);
-                    backButton.setVisible(true);
-                }
-                else {
-                    logoutButton.setVisible(true);
-                    backButton.setVisible(false);
-                }
-                return true;
+        navigator.addViewChangeListener((ViewChangeListener) viewChangeEvent -> {
+            if (!viewChangeEvent.getViewName().equals("landing")){
+                logoutButton.setVisible(false);
+                backButton.setVisible(true);
             }
-
-            @Override
-            public void afterViewChange(ViewChangeEvent event) {
-//                if (!event.getViewName().equals("landing")){
-//                    logoutButton.setVisible(false);
-//                    backButton.setVisible(true);
-//                }
+            else {
+                logoutButton.setVisible(true);
+                backButton.setVisible(false);
             }
+            return true;
         });
         updateHeaderUser();
     }
 
     private void back() {
-        this.getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+        if (!Boolean.valueOf(getSession().getAttribute("isUserEditMode").toString())){
+            this.getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+        }
+        else {
+            ((UserManagementView) this.getNavigator().getCurrentView()).showManageAccess();
+            getSession().setAttribute("isUserEditMode", false);
+        }
     }
 
     @Override

@@ -13504,6 +13504,9 @@ div.v-layout.v-horizontal.v-widget {
 	margin-left: auto;
 	width: 683px;
 	margin-right: auto;
+    margin-top:50px;
+    font-weight: bolder;
+    font-size: 18px;
 }
 
 .mytheme .user-access .v-horizontallayout {

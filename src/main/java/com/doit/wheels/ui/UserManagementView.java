@@ -483,8 +483,14 @@ public class UserManagementView extends VerticalLayout implements View {
         User tmpUser = user;
         userGrid.setItems(userService.findAll());
         userGrid.select(tmpUser);
+        showManageAccess();
+    }
+
+    void showManageAccess(){
         userCreateDataWrapper.setVisible(false);
         userAccessWrapper.setVisible(true);
+        editMode = false;
+        changeMenubarButtonsVisible();
     }
 
     private void showAddNotification(){
@@ -602,8 +608,7 @@ public class UserManagementView extends VerticalLayout implements View {
     }
 
     private void changeMenubarButtonsVisible(){
-        createUserButton.setVisible(!editMode);
-        manageUserAccessButton.setVisible(!editMode);
+        menubar.setVisible(!editMode);
         editModeLabel.setVisible(editMode);
         changePasswordPresentation();
     }
@@ -620,6 +625,7 @@ public class UserManagementView extends VerticalLayout implements View {
         userCreateDataWrapper.setVisible(true);
         editMode = true;
         changeMenubarButtonsVisible();
+        getSession().setAttribute("isUserEditMode", true);
     }
 
     private void changePasswordPresentation(){
