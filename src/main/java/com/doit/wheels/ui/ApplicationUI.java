@@ -4,6 +4,7 @@ import com.doit.wheels.auth.SecurityUtils;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Viewport;
+import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -21,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 
@@ -96,11 +98,21 @@ public class ApplicationUI extends UI implements View{
         image.setHeight("50px");
         header.addComponent(image);
 
-        changeLocale = new Button(messageService.getMessage("localization"));
-        changeLocale.setId("localization");
-        changeLocale.addClickListener(e -> changeLocale());
-        changeLocale.setStyleName("headerButton");
-        header.addComponent(changeLocale);
+        ComboBox<Label> comboBox = new ComboBox<>();
+        Label englishLabel = new Label(messageService.getMessage("localization.english"));
+        englishLabel.setId("localization.english");
+        englishLabel.setData(Locale.ENGLISH);
+        Label germanLabel = new Label(messageService.getMessage("localization.german"));
+        germanLabel.setId("localization.german");
+        germanLabel.setData(Locale.GERMAN);
+
+        comboBox.setItems(Arrays.asList(englishLabel, germanLabel));
+        comboBox.setStyleName("headerButton");
+        comboBox.setEmptySelectionAllowed(false);
+        comboBox.setSelectedItem(englishLabel);
+        comboBox.setTextInputAllowed(false);
+        comboBox.setItemCaptionGenerator(Label::getValue);
+        comboBox.addSelectionListener(this::changeLocale);
 
         Button logoutButton = new Button(messageService.getMessage("header.logout"));
         logoutButton.setId("header.logout");
@@ -110,7 +122,7 @@ public class ApplicationUI extends UI implements View{
 
         CssLayout headerRight = new CssLayout();
         headerRight.addStyleName("header-item-right");
-        headerRight.addComponents(changeLocale, logoutButton);
+        headerRight.addComponents(comboBox, logoutButton);
         header.addComponent(headerRight);
 
         Panel viewContainer = new Panel();
@@ -172,9 +184,12 @@ public class ApplicationUI extends UI implements View{
         headerUser.setValue(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-    private void changeLocale(){
-        Locale locale = !VaadinSession.getCurrent().getLocale().equals(Locale.ENGLISH) ? Locale.ENGLISH : Locale.GERMAN;
-        messageService.updateLocale(getUI(), locale);
-        VaadinSession.getCurrent().setLocale(locale);
+    private void changeLocale(SelectionEvent event){
+        if (event.getFirstSelectedItem().isPresent()) {
+            Label selectedItem = (Label)event.getFirstSelectedItem().get();
+            Locale locale = (Locale) selectedItem.getData();
+            messageService.updateLocale(getUI(), locale);
+            VaadinSession.getCurrent().setLocale(locale);
+        }
     }
 }
