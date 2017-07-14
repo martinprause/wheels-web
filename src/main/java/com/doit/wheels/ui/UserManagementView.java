@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Configurable
@@ -129,7 +130,7 @@ public class UserManagementView extends VerticalLayout implements View {
 
     private void init(){
         editMode = false;
-        setSizeFull();
+//        setSizeFull();
         menubar = new CssLayout();
         menubar.addStyleName("user-management-menubar");
 
@@ -453,22 +454,27 @@ public class UserManagementView extends VerticalLayout implements View {
 
     private void saveUser(){
         binder.readBean(user);
-        if (editMode){
-            userService.updateUser(user);
-            editMode = false;
-            changeMenubarButtonsVisible();
-            gotoAccesses();
-        } else {
-            try {
-                binder.validate();
-                binder.writeBean(user);
-                userService.addNewUser(user);
-                gotoAccesses();
-            } catch (ValidationException e) {
-                e.printStackTrace();
-            } catch (UserException e) {
-                loginErrorNotification();
+        try {
+            binder.validate();
+            binder.writeBean(user);
+            if (editMode){
+                userService.updateUser(user);
+                editMode = false;
+                changeMenubarButtonsVisible();
             }
+            else {
+                userService.addNewUser(user);
+            }
+            gotoAccesses();
+        } catch (ValidationException e) {
+            if (e.getFieldValidationErrors().size() == 1 && editMode && e.getFieldValidationErrors().get(0).getBinding().getField() instanceof PasswordField){
+                userService.updateUser(user);
+                editMode = false;
+                changeMenubarButtonsVisible();
+                gotoAccesses();
+            }
+        } catch (UserException e) {
+            loginErrorNotification();
         }
     }
 
@@ -478,7 +484,6 @@ public class UserManagementView extends VerticalLayout implements View {
         userGrid.select(tmpUser);
         userCreateDataWrapper.setVisible(false);
         userAccessWrapper.setVisible(true);
-
     }
 
     private void showAddNotification(){
@@ -525,7 +530,9 @@ public class UserManagementView extends VerticalLayout implements View {
                 "Login must be between 4 and 20 characters long!",
                 4, 20)).bind(User::getUsername, User::setUsername);
 
-        binder.forField(password).withValidator(passwordValidator).bind(User::getPassword, User::setPassword);
+        binder.forField(password).withValidator(notEmptyValidator).bind(User::getPassword, User::setPassword);
+
+        binder.forField(role).withValidator(Objects::nonNull, messageService.getMessage("userManagement.validation.notEmpty")).bind(User::getRole, User::setRole);
 
         binder.forField(firstname).withValidator(notEmptyValidator).bind(User::getFirstname, User::setFirstname);
         binder.forField(lastname).withValidator(notEmptyValidator).bind(User::getLastname, User::setLastname);
