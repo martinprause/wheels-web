@@ -152,6 +152,7 @@ public class UserManagementView extends VerticalLayout implements View {
             makeButtonSelected(createUserButton);
         });
         createUserButton.addStyleName("clear-button");
+        createUserButton.addStyleName("selected");
 
         manageUserAccessButton = new Button(messageService.getMessage("userManagement.manageUserAccess"));
         manageUserAccessButton.setId("userManagement.manageUserAccess");

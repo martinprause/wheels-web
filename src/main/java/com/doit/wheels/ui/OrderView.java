@@ -109,6 +109,7 @@ public class OrderView extends VerticalLayout implements View {
         detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
         detailsButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         detailsButton.addStyleName("order-menubar-buttons");
+        detailsButton.addStyleName("selected");
         menuBar.addComponent(detailsButton);
 
         positionsButton = new Button(messageByLocaleService.getMessage("order.positions.button"));
