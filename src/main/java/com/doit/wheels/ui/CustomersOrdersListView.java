@@ -58,6 +58,7 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
         ordersNavigationButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         ordersNavigationButton.addStyleName("clear-button");
         ordersNavigationButton.addStyleName("order-list-button");
+        ordersNavigationButton.addStyleName("selected");
         ordersNavigationButton.addClickListener(clickEvent -> {
             makeButtonSelected(ordersNavigationButton);
             replaceComponent(new OrdersListLayout(messageByLocaleService, orderService));

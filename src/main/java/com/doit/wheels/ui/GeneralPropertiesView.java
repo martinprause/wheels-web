@@ -77,6 +77,7 @@ public class GeneralPropertiesView extends VerticalLayout implements View {
         countryButton.setIcon(new ThemeResource("img/ico/country.png"));
         countryButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         countryButton.addStyleName("clear-button");
+        countryButton.addStyleName("selected");
 
         manufacturerButton = new Button(messageService.getMessage("generalProperties.manufacturer"));
         manufacturerButton.setId("generalProperties.manufacturer");
