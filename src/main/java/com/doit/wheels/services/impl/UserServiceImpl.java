@@ -34,11 +34,6 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
         super(genericRepository);
     }
 
-    @Override
-    public User getUser(long id) {
-        return userRepository.findOne(id);
-    }
-
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
     public User addNewUser(User user) throws UserException {
@@ -54,7 +49,7 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     @Override
     public User updateUser(User user){
         if (user.getPassword() == null || user.getPassword().equals("")) {
-            user.setPassword(findUserByUsername(user.getUsername()).getPassword());
+            user.setPassword(findById(user.getId()).getPassword());
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
@@ -90,6 +85,11 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     @Override
     public List<User> findAllByRole(UserRoleEnum role) {
         return userRepository.findAllByRole(role);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findOne(id);
     }
 
 }

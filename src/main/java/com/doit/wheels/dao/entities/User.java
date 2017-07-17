@@ -110,9 +110,9 @@ public class User extends Contact {
 
     @Override
     public int hashCode() {
-        int result = this.getId();
+        long result = this.getId();
         result = 31 * result + getUsername().hashCode();
-        return result;
+        return (int) result;
     }
 
     public List<Order> getCreatedOrders() {

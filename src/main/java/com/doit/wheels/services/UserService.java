@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface UserService extends GenericService<User>{
 
-    User getUser(long id);
-
     User addNewUser(User user) throws UserException;
 
     User updateUser(User user);
@@ -23,4 +21,6 @@ public interface UserService extends GenericService<User>{
     void removeUserWithAccesses(User user) throws NoPermissionsException;
 
     List<User> findAllByRole(UserRoleEnum role);
+
+    User findById(Long id);
 }

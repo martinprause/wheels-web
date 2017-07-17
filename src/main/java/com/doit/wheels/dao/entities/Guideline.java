@@ -40,8 +40,8 @@ public class Guideline extends Description {
 
     @Override
     public int hashCode() {
-        int result = this.getId();
+        long result = this.getId();
         result = 31 * result + getDescription().hashCode();
-        return result;
+        return (int) result;
     }
 }
