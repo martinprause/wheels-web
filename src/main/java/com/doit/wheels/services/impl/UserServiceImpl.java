@@ -92,4 +92,10 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
         return userRepository.findOne(id);
     }
 
+    @Override
+    public boolean checkIfCurrentUserHasPermissions(AccessLevelType accessLevelType) {
+        User currentUser = findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        return currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == accessLevelType);
+    }
+
 }

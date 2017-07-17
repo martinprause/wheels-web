@@ -4,6 +4,7 @@ import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.dao.entities.Order;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
+import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
 import org.vaadin.dialogs.ConfirmDialog;
@@ -61,9 +62,16 @@ public class OrdersListLayout extends VerticalLayout {
                 messageByLocaleService.getMessage("orderView.order.delete.question"),
                 (ConfirmDialog.Listener) dialog -> {
                     if (dialog.isConfirmed()) {
+                        try {
+                            orderService.deleteOrder(selectedOrder);
+                        } catch (NoPermissionsException e) {
+                            Notification.show(messageByLocaleService.getMessage("order.delete.noAccess"),
+                                    Notification.Type.ERROR_MESSAGE);
+                            e.printStackTrace();
+                            return;
+                        }
                         Notification.show(messageByLocaleService.getMessage("orderView.order.delete.success"),
                                 Notification.Type.HUMANIZED_MESSAGE);
-                        orderService.delete(selectedOrder);
                         orderGrid.setItems(orderService.findAll());
                     }
                 });

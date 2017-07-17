@@ -28,6 +28,7 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.dialogs.ConfirmDialog;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +41,9 @@ import java.util.Set;
 public class UserManagementView extends VerticalLayout implements View {
 
     private boolean editMode;
+
+    private boolean hasCreateNewUserPermissions;
+    private boolean hasDeleteUserPermissions;
 
     @Autowired
     MessageByLocaleServiceImpl messageService;
@@ -144,13 +148,17 @@ public class UserManagementView extends VerticalLayout implements View {
         createUserButton.setIcon(new ThemeResource("img/ico/new-user.png"));
         createUserButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         createUserButton.addClickListener(e -> {
-            user = new User();
-            binder.setBean(user);
-            userAccessWrapper.setVisible(false);
-            userCreateDataWrapper.setVisible(true);
-            binder.forField(password).withValidator(passwordValidator).bind(User::getPassword, User::setPassword);
-            password.setPlaceholder(null);
-            makeButtonSelected(createUserButton);
+            if (hasCreateNewUserPermissions) {
+                user = new User();
+                binder.setBean(user);
+                userAccessWrapper.setVisible(false);
+                userCreateDataWrapper.setVisible(true);
+                binder.forField(password).withValidator(passwordValidator).bind(User::getPassword, User::setPassword);
+                password.setPlaceholder(null);
+                makeButtonSelected(createUserButton);
+            } else
+                Notification.show(messageService.getMessage("user.create.noAccess"),
+                        Notification.Type.ERROR_MESSAGE);
         });
         createUserButton.addStyleName("clear-button");
         createUserButton.addStyleName("selected");
@@ -170,8 +178,18 @@ public class UserManagementView extends VerticalLayout implements View {
         menubar.addComponent(createUserButton);
         menubar.addComponent(manageUserAccessButton);
         this.addComponent(menubar);
+
+        hasCreateNewUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.CreateUser);
+        hasDeleteUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.DeleteUser);
+
         initUserCreateView();
         initUserAccessWrapper();
+
+        if(!hasCreateNewUserPermissions) {
+            userCreateDataWrapper.setVisible(false);
+            userAccessWrapper.setVisible(true);
+            makeButtonSelected(manageUserAccessButton);
+        }
     }
 
     private void initUserCreateView(){
@@ -508,10 +526,7 @@ public class UserManagementView extends VerticalLayout implements View {
     }
 
     private void permissionDeniedNotification(){
-        Notification permissionNotification = new Notification(messageService.getMessage("userManagement.permissionDenied.notification"), Notification.Type.ERROR_MESSAGE);
-        permissionNotification.setStyleName("userManagement.permissionDenied.notification");
-        permissionNotification.setDelayMsec(3000);
-        permissionNotification.show(Page.getCurrent());
+        Notification.show(messageService.getMessage("user.delete.noAccess"), Notification.Type.ERROR_MESSAGE);
     }
 
     private void initBinderAndValidation(){
@@ -569,16 +584,24 @@ public class UserManagementView extends VerticalLayout implements View {
             userService.save(user);
         }
         updateUsersGrid();
+        hasCreateNewUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.CreateUser);
+        hasDeleteUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.DeleteUser);
     }
 
     private void deleteUser() {
         if (user != null){
-            try {
-                userService.removeUserWithAccesses(user);
-                updateUsersGrid();
-            } catch (NoPermissionsException e) {
-                permissionDeniedNotification();
-            }
+            ConfirmDialog.show(getUI(),
+                    messageService.getMessage("user.delete.question"),
+                    (ConfirmDialog.Listener) dialog -> {
+                        if (dialog.isConfirmed()) {
+                            try {
+                                userService.removeUserWithAccesses(user);
+                                updateUsersGrid();
+                            } catch (NoPermissionsException e) {
+                                permissionDeniedNotification();
+                            }
+                        }
+                    });
         }
     }
 

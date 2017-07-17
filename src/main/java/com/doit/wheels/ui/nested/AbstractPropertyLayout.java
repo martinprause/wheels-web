@@ -5,6 +5,7 @@ import com.doit.wheels.services.GenericService;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.*;
+import org.vaadin.dialogs.ConfirmDialog;
 
 public class AbstractPropertyLayout<T extends Description> extends HorizontalLayout {
 
@@ -181,10 +182,16 @@ public class AbstractPropertyLayout<T extends Description> extends HorizontalLay
     }
 
     private void deleteEntity() {
-        T bean = entityBinder.getBean();
-        entityService.delete(bean);
-        entityGrid.setItems(entityService.findAll());
-        initBinder();
+        ConfirmDialog.show(getUI(),
+                messageByLocaleService.getMessage("propertyView.property.delete.question"),
+                (ConfirmDialog.Listener) dialog -> {
+                    if (dialog.isConfirmed()) {
+                        T bean = entityBinder.getBean();
+                        entityService.delete(bean);
+                        entityGrid.setItems(entityService.findAll());
+                        initBinder();
+                    }
+                });
     }
 
     @SafeVarargs

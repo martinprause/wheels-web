@@ -1,16 +1,15 @@
 package com.doit.wheels.ui;
 
 
+import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
+import com.doit.wheels.utils.AccessLevelType;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -22,6 +21,10 @@ public class LandingView extends CssLayout implements View {
 
     @Autowired
     MessageByLocaleServiceImpl messageService;
+
+    @Autowired
+    private OrderService orderService;
+    private boolean hasCreateOrderPermissions;
 
     private void init(){
         this.addStyleName("landing-page");
@@ -35,9 +38,15 @@ public class LandingView extends CssLayout implements View {
         newOrderButton.setIcon(new ThemeResource("img/ico/newOrder.png"));
         newOrderButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         newOrderButton.addStyleName("landing-center-menu-bar-buttons");
+        hasCreateOrderPermissions = orderService.checkIfCurrentUserHasPermissions(AccessLevelType.CreateOrder);
         newOrderButton.addClickListener(e -> {
-            getSession().getSession().setAttribute("previousView", getUI().getNavigator().getState());
-            getUI().getNavigator().navigateTo("new-order");
+            if (hasCreateOrderPermissions) {
+                getSession().getSession().setAttribute("previousView", getUI().getNavigator().getState());
+                getUI().getNavigator().navigateTo("new-order");
+            } else {
+                Notification.show(messageService.getMessage("order.create.noAccess"),
+                        Notification.Type.ERROR_MESSAGE);
+            }
         });
 
         Button userManagementButton = new Button(messageService.getMessage("landing.userManagement"));
