@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+
 @Service
 public class OrderServiceImpl extends GenericServiceImpl<Order> implements OrderService{
 
@@ -25,9 +27,14 @@ public class OrderServiceImpl extends GenericServiceImpl<Order> implements Order
 
     @Override
     public Order save(Order order) {
+        User currentUser = userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(order.getId() == null) {
             order.setStatus(StatusTypeEnum.CREATED);
+            order.setCreatedByUser(currentUser);
+            order.setCreated(Calendar.getInstance().getTime());
         }
+        order.setLastUpdated(Calendar.getInstance().getTime());
+        order.setLastUpdatedByUser(currentUser);
         return super.save(order);
     }
 
