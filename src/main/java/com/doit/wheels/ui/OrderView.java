@@ -172,6 +172,8 @@ public class OrderView extends VerticalLayout implements View {
         if (validated){
             replaceComponent(previousLayout, layoutToReplace);
             previousLayout = layoutToReplace;
+        } else {
+            makeButtonSelected(detailsButton);
         }
     }
 
