@@ -60,13 +60,16 @@ public class GuidelinesLayout extends HorizontalLayout{
         guidelines.addComponent(guidelinesLabel);
 
         HorizontalLayout guidelinesComboboxAndButton = new HorizontalLayout();
+        guidelinesComboboxAndButton.addStyleName("under-table-panel");
         guidelineComboBox = new ComboBox<>();
         guidelineComboBox.setItems(guidelineService.findAll());
         guidelineComboBox.setItemCaptionGenerator(Description::getDescription);
         guidelineComboBox.setEmptySelectionAllowed(false);
+        guidelineComboBox.addStyleName("guideline-combobox");
         guidelinesComboboxAndButton.addComponent(guidelineComboBox);
 
         Button addGuideline = new Button(messageByLocaleService.getMessage("guidelines.add.button"));
+        addGuideline.addStyleName("theme-buttons");
         addGuideline.setId("guidelines.add.button");
         addGuideline.addClickListener(e -> addGuideline());
         addGuideline.setWidth("175px");
@@ -82,6 +85,7 @@ public class GuidelinesLayout extends HorizontalLayout{
         HorizontalLayout deleteButtonLayout = new HorizontalLayout();
         deleteButtonLayout.addStyleName("guideline-delete-layout");
         Button deleteGuidelineButton = new Button(messageByLocaleService.getMessage("guidelines.delete.button"));
+        deleteGuidelineButton.addStyleName("theme-buttons");
         deleteGuidelineButton.addClickListener(e -> deleteGuideline());
         deleteGuidelineButton.setId("guidelines.delete.button");
         deleteGuidelineButton.setWidth("175px");

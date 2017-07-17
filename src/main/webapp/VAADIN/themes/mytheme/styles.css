@@ -13642,3 +13642,27 @@ div.v-layout.v-horizontal.v-widget {
 	box-shadow: none;
 	width: 360px !important;
 }
+
+.mytheme .under-table-panel{
+    width:95%;
+    display:flex;
+    justify-content: space-between;
+}
+
+.mytheme .guideline-combobox{
+    width: 100% !important;
+}
+
+.mytheme .v-slot-guideline-combobox{
+    width:100% !important;
+}
+
+.mytheme .theme-buttons{
+    background: #5b99e2 !important;
+    color: #ffffff;
+    border-radius: 5px;
+    border: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
