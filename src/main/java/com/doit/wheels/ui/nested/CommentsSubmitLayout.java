@@ -92,6 +92,8 @@ public class CommentsSubmitLayout extends VerticalLayout {
                 messageByLocaleService.getMessage("commentSubmitView.submitNewOrder.question"),
                 (ConfirmDialog.Listener) dialog -> {
                     if (dialog.isConfirmed()) {
+                        sharedBinder.readBean(sharedBinder.getBean());
+                        sharedBinder.validate();
                         orderService.save(sharedBinder.getBean());
                         Notification.show(messageByLocaleService.getMessage("commentSubmitView.submitNewOrder.success"),
                                 Notification.Type.HUMANIZED_MESSAGE);

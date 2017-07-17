@@ -9,6 +9,7 @@ import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.utils.UserRoleEnum;
 import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationException;
 import com.vaadin.data.converter.LocalDateToDateConverter;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
@@ -204,6 +205,16 @@ public class OrderDetailsLayout extends VerticalLayout{
 
     }
 
+    public boolean validate(){
+        try {
+            binder.validate();
+            binder.writeBean(order);
+            return true;
+        } catch (ValidationException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     private LocalDate formatToLocalDate(Date date){
         return date == null ? null : date.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDate();
     }

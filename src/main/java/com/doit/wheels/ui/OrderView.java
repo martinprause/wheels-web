@@ -165,8 +165,14 @@ public class OrderView extends VerticalLayout implements View {
     }
 
     private void replaceComponent(Layout layoutToReplace){
-        replaceComponent(previousLayout, layoutToReplace);
-        previousLayout = layoutToReplace;
+        boolean validated = true;
+        if (previousLayout instanceof OrderDetailsLayout){
+            validated = ((OrderDetailsLayout) previousLayout).validate();
+        }
+        if (validated){
+            replaceComponent(previousLayout, layoutToReplace);
+            previousLayout = layoutToReplace;
+        }
     }
 
     private void makeButtonSelected(Button buttonToSelect){

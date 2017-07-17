@@ -166,7 +166,7 @@ public class ApplicationUI extends UI implements View{
     }
 
     private void back() {
-        if (!Boolean.valueOf(getSession().getAttribute("isUserEditMode").toString())){
+        if (getSession().getAttribute("isUserEditMode") == null || !Boolean.valueOf(getSession().getAttribute("isUserEditMode").toString())){
             this.getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
         }
         else {
