@@ -13627,9 +13627,18 @@ div.v-layout.v-horizontal.v-widget {
 /*}*/
 
 
-.mytheme .guideline-delete-layout{
+.mytheme .guideline-delete-layout {
     width: 95%;
     text-align: right;
+}
+
+.mytheme .v-panel-content .v-slot-order-details-layout {
+	display: flex;
+	justify-content: center;
+}
+
+.mytheme .v-panel-content .v-slot-order-details-layout .order-details-layout {
+	width: auto !important;
 }
 
 .mytheme .manage-order-button {
