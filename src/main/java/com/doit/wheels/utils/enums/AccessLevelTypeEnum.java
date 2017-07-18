@@ -1,6 +1,6 @@
-package com.doit.wheels.utils;
+package com.doit.wheels.utils.enums;
 
-public enum AccessLevelType {
+public enum AccessLevelTypeEnum {
 
     DeleteOrder,
     CreateOrder,

@@ -1,4 +1,4 @@
-package com.doit.wheels.utils;
+package com.doit.wheels.utils.enums;
 
 
 public enum UserRoleEnum {

@@ -1,16 +1,26 @@
 package com.doit.wheels.ui.nested;
 
 import com.doit.wheels.dao.entities.Order;
+import com.doit.wheels.dao.entities.PrintJob;
+import com.doit.wheels.dao.entities.WheelRimPosition;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
+import com.doit.wheels.services.PrintJobService;
+import com.doit.wheels.services.UserService;
+import com.doit.wheels.utils.enums.PrintJobStatusEnum;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.dialogs.ConfirmDialog;
+
+import java.util.Date;
 
 public class CommentsSubmitLayout extends VerticalLayout {
 
     private MessageByLocaleService messageByLocaleService;
     private OrderService orderService;
+    private UserService userService;
+    private PrintJobService printJobService;
 
     private Binder<Order> sharedBinder;
     private TextArea commentArea;
@@ -19,10 +29,14 @@ public class CommentsSubmitLayout extends VerticalLayout {
 
     public CommentsSubmitLayout(MessageByLocaleService messageByLocaleService,
                                 OrderService orderService,
+                                UserService userService,
+                                PrintJobService printJobService,
                                 Binder<Order> sharedBinder,
                                 boolean isInEdit) {
         this.messageByLocaleService = messageByLocaleService;
         this.orderService = orderService;
+        this.userService = userService;
+        this.printJobService = printJobService;
         this.sharedBinder = sharedBinder;
         this.isInEdit = isInEdit;
 
@@ -92,6 +106,21 @@ public class CommentsSubmitLayout extends VerticalLayout {
                 messageByLocaleService.getMessage("commentSubmitView.submitNewOrder.question"),
                 (ConfirmDialog.Listener) dialog -> {
                     if (dialog.isConfirmed()) {
+                        sharedBinder.getBean().setQrCode(sharedBinder.getBean().getOrderNo() + "-P");
+                        if (printImmediatelyCheck.getValue()){
+                            int i = 1;
+                            for (WheelRimPosition wheelRimPosition : sharedBinder.getBean().getWheelRimPositions()) {
+                                wheelRimPosition.setQrCode(sharedBinder.getBean().getOrderNo() + "-" + i);
+                                i++;
+                            }
+                        }
+                        PrintJob printJob = new PrintJob();
+                        printJob.setOrder(sharedBinder.getBean());
+                        printJob.setUser(userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+                        printJob.setJobCreated(new Date());
+                        printJob.setPrintJobStatusEnum(PrintJobStatusEnum.ACTIVE);
+                        printJobService.save(printJob);
+
                         sharedBinder.readBean(sharedBinder.getBean());
                         sharedBinder.validate();
                         orderService.save(sharedBinder.getBean());

@@ -7,17 +7,20 @@ import com.doit.wheels.services.CustomerService;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.UserService;
-import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.vaadin.data.Binder;
+import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationException;
-import com.vaadin.data.converter.LocalDateToDateConverter;
+import com.vaadin.data.converter.LocalDateTimeToDateConverter;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -35,15 +38,15 @@ public class OrderDetailsLayout extends VerticalLayout{
 
     private final TextField orderNo = new TextField();
 
-    private final DateField created = new DateField();
+    private final DateTimeField created = new DateTimeField();
 
     private final ComboBox<Customer> customer = new ComboBox<>();
 
     private final TextField customerNumberOrder = new TextField();
 
-    private final DateField deadlineFinish = new DateField();
+    private final DateTimeField deadlineFinish = new DateTimeField();
 
-    private final DateField deadlineDelivery = new DateField();
+    private final DateTimeField deadlineDelivery = new DateTimeField();
 
     private final Label status = new Label();
 
@@ -89,6 +92,7 @@ public class OrderDetailsLayout extends VerticalLayout{
         created.setDateFormat("EEE, d MMM yyyy HH:mm");
         created.addStyleName("order-details-input-elem");
         created.setLocale(VaadinSession.getCurrent().getLocale());
+        created.addValueChangeListener(this::convertOrderNumber);
         this.addComponent(orderDateLayout);
 
         HorizontalLayout customerLayout = new HorizontalLayout();
@@ -163,16 +167,28 @@ public class OrderDetailsLayout extends VerticalLayout{
 
     }
 
+    private void convertOrderNumber(HasValue.ValueChangeEvent<LocalDateTime> e) {
+        if (e.getValue() != null && orderNo.getValue().equals("")){
+            Date date = Date.from(e.getValue().atZone(ZoneId.systemDefault()).toInstant());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMddHHmmss");
+            orderNo.setValue(simpleDateFormat.format(date));
+        }
+    }
+
     private void initBinderAndValidation(){
 
         binder.forField(orderNo).bind(Order::getOrderNo, Order::setOrderNo);
 
-        binder.forField(created).withConverter(new LocalDateToDateConverter()).bind(Order::getCreated, Order::setCreated);
+        binder.forField(created).withConverter(new LocalDateTimeToDateConverter(ZoneOffset.of("+02:00"))).bind(Order::getCreated, Order::setCreated);
+
+        if (created.getValue() == null){
+            created.setValue(LocalDateTime.now());
+        }
 
         binder.forField(created).withValidator(Objects::nonNull,
                 messageService.getMessage("userManagement.validation.notEmpty"))
-                .bind(order1 -> formatToLocalDate(order1.getCreated()),
-                        (order2, created1) -> order2.setCreated(formatToDate(created1)));
+                .bind(order1 -> formatToLocalDateTime(order1.getCreated()),
+                        (order2, created1) -> order2.setCreated(formatToDateFromLocalDateTime(created1)));
 
         binder.forField(customer).withValidator(Objects::nonNull, messageService.getMessage("userManagement.validation.notEmpty")).bind(Order::getCustomer, Order::setCustomer);
 
@@ -180,19 +196,19 @@ public class OrderDetailsLayout extends VerticalLayout{
 
         binder.forField(driver).bind(Order::getDriver, Order::setDriver);
 
-        binder.forField(deadlineFinish).withConverter(new LocalDateToDateConverter()).bind(Order::getDeadlineFinish, Order::setDeadlineFinish);
+        binder.forField(deadlineFinish).withConverter(new LocalDateTimeToDateConverter(ZoneOffset.of("+02:00"))).bind(Order::getDeadlineFinish, Order::setDeadlineFinish);
 
         binder.forField(deadlineFinish).withValidator(Objects::nonNull,
                 messageService.getMessage("userManagement.validation.notEmpty"))
-                .bind(order1 -> formatToLocalDate(order1.getDeadlineFinish()),
-                        (order2, deadlineFinish1) -> order2.setCreated(formatToDate(deadlineFinish1)));
+                .bind(order1 -> formatToLocalDateTime(order1.getDeadlineFinish()),
+                        (order2, deadlineFinish1) -> order2.setCreated(formatToDateFromLocalDateTime(deadlineFinish1)));
 
-        binder.forField(deadlineDelivery).withConverter(new LocalDateToDateConverter()).bind(Order::getDeadlineDelivery, Order::setDeadlineDelivery);
+        binder.forField(deadlineDelivery).withConverter(new LocalDateTimeToDateConverter(ZoneOffset.of("+02:00"))).bind(Order::getDeadlineDelivery, Order::setDeadlineDelivery);
 
         binder.forField(deadlineDelivery).withValidator(Objects::nonNull,
                 messageService.getMessage("userManagement.validation.notEmpty"))
-                .bind(order1 -> formatToLocalDate(order1.getDeadlineDelivery()),
-                        (order2, deadlineDelivery1) -> order2.setCreated(formatToDate(deadlineDelivery1)));
+                .bind(order1 -> formatToLocalDateTime(order1.getDeadlineDelivery()),
+                        (order2, deadlineDelivery1) -> order2.setCreated(formatToDateFromLocalDateTime(deadlineDelivery1)));
 
         if(binder.getBean() == null){
             order = new Order();
@@ -215,11 +231,20 @@ public class OrderDetailsLayout extends VerticalLayout{
             return false;
         }
     }
-    private LocalDate formatToLocalDate(Date date){
-        return date == null ? null : date.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDate();
+
+//    private LocalDate formatToLocalDate(Date date){
+//        return date == null ? null : date.toInstant().atZone(ZoneId.of("+01:00")).toLocalDate();
+//    }
+//
+//    private Date formatToDate(LocalDate localDate){
+//        return localDate == null ? null : (Date.from(localDate.atStartOfDay(ZoneId.of("+01:00")).toInstant()));
+//    }
+
+    private LocalDateTime formatToLocalDateTime(Date date){
+        return date == null ? null : date.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
     }
 
-    private Date formatToDate(LocalDate localDate){
-        return localDate == null ? null : (Date.from(localDate.atStartOfDay(ZoneId.of("Europe/Berlin")).toInstant()));
+    private Date formatToDateFromLocalDateTime(LocalDateTime localDateTime){
+        return localDateTime == null ? null : (Date.from(localDateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant()));
     }
 }

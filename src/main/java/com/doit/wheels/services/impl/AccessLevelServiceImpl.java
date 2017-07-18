@@ -3,7 +3,7 @@ package com.doit.wheels.services.impl;
 import com.doit.wheels.dao.entities.AccessLevel;
 import com.doit.wheels.dao.repositories.AccessLevelRepository;
 import com.doit.wheels.services.AccessLevelService;
-import com.doit.wheels.utils.AccessLevelType;
+import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     }
 
     @Override
-    public AccessLevel findAccessLevelByAccessLevel(AccessLevelType accessLevelType) {
-        return accessLevelRepository.findAccessLevelByAccessLevel(accessLevelType);
+    public AccessLevel findAccessLevelByAccessLevel(AccessLevelTypeEnum AccessLevelTypeEnum) {
+        return accessLevelRepository.findAccessLevelByAccessLevel(AccessLevelTypeEnum);
     }
 }

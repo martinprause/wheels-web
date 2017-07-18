@@ -1,8 +1,6 @@
 package com.doit.wheels.ui;
 
-import com.doit.wheels.services.CustomerService;
-import com.doit.wheels.services.MessageByLocaleService;
-import com.doit.wheels.services.OrderService;
+import com.doit.wheels.services.*;
 import com.doit.wheels.ui.nested.CustomersListLayout;
 import com.doit.wheels.ui.nested.OrdersListLayout;
 import com.vaadin.annotations.PreserveOnRefresh;
@@ -28,6 +26,8 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
     private final MessageByLocaleService messageByLocaleService;
     private final CustomerService customerService;
     private final OrderService orderService;
+    private final PrintJobService printJobService;
+    private final UserService userService;
 
     private Component lastUsedComponent;
     private Button customersNavigationButton;
@@ -35,10 +35,12 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
 
     @Autowired
     public CustomersOrdersListView(MessageByLocaleService messageByLocaleService, CustomerService customerService,
-                                   OrderService orderService) {
+                                   OrderService orderService, PrintJobService printJobService, UserService userService) {
         this.messageByLocaleService = messageByLocaleService;
         this.customerService = customerService;
         this.orderService = orderService;
+        this.printJobService = printJobService;
+        this.userService = userService;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
         ordersNavigationButton.addStyleName("selected");
         ordersNavigationButton.addClickListener(clickEvent -> {
             makeButtonSelected(ordersNavigationButton);
-            replaceComponent(new OrdersListLayout(messageByLocaleService, orderService));
+            replaceComponent(new OrdersListLayout(messageByLocaleService, orderService, printJobService, userService));
         });
 
         customersNavigationButton = new Button(messageByLocaleService.getMessage("orderView.navigation.customer"));
@@ -79,7 +81,7 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
         menubar.addComponents(ordersNavigationButton, customersNavigationButton);
 
         this.addComponent(menubar);
-        lastUsedComponent = new OrdersListLayout(messageByLocaleService, orderService);
+        lastUsedComponent = new OrdersListLayout(messageByLocaleService, orderService, printJobService, userService);
         this.addComponent(lastUsedComponent);
     }
 

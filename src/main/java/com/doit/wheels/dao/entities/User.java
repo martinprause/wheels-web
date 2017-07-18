@@ -1,7 +1,7 @@
 package com.doit.wheels.dao.entities;
 
 import com.doit.wheels.dao.entities.basic.Contact;
-import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 
 import javax.persistence.*;
 import java.util.List;
@@ -34,6 +34,8 @@ public class User extends Contact {
     @OneToMany(mappedBy = "driver")
     private List<Order> driverOrders;
 
+    @OneToMany(mappedBy = "user")
+    private List<PrintJob> printJobs;
 
     public User() {
 
@@ -137,6 +139,14 @@ public class User extends Contact {
 
     public void setDriverOrders(List<Order> driverOrders) {
         this.driverOrders = driverOrders;
+    }
+
+    public List<PrintJob> getPrintJobs() {
+        return printJobs;
+    }
+
+    public void setPrintJobs(List<PrintJob> printJobs) {
+        this.printJobs = printJobs;
     }
 
     public String getDriverFullName(){

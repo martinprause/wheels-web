@@ -419,6 +419,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         if (validateBindedValues()) {
             WheelRimPosition position = localBinder.getBean();
             Order order = sharedBinder.getBean();
+            position.setQrCode(order.getOrderNo() );
             order.getWheelRimPositions().add(position);
             position.setPositionNo(String.valueOf(++POSITIONS_COUNTER));
             positionsGrid.setItems(order.getWheelRimPositions());

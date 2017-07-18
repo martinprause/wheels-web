@@ -1,6 +1,6 @@
 package com.doit.wheels.auth;
 
-import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.vaadin.spring.access.ViewAccessControl;
 import com.vaadin.ui.UI;
 import org.springframework.stereotype.Component;

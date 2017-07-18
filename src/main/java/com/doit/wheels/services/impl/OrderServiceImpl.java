@@ -5,8 +5,8 @@ import com.doit.wheels.dao.entities.User;
 import com.doit.wheels.dao.repositories.GenericRepository;
 import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.UserService;
-import com.doit.wheels.utils.AccessLevelType;
-import com.doit.wheels.utils.StatusTypeEnum;
+import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
+import com.doit.wheels.utils.enums.StatusTypeEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,7 +41,7 @@ public class OrderServiceImpl extends GenericServiceImpl<Order> implements Order
     @Override
     public void deleteOrder(Order order) throws NoPermissionsException {
         User currentUser = userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        boolean isHasAccess = currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelType.DeleteOrder);
+        boolean isHasAccess = currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelTypeEnum.DeleteOrder);
         if(isHasAccess)
             super.delete(order);
         else
@@ -50,8 +50,8 @@ public class OrderServiceImpl extends GenericServiceImpl<Order> implements Order
     }
 
     @Override
-    public boolean checkIfCurrentUserHasPermissions(AccessLevelType accessLevelType) {
+    public boolean checkIfCurrentUserHasPermissions(AccessLevelTypeEnum AccessLevelTypeEnum) {
         User currentUser = userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        return currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == accessLevelType);
+        return currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelTypeEnum);
     }
 }

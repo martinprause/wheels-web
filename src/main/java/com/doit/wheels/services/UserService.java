@@ -2,8 +2,8 @@ package com.doit.wheels.services;
 
 
 import com.doit.wheels.dao.entities.User;
-import com.doit.wheels.utils.AccessLevelType;
-import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.doit.wheels.utils.exceptions.UserException;
 
@@ -23,7 +23,7 @@ public interface UserService extends GenericService<User>{
 
     List<User> findAllByRole(UserRoleEnum role);
 
-    boolean checkIfCurrentUserHasPermissions(AccessLevelType accessLevelType);
+    boolean checkIfCurrentUserHasPermissions(AccessLevelTypeEnum accessLevelTypeEnum);
 
     User findById(Long id);
 }

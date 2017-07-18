@@ -53,6 +53,8 @@ public class OrderView extends VerticalLayout implements View {
 
     private final GuidelineService guidelineService;
 
+    private final PrintJobService printJobService;
+
     private final Binder<Order> SHARED_BINDER = new Binder<>(Order.class);
     private Button detailsButton;
     private Button positionsButton;
@@ -63,7 +65,7 @@ public class OrderView extends VerticalLayout implements View {
     public OrderView(MessageByLocaleService messageByLocaleService, ManufacturerService manufacturerService,
                      ModelService modelService, ModelTypeService modelTypeService, ValveTypeService valveTypeService,
                      OrderService orderService, CustomerService customerService, UserService userService,
-                     GuidelineService guidelineService) {
+                     GuidelineService guidelineService, PrintJobService printJobService) {
         this.messageByLocaleService = messageByLocaleService;
         this.manufacturerService = manufacturerService;
         this.modelService = modelService;
@@ -73,6 +75,7 @@ public class OrderView extends VerticalLayout implements View {
         this.customerService = customerService;
         this.userService = userService;
         this.guidelineService = guidelineService;
+        this.printJobService = printJobService;
     }
 
     private void init(){
@@ -149,7 +152,7 @@ public class OrderView extends VerticalLayout implements View {
         printButton.addStyleName("order-menubar-buttons");
         printButton.addClickListener(clickEvent -> {
             makeButtonSelected(printButton);
-            replaceComponent(new CommentsSubmitLayout(messageByLocaleService, orderService, SHARED_BINDER, CURRENT_MODE.equals(EDIT)));
+            replaceComponent(new CommentsSubmitLayout(messageByLocaleService, orderService, userService, printJobService, SHARED_BINDER, CURRENT_MODE.equals(EDIT)));
         });
         menuBar.addComponent(printButton);
 

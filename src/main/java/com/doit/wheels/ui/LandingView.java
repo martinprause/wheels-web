@@ -3,7 +3,7 @@ package com.doit.wheels.ui;
 
 import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
-import com.doit.wheels.utils.AccessLevelType;
+import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
@@ -38,7 +38,7 @@ public class LandingView extends CssLayout implements View {
         newOrderButton.setIcon(new ThemeResource("img/ico/newOrder.png"));
         newOrderButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         newOrderButton.addStyleName("landing-center-menu-bar-buttons");
-        hasCreateOrderPermissions = orderService.checkIfCurrentUserHasPermissions(AccessLevelType.CreateOrder);
+        hasCreateOrderPermissions = orderService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.CreateOrder);
         newOrderButton.addClickListener(e -> {
             if (hasCreateOrderPermissions) {
                 getSession().getSession().setAttribute("previousView", getUI().getNavigator().getState());

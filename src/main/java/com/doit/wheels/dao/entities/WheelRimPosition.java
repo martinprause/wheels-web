@@ -1,7 +1,7 @@
 package com.doit.wheels.dao.entities;
 
 import com.doit.wheels.dao.entities.basic.AbstractModel;
-import com.doit.wheels.utils.StatusTypeEnum;
+import com.doit.wheels.utils.enums.StatusTypeEnum;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -37,6 +37,8 @@ public class WheelRimPosition extends AbstractModel {
     private Integer diameter;
     private Integer indexVal;
     private String speed;
+
+    private String qrCode;
 
     public WheelRimPosition() {}
 
@@ -150,5 +152,13 @@ public class WheelRimPosition extends AbstractModel {
 
     public void setSpeed(String speed) {
         this.speed = speed;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }

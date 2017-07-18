@@ -1,11 +1,12 @@
 package com.doit.wheels.dao.entities;
 
 import com.doit.wheels.dao.entities.basic.AbstractModel;
-import com.doit.wheels.utils.StatusTypeEnum;
+import com.doit.wheels.utils.enums.StatusTypeEnum;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -48,6 +49,8 @@ public class Order extends AbstractModel {
     @Lob
     private byte[] signaturePicture;
 
+    private String qrCode;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "orders_wheel_rim_positions",joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = { @JoinColumn(name = "wheel_rim_position_id") })
     private Set<WheelRimPosition> wheelRimPositions;
@@ -57,6 +60,9 @@ public class Order extends AbstractModel {
             joinColumns = {@JoinColumn(name = "order_id")},
             inverseJoinColumns = {@JoinColumn(name = "guideline_id")})
     private Set<Guideline> guidelines = new HashSet<>();
+
+    @OneToMany(mappedBy = "order")
+    private List<PrintJob> printJobs;
 
     public String getOrderNo() {
         return orderNo;
@@ -184,5 +190,21 @@ public class Order extends AbstractModel {
 
     public void setGuidelines(Set<Guideline> guidelines) {
         this.guidelines = guidelines;
+    }
+
+    public List<PrintJob> getPrintJobs() {
+        return printJobs;
+    }
+
+    public void setPrintJobs(List<PrintJob> printJobs) {
+        this.printJobs = printJobs;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }

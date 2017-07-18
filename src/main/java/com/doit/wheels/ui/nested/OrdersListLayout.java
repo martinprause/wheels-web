@@ -2,17 +2,27 @@ package com.doit.wheels.ui.nested;
 
 import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.dao.entities.Order;
+import com.doit.wheels.dao.entities.PrintJob;
+import com.doit.wheels.dao.entities.WheelRimPosition;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
+import com.doit.wheels.services.PrintJobService;
+import com.doit.wheels.services.UserService;
+import com.doit.wheels.utils.enums.PrintJobStatusEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.dialogs.ConfirmDialog;
+
+import java.util.Date;
 
 public class OrdersListLayout extends VerticalLayout {
 
     private MessageByLocaleService messageByLocaleService;
     private OrderService orderService;
+    private PrintJobService printJobService;
+    private UserService userService;
 
     private Order selectedOrder;
 
@@ -22,10 +32,11 @@ public class OrdersListLayout extends VerticalLayout {
     private Button printOrderButton;
     private Button deleteOrderButton;
 
-    public OrdersListLayout(MessageByLocaleService messageByLocaleService, OrderService orderService) {
+    public OrdersListLayout(MessageByLocaleService messageByLocaleService, OrderService orderService, PrintJobService printJobService, UserService userService) {
         this.messageByLocaleService = messageByLocaleService;
         this.orderService = orderService;
-
+        this.printJobService = printJobService;
+        this.userService = userService;
         init();
     }
 
@@ -90,7 +101,7 @@ public class OrdersListLayout extends VerticalLayout {
         printOrderButton = new Button(messageByLocaleService.getMessage("orderView.order.buttons.print"));
         printOrderButton.setId("orderView.order.buttons.print");
         printOrderButton.addStyleName("manage-order-button");
-        printOrderButton.addClickListener(clickEvent -> Notification.show("HERE WILL BE PRINT!", Notification.Type.HUMANIZED_MESSAGE));
+        printOrderButton.addClickListener(clickEvent -> print());
 
         deleteOrderButton = new Button(messageByLocaleService.getMessage("orderView.order.buttons.deleteOrder"));
         deleteOrderButton.setId("orderView.order.buttons.deleteOrder");
@@ -160,5 +171,21 @@ public class OrdersListLayout extends VerticalLayout {
         String zipCode = customer.getZipCode() == null ? "" : customer.getZipCode() + "/";
         String city = customer.getCity() == null ? "" : customer.getCity();
         return zipCode + city;
+    }
+
+    private void print(){
+        Notification.show("Print started!", Notification.Type.HUMANIZED_MESSAGE);
+        selectedOrder.setQrCode(selectedOrder.getOrderNo() + "-P");
+            int i = 1;
+            for (WheelRimPosition wheelRimPosition : selectedOrder.getWheelRimPositions()) {
+                wheelRimPosition.setQrCode(selectedOrder.getOrderNo() + "-" + i);
+                i++;
+            }
+        PrintJob printJob = new PrintJob();
+        printJob.setOrder(selectedOrder);
+        printJob.setUser(userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+        printJob.setJobCreated(new Date());
+        printJob.setPrintJobStatusEnum(PrintJobStatusEnum.ACTIVE);
+        printJobService.save(printJob);
     }
 }

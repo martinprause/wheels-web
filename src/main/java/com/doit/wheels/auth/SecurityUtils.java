@@ -1,6 +1,6 @@
 package com.doit.wheels.auth;
 
-import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

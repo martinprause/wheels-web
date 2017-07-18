@@ -7,8 +7,8 @@ import com.doit.wheels.services.AccessLevelService;
 import com.doit.wheels.services.CountryService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
-import com.doit.wheels.utils.AccessLevelType;
-import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.doit.wheels.utils.exceptions.UserException;
 import com.doit.wheels.utils.validators.EmailValidatorAllowEmpty;
@@ -118,7 +118,7 @@ public class UserManagementView extends VerticalLayout implements View {
 
     Grid<User> userGrid;
 
-    private HashMap<AccessLevelType, CheckBox> accessCheckboxes;
+    private HashMap<AccessLevelTypeEnum, CheckBox> accessCheckboxes;
 
     private CheckBox deleteOrderCheckbox;
     private CheckBox createOrderCheckBox;
@@ -179,8 +179,8 @@ public class UserManagementView extends VerticalLayout implements View {
         menubar.addComponent(manageUserAccessButton);
         this.addComponent(menubar);
 
-        hasCreateNewUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.CreateUser);
-        hasDeleteUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.DeleteUser);
+        hasCreateNewUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.CreateUser);
+        hasDeleteUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.DeleteUser);
 
         initUserCreateView();
         initUserAccessWrapper();
@@ -443,11 +443,11 @@ public class UserManagementView extends VerticalLayout implements View {
         reportsCheckbox.setId("userManagement.reports.checkbox");
 
         accessCheckboxes = new HashMap<>();
-        accessCheckboxes.put(AccessLevelType.CreateOrder, createOrderCheckBox);
-        accessCheckboxes.put(AccessLevelType.DeleteOrder, deleteOrderCheckbox);
-        accessCheckboxes.put(AccessLevelType.CreateUser, createUserCheckbox);
-        accessCheckboxes.put(AccessLevelType.DeleteUser, deleteUserCheckbox);
-        accessCheckboxes.put(AccessLevelType.Reports, reportsCheckbox);
+        accessCheckboxes.put(AccessLevelTypeEnum.CreateOrder, createOrderCheckBox);
+        accessCheckboxes.put(AccessLevelTypeEnum.DeleteOrder, deleteOrderCheckbox);
+        accessCheckboxes.put(AccessLevelTypeEnum.CreateUser, createUserCheckbox);
+        accessCheckboxes.put(AccessLevelTypeEnum.DeleteUser, deleteUserCheckbox);
+        accessCheckboxes.put(AccessLevelTypeEnum.Reports, reportsCheckbox);
 
         saveAccessButton = new Button();
         saveAccessButton.setCaption(messageService.getMessage("userManagement.saveAccessRights.button"));
@@ -570,9 +570,9 @@ public class UserManagementView extends VerticalLayout implements View {
     private void saveAccesses() {
         if (user != null) {
             Set<AccessLevel> accessLevels = new HashSet<>();
-            for (AccessLevelType accessLevelType : accessCheckboxes.keySet()) {
-                AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevel(accessLevelType);
-                if (accessCheckboxes.get(accessLevelType).getValue().equals(Boolean.TRUE)){
+            for (AccessLevelTypeEnum AccessLevelTypeEnum : accessCheckboxes.keySet()) {
+                AccessLevel accessLevel = accessLevelService.findAccessLevelByAccessLevel(AccessLevelTypeEnum);
+                if (accessCheckboxes.get(AccessLevelTypeEnum).getValue().equals(Boolean.TRUE)){
                     accessLevel.getUsers().add(user);
                     accessLevels.add(accessLevel);
                 } else {
@@ -584,8 +584,8 @@ public class UserManagementView extends VerticalLayout implements View {
             userService.save(user);
         }
         updateUsersGrid();
-        hasCreateNewUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.CreateUser);
-        hasDeleteUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelType.DeleteUser);
+        hasCreateNewUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.CreateUser);
+        hasDeleteUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.DeleteUser);
     }
 
     private void deleteUser() {

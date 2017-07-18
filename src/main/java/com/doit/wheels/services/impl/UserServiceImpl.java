@@ -6,8 +6,8 @@ import com.doit.wheels.dao.repositories.GenericRepository;
 import com.doit.wheels.dao.repositories.UserRepository;
 import com.doit.wheels.services.AccessLevelService;
 import com.doit.wheels.services.UserService;
-import com.doit.wheels.utils.AccessLevelType;
-import com.doit.wheels.utils.UserRoleEnum;
+import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.doit.wheels.utils.exceptions.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     @Override
     public void removeUserWithAccesses(User user) throws NoPermissionsException {
         User currentUser = findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        boolean access = currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelType.DeleteUser);
+        boolean access = currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelTypeEnum.DeleteUser);
         if (access){
             if (user.getAccesses() != null && user.getAccesses().size() != 0) {
                 for (AccessLevel accessLevel : user.getAccesses()) {
@@ -93,9 +93,9 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     }
 
     @Override
-    public boolean checkIfCurrentUserHasPermissions(AccessLevelType accessLevelType) {
+    public boolean checkIfCurrentUserHasPermissions(AccessLevelTypeEnum AccessLevelTypeEnum) {
         User currentUser = findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        return currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == accessLevelType);
+        return currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelTypeEnum);
     }
 
 }
