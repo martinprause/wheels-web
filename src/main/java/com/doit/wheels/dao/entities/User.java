@@ -152,4 +152,5 @@ public class User extends Contact {
     public String getDriverFullName(){
         return this.getFirstname() + " " + this.getLastname() + " (" + this.getUsername() + ")";
     }
+
 }

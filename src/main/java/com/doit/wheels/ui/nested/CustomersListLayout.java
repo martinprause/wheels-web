@@ -3,7 +3,9 @@ package com.doit.wheels.ui.nested;
 import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.services.CustomerService;
 import com.doit.wheels.services.MessageByLocaleService;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.*;
+import com.vaadin.ui.components.grid.HeaderRow;
 import org.vaadin.dialogs.ConfirmDialog;
 
 public class CustomersListLayout extends VerticalLayout {
@@ -17,6 +19,17 @@ public class CustomersListLayout extends VerticalLayout {
 
     private Button editCustomerButton;
     private Button deleteCustomerButton;
+
+    private TextField filterCustomerNo;
+    private TextField filterFirstname;
+    private TextField filterLastname;
+    private TextField filterCompanyName;
+    private TextField filterAddress1;
+    private TextField filterZipCode;
+    private TextField filterCity;
+    private TextField filterEmail;
+    private TextField filterPhone;
+    private TextField filterMobile;
 
     public CustomersListLayout(MessageByLocaleService messageByLocaleService, CustomerService customerService) {
         this.messageByLocaleService = messageByLocaleService;
@@ -45,6 +58,60 @@ public class CustomersListLayout extends VerticalLayout {
             }
         });
 
+        filterCustomerNo = new TextField();
+        filterCustomerNo.addStyleName("filter-field");
+        filterCustomerNo.addValueChangeListener(e -> filter());
+
+        filterFirstname = new TextField();
+        filterFirstname.addStyleName("filter-field");
+        filterFirstname.addValueChangeListener(e -> filter());
+
+        filterLastname = new TextField();
+        filterLastname.addStyleName("filter-field");
+        filterLastname.addValueChangeListener(e -> filter());
+
+        filterCompanyName = new TextField();
+        filterCompanyName.addStyleName("filter-field");
+        filterCompanyName.addValueChangeListener(e -> filter());
+
+        filterAddress1 = new TextField();
+        filterAddress1.addStyleName("filter-field");
+        filterAddress1.addValueChangeListener(e -> filter());
+
+        filterZipCode = new TextField();
+        filterZipCode.addStyleName("filter-field");
+        filterZipCode.addValueChangeListener(e -> filter());
+
+        filterCity = new TextField();
+        filterCity.addStyleName("filter-field");
+        filterCity.addValueChangeListener(e -> filter());
+
+        filterEmail = new TextField();
+        filterEmail.addStyleName("filter-field");
+        filterEmail.addValueChangeListener(e -> filter());
+
+        filterPhone = new TextField();
+        filterPhone.addStyleName("filter-field");
+        filterPhone.addValueChangeListener(e -> filter());
+
+        filterMobile = new TextField();
+        filterMobile.addStyleName("filter-field");
+        filterMobile.addValueChangeListener(e -> filter());
+
+
+        HeaderRow filterRow = customerGrid.appendHeaderRow();
+        filterRow.setStyleName("filter-row");
+        filterRow.getCell("customerNo").setComponent(filterCustomerNo);
+        filterRow.getCell("firstname").setComponent(filterFirstname);
+        filterRow.getCell("lastname").setComponent(filterLastname);
+        filterRow.getCell("companyName").setComponent(filterCompanyName);
+        filterRow.getCell("address1").setComponent(filterAddress1);
+        filterRow.getCell("zipCode").setComponent(filterZipCode);
+        filterRow.getCell("city").setComponent(filterCity);
+        filterRow.getCell("email").setComponent(filterEmail);
+        filterRow.getCell("phone").setComponent(filterPhone);
+        filterRow.getCell("mobile").setComponent(filterMobile);
+
         this.addComponents(customerGrid);
 
         editCustomerButton = new Button(messageByLocaleService.getMessage("orderView.buttons.editCustomer"));
@@ -69,6 +136,24 @@ public class CustomersListLayout extends VerticalLayout {
         bottomMenuLayout.addStyleName("user-management-menubar");
 
         this.addComponent(bottomMenuLayout);
+    }
+
+    private void filter() {
+        ListDataProvider<Customer> dataProvider = (ListDataProvider<Customer>) customerGrid.getDataProvider();
+        dataProvider.addFilter(Customer::getCustomerNo, valueFilter -> caseInsensitiveContains(valueFilter, filterCustomerNo.getValue()));
+        dataProvider.addFilter(Customer::getFirstname, valueFilter -> caseInsensitiveContains(valueFilter, filterFirstname.getValue()));
+        dataProvider.addFilter(Customer::getLastname, valueFilter -> caseInsensitiveContains(valueFilter, filterLastname.getValue()));
+        dataProvider.addFilter(Customer::getCompanyName, valueFilter -> caseInsensitiveContains(valueFilter, filterCompanyName.getValue()));
+        dataProvider.addFilter(Customer::getAddress1, valueFilter -> caseInsensitiveContains(valueFilter, filterAddress1.getValue()));
+        dataProvider.addFilter(Customer::getZipCode, valueFilter -> caseInsensitiveContains(valueFilter, filterZipCode.getValue()));
+        dataProvider.addFilter(Customer::getCity, valueFilter -> caseInsensitiveContains(valueFilter, filterCity.getValue()));
+        dataProvider.addFilter(Customer::getEmail, valueFilter -> caseInsensitiveContains(valueFilter, filterEmail.getValue()));
+        dataProvider.addFilter(Customer::getPhone, valueFilter -> caseInsensitiveContains(valueFilter, filterPhone.getValue()));
+        dataProvider.addFilter(Customer::getMobile, valueFilter -> caseInsensitiveContains(valueFilter, filterMobile.getValue()));
+    }
+
+    private Boolean caseInsensitiveContains(String where, String what) {
+        return where.toLowerCase().contains(what.toLowerCase());
     }
 
     private void enableManagingButtons(boolean flag) {

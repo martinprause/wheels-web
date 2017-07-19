@@ -13675,3 +13675,13 @@ div.v-layout.v-horizontal.v-widget {
     -moz-box-shadow: none;
     box-shadow: none;
 }
+
+.mytheme .filter-field{
+    width:100% !important;
+    height: 25px !important;
+    margin-top: -2px;
+}
+
+.mytheme .filter-row th{
+    text-align: center;
+}

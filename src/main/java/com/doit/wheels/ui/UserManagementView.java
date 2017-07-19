@@ -134,13 +134,8 @@ public class UserManagementView extends VerticalLayout implements View {
 
     private void init(){
         editMode = false;
-//        setSizeFull();
         menubar = new CssLayout();
         menubar.addStyleName("user-management-menubar");
-
-//        editModeLabel = new Label("Edit user");
-//        editModeLabel.setVisible(editMode);
-//        menubar.addComponent(editModeLabel);
 
         createUserButton = new Button(messageService.getMessage("userManagement.createUser"));
         createUserButton.setId("userManagement.createUser");
@@ -226,6 +221,7 @@ public class UserManagementView extends VerticalLayout implements View {
         employeeNumberLabel.addStyleName("user-management-label");
         employeeNumberLabel.setId("userManagement.emoloyeeNumber.label");
         employeeNumberLayout.addComponents(employeeNumberLabel, employeeNumber);
+        employeeNumber.setEnabled(false);
         userCreateDataBlockLeft.addComponent(employeeNumberLayout);
 
         HorizontalLayout loginNameLayout = new HorizontalLayout();
@@ -424,7 +420,6 @@ public class UserManagementView extends VerticalLayout implements View {
         userAccessWrapper.addComponent(gridWrapper);
 
         VerticalLayout accessesWrapper = new VerticalLayout();
-//        accessesWrapper.setWidth("20%");
         accessesWrapper.addStyleName("accesses-wrapper");
 
         createOrderCheckBox = new CheckBox(messageService.getMessage("userManagement.createOrder.checkbox"));
@@ -457,7 +452,6 @@ public class UserManagementView extends VerticalLayout implements View {
         accessCaption = new Label(messageService.getMessage("userManagement.accessRights.label"));
         accessCaption.setId("userManagement.accessRights.label");
         accessCaption.addStyleName("user-access-caption");
-//        userListButtonLayout.addComponent(saveAccessButton);
 
         accessesWrapper.addComponent(accessCaption);
         accessesWrapper.addComponent(createOrderCheckBox);
@@ -483,6 +477,8 @@ public class UserManagementView extends VerticalLayout implements View {
             }
             else {
                 userService.addNewUser(user);
+                user.setEmployeeNo(String.valueOf(user.getId()));
+                userService.update(user);
             }
             gotoAccesses();
         } catch (ValidationException e) {
@@ -542,7 +538,7 @@ public class UserManagementView extends VerticalLayout implements View {
 
         binder.bindInstanceFields(this);
 
-        binder.forField(employeeNumber).withValidator(notEmptyValidator).bind(User::getEmployeeNo, User::setEmployeeNo);
+//        binder.forField(employeeNumber).withValidator(notEmptyValidator).bind(User::getEmployeeNo, User::setEmployeeNo);
 
         binder.forField(email)
                 .withValidator(new EmailValidatorAllowEmpty(messageService.getMessage("userManagement.validation.email")))

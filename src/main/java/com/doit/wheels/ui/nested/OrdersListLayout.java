@@ -10,6 +10,7 @@ import com.doit.wheels.services.PrintJobService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.utils.enums.PrintJobStatusEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +32,14 @@ public class OrdersListLayout extends VerticalLayout {
     private Button editOrderButton;
     private Button printOrderButton;
     private Button deleteOrderButton;
+
+    private TextField filterOrderNumber;
+    private TextField filterCustomer;
+    private TextField filterStatus;
+    private TextField filterCustomerZip;
+    private TextField filterCustomerOrderNo;
+    private TextField filterCreatedDate;
+    private TextField filterDeadlineFinish;
 
     public OrdersListLayout(MessageByLocaleService messageByLocaleService, OrderService orderService, PrintJobService printJobService, UserService userService) {
         this.messageByLocaleService = messageByLocaleService;
@@ -58,8 +67,61 @@ public class OrdersListLayout extends VerticalLayout {
             enableManagingButtons(present);
         });
 
+        filterOrderNumber = new TextField();
+        filterOrderNumber.addStyleName("filter-field");
+        filterOrderNumber.addValueChangeListener(e -> filter());
+
+        filterStatus = new TextField();
+        filterStatus.addStyleName("filter-field");
+        filterStatus.addValueChangeListener(e -> filter());
+
+        filterCustomer = new TextField();
+        filterCustomer.addStyleName("filter-field");
+        filterCustomer.addValueChangeListener(e -> filter());
+
+        filterCustomerZip = new TextField();
+        filterCustomerZip.addStyleName("filter-field");
+        filterCustomerZip.addValueChangeListener(e -> filter());
+
+        filterCustomerOrderNo = new TextField();
+        filterCustomerOrderNo.addStyleName("filter-field");
+        filterCustomerOrderNo.addValueChangeListener(e -> filter());
+
+        filterCreatedDate = new TextField();
+        filterCreatedDate.addStyleName("filter-field");
+        filterCreatedDate.addValueChangeListener(e -> filter());
+
+        filterDeadlineFinish = new TextField();
+        filterDeadlineFinish.addStyleName("filter-field");
+        filterDeadlineFinish.addValueChangeListener(e -> filter());
+
+        HeaderRow filterRow = orderGrid.appendHeaderRow();
+        filterRow.setStyleName("filter-row");
+        filterRow.getCell("orderNo").setComponent(filterOrderNumber);
+        filterRow.getCell("customer").setComponent(filterCustomer);
+        filterRow.getCell("status").setComponent(filterStatus);
+        filterRow.getCell("customerCity").setComponent(filterCustomerZip);
+        filterRow.getCell("customerOrderNo").setComponent(filterCustomerOrderNo);
+        filterRow.getCell("created").setComponent(filterCreatedDate);
+        filterRow.getCell("deadlineFinish").setComponent(filterDeadlineFinish);
+
         this.addComponents(orderGrid);
         this.addComponent(initButtonsLayout());
+    }
+
+    private void filter() {
+        ListDataProvider<Order> dataProvider = (ListDataProvider<Order>) orderGrid.getDataProvider();
+        dataProvider.addFilter(Order::getOrderNo, valueFilter -> caseInsensitiveContains(valueFilter, filterOrderNumber.getValue()));
+        dataProvider.addFilter(Order::getStatus, valueFilter -> caseInsensitiveContains(valueFilter.toString(), filterStatus.getValue()));
+        dataProvider.addFilter((Order order) -> order, valueFilter -> caseInsensitiveContains(formatCustomerCompanyFirstLastName(valueFilter), filterCustomer.getValue()));
+        dataProvider.addFilter((Order order) -> order, valueFilter -> caseInsensitiveContains(formatCustomerZipCity(valueFilter), filterCustomerZip.getValue()));
+        dataProvider.addFilter(Order::getOrderNo, valueFilter -> caseInsensitiveContains(valueFilter, filterCustomerOrderNo.getValue()));
+        dataProvider.addFilter(Order::getCreated, valueFilter -> caseInsensitiveContains(valueFilter.toString(), filterCreatedDate.getValue()));
+        dataProvider.addFilter(Order::getDeadlineFinish, valueFilter -> caseInsensitiveContains(valueFilter.toString(), filterDeadlineFinish.getValue()));
+    }
+
+    private Boolean caseInsensitiveContains(String where, String what) {
+        return where.toLowerCase().contains(what.toLowerCase());
     }
 
     private void enableManagingButtons(boolean flag) {

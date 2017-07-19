@@ -107,23 +107,23 @@ public class CommentsSubmitLayout extends VerticalLayout {
                 (ConfirmDialog.Listener) dialog -> {
                     if (dialog.isConfirmed()) {
                         sharedBinder.getBean().setQrCode(sharedBinder.getBean().getOrderNo() + "-P");
+                        sharedBinder.readBean(sharedBinder.getBean());
+                        sharedBinder.validate();
+                        orderService.save(sharedBinder.getBean());
                         if (printImmediatelyCheck.getValue()){
                             int i = 1;
                             for (WheelRimPosition wheelRimPosition : sharedBinder.getBean().getWheelRimPositions()) {
                                 wheelRimPosition.setQrCode(sharedBinder.getBean().getOrderNo() + "-" + i);
                                 i++;
                             }
+                            PrintJob printJob = new PrintJob();
+                            printJob.setOrder(sharedBinder.getBean());
+                            printJob.setUser(userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+                            printJob.setJobCreated(new Date());
+                            printJob.setPrintJobStatusEnum(PrintJobStatusEnum.ACTIVE);
+                            printJobService.save(printJob);
                         }
-                        PrintJob printJob = new PrintJob();
-                        printJob.setOrder(sharedBinder.getBean());
-                        printJob.setUser(userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
-                        printJob.setJobCreated(new Date());
-                        printJob.setPrintJobStatusEnum(PrintJobStatusEnum.ACTIVE);
-                        printJobService.save(printJob);
 
-                        sharedBinder.readBean(sharedBinder.getBean());
-                        sharedBinder.validate();
-                        orderService.save(sharedBinder.getBean());
                         Notification.show(messageByLocaleService.getMessage("commentSubmitView.submitNewOrder.success"),
                                 Notification.Type.HUMANIZED_MESSAGE);
                         getUI().getNavigator().navigateTo("customer-orders-list");
