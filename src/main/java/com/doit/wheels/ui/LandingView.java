@@ -25,6 +25,7 @@ public class LandingView extends CssLayout implements View {
     @Autowired
     private OrderService orderService;
     private boolean hasCreateOrderPermissions;
+    private boolean hasOrderReviewPermissions;
 
     private void init(){
         this.addStyleName("landing-page");
@@ -67,7 +68,15 @@ public class LandingView extends CssLayout implements View {
         searchButton.addStyleName("landing-center-menu-bar-buttons");
         searchButton.setIcon(new ThemeResource("img/ico/loupe.png"));
         searchButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
-        searchButton.addClickListener(enter -> getUI().getNavigator().navigateTo("customer-orders-list"));
+        hasOrderReviewPermissions = orderService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.Reports);
+        searchButton.addClickListener(enter -> {
+            if(hasOrderReviewPermissions){
+                getUI().getNavigator().navigateTo("customer-orders-list");
+            } else {
+                Notification.show(messageService.getMessage("reports.noAccess"),
+                        Notification.Type.ERROR_MESSAGE);
+            }
+        });
 
         Button generaLPropertiesButton = new Button(messageService.getMessage("landing.generalProperties"));
         generaLPropertiesButton.setId("landing.generalProperties");
