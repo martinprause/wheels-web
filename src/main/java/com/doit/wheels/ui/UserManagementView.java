@@ -453,6 +453,13 @@ public class UserManagementView extends VerticalLayout implements View {
         accessCaption.setId("userManagement.accessRights.label");
         accessCaption.addStyleName("user-access-caption");
 
+        createOrderCheckBox.setEnabled(false);
+        deleteOrderCheckbox.setEnabled(false);
+        createUserCheckbox.setEnabled(false);
+        deleteUserCheckbox.setEnabled(false);
+        reportsCheckbox.setEnabled(false);
+        saveAccessButton.setEnabled(false);
+
         accessesWrapper.addComponent(accessCaption);
         accessesWrapper.addComponent(createOrderCheckBox);
         accessesWrapper.addComponent(deleteOrderCheckbox);
@@ -623,7 +630,10 @@ public class UserManagementView extends VerticalLayout implements View {
     private void changeButtonsEnable(boolean enable){
         editUserButton.setEnabled(enable);
         deleteUserButton.setEnabled(enable);
-        saveAccessButton.setEnabled(enable);
+        if(userService.isCurrentUserAdmin()) {
+            accessCheckboxes.values().forEach(checkBox -> checkBox.setEnabled(enable));
+            saveAccessButton.setEnabled(enable);
+        }
     }
 
     private void changeMenubarButtonsVisible(){

@@ -26,4 +26,6 @@ public interface UserService extends GenericService<User>{
     boolean checkIfCurrentUserHasPermissions(AccessLevelTypeEnum accessLevelTypeEnum);
 
     User findById(Long id);
+
+    boolean isCurrentUserAdmin();
 }

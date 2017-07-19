@@ -93,6 +93,11 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     }
 
     @Override
+    public boolean isCurrentUserAdmin() {
+        return findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getRole() == UserRoleEnum.ADMIN;
+    }
+
+    @Override
     public boolean checkIfCurrentUserHasPermissions(AccessLevelTypeEnum AccessLevelTypeEnum) {
         User currentUser = findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         return currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelTypeEnum);
