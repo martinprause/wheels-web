@@ -9,6 +9,7 @@ import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.PrintJobService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.utils.enums.PrintJobStatusEnum;
+import com.doit.wheels.utils.enums.StatusTypeEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.*;
@@ -54,7 +55,7 @@ public class OrdersListLayout extends VerticalLayout {
 
         orderGrid = new Grid<>(Order.class);
         orderGrid.setWidth("100%");
-        orderGrid.setColumns("orderNo", "status", "created", "deadlineFinish");
+        orderGrid.setColumns("orderNo", "created", "deadlineFinish");
         initGridHeaders();
         orderGrid.setItems(orderService.findAll());
 
@@ -188,6 +189,7 @@ public class OrdersListLayout extends VerticalLayout {
 
         Label statusHeader = new Label(messageByLocaleService.getMessage("orderView.order.status"));
         statusHeader.setId("orderView.order.status");
+        orderGrid.addColumn(order -> labelByCode(order.getStatus())).setId("status");
         defaultGridHeader.getCell("status").setComponent(statusHeader);
 
         Label customerDataHeader = new Label(messageByLocaleService.getMessage("orderView.order.customer"));
@@ -250,4 +252,25 @@ public class OrdersListLayout extends VerticalLayout {
         printJob.setPrintJobStatusEnum(PrintJobStatusEnum.ACTIVE);
         printJobService.save(printJob);
     }
+
+    private String labelByCode(StatusTypeEnum status) {
+        switch (status) {
+            case IN_CREATION:
+                return messageByLocaleService.getMessage("orderDetails.status.inCreation");
+            case CREATED:
+                return messageByLocaleService.getMessage("orderDetails.status.created");
+            case IN_PROCESS:
+                return messageByLocaleService.getMessage ("orderDetails.status.inProcess");
+            case PROCESSED:
+                return messageByLocaleService.getMessage ("orderDetails.status.processed");
+            case IN_DELIVERY:
+                return messageByLocaleService.getMessage ("orderDetails.status.inDelivery");
+            case DELIVERED:
+                return messageByLocaleService.getMessage("orderDetails.status.delivered");
+
+            default:
+                return messageByLocaleService.getMessage("orderDetails.status.undefined");
+        }
+    }
+
 }

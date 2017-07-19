@@ -7,6 +7,7 @@ import com.doit.wheels.services.CustomerService;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.UserService;
+import com.doit.wheels.utils.enums.StatusTypeEnum;
 import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
@@ -217,8 +218,8 @@ public class OrderDetailsLayout extends VerticalLayout{
             order = binder.getBean();
         }
         binder.setBean(order);
-        status.setValue(order.getStatus().name());
-
+        status.setValue(messageService.getMessage(codeByStatus(order.getStatus())));
+        status.setId(codeByStatus(order.getStatus()));
     }
 
     public boolean validate(){
@@ -246,5 +247,25 @@ public class OrderDetailsLayout extends VerticalLayout{
 
     private Date formatToDateFromLocalDateTime(LocalDateTime localDateTime){
         return localDateTime == null ? null : (Date.from(localDateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant()));
+    }
+
+    private String codeByStatus(StatusTypeEnum statusEnum) {
+        switch (statusEnum) {
+            case IN_CREATION:
+                return "orderDetails.status.inCreation";
+            case CREATED:
+                return "orderDetails.status.created";
+            case IN_PROCESS:
+                return "orderDetails.status.inProcess";
+            case PROCESSED:
+                return "orderDetails.status.processed";
+            case IN_DELIVERY:
+                return "orderDetails.status.inDelivery";
+            case DELIVERED:
+                return "orderDetails.status.delivered";
+
+            default:
+                return "orderDetails.status.undefined";
+        }
     }
 }
