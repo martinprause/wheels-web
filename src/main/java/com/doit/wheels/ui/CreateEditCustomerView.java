@@ -4,6 +4,7 @@ import com.doit.wheels.dao.entities.Country;
 import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.dao.entities.CustomerContact;
 import com.doit.wheels.dao.entities.Order;
+import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.services.CountryService;
 import com.doit.wheels.services.CustomerService;
 import com.doit.wheels.services.MessageByLocaleService;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("FieldCanBeLocal")
 @Configurable
@@ -251,6 +254,10 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
             showAddNotification();
             if (getUI().getData() != null) {
                 if(getUI().getData() instanceof Order) {
+                    Map<String, AbstractModel> args = new HashMap<>();
+                    args.put("CUSTOMER", customer);
+                    args.put("ORDER", (Order)getUI().getData());
+                    getUI().setData(args);
                     getUI().getNavigator().navigateTo("new-order");
                 }
             } else {

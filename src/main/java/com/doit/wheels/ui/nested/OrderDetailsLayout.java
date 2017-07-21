@@ -51,20 +51,26 @@ public class OrderDetailsLayout extends HorizontalLayout {
     private Grid<CustomerContact> contactGrid;
     private VerticalLayout basicCustomerData;
 
+    private Customer sharedCustomer;
+
     public OrderDetailsLayout(MessageByLocaleService messageByLocaleService,
                               Binder<Order> sharedBinder,
                               CustomerService customerService,
                               UserService userService,
-                              boolean isEditMode) {
+                              boolean isEditMode,
+                              Customer sharedCustomer) {
         this.messageService = messageByLocaleService;
         this.customerService = customerService;
         this.userService = userService;
         binder = sharedBinder;
         this.isEditMode = isEditMode;
+        this.sharedCustomer = sharedCustomer;
         init();
     }
 
     public void init() {
+        if(sharedCustomer != null)
+            binder.getBean().setCustomer(sharedCustomer);
         this.setSizeFull();
         this.addStyleName("order-details-layout");
         this.setSpacing(false);

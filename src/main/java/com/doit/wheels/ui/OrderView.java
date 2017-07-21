@@ -61,6 +61,8 @@ public class OrderView extends VerticalLayout implements View {
     private Button guidelines;
     private Button printButton;
 
+    private Customer sharedCustomer;
+
     @Autowired
     public OrderView(MessageByLocaleService messageByLocaleService, ManufacturerService manufacturerService,
                      ModelService modelService, ModelTypeService modelTypeService, ValveTypeService valveTypeService,
@@ -83,14 +85,16 @@ public class OrderView extends VerticalLayout implements View {
         Object data = getUI().getData();
 
         if(data != null && data.toString().length() > 0) {
-            if(data instanceof Order){
-                order = (Order) data;
-                CURRENT_MODE = ((Order) data).getId() == null ? CREATE : EDIT;
+            Order sharedOrder = (Order) ((Map) data).get("ORDER");
+            if(sharedOrder != null){
+                order = sharedOrder;
+                CURRENT_MODE = sharedOrder.getId() == null ? CREATE : EDIT;
             } else {
                 order = new Order();
                 order.setWheelRimPositions(new HashSet<>());
                 CURRENT_MODE = CREATE;
             }
+            sharedCustomer = (Customer) ((Map) data).get("CUSTOMER");
             getUI().setData(null);
         } else {
             order = new Order();
@@ -106,7 +110,7 @@ public class OrderView extends VerticalLayout implements View {
         detailsButton.setId("order.menubar.customerAndOrder.button");
         detailsButton.addClickListener(e -> {
             makeButtonSelected(detailsButton);
-            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService,CURRENT_MODE.equals(EDIT)));
+            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService,CURRENT_MODE.equals(EDIT), sharedCustomer));
         });
         detailsButton.addStyleName("clear-button");
         detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
@@ -159,7 +163,7 @@ public class OrderView extends VerticalLayout implements View {
 
         this.addComponent(menuBar);
 
-        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService, CURRENT_MODE.equals(EDIT) );
+        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService, CURRENT_MODE.equals(EDIT), sharedCustomer);
         previousLayout = orderDetailsLayout;
 
         orderDetailsLayout.setHeight("100%");
