@@ -13540,18 +13540,18 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme #order\.menubar\.customerAndOrder\.button:hover:after,
 .mytheme #order\.positions\.button:hover:after,
 .mytheme #order\.menubar\.guidelinesAndPictures\.button:hover:after,
-.mytheme #order\.printAndClose\.button:hover:after{
+.mytheme #order\.commentsAndSubmit\.button:hover:after{
     background-color: transparent;
 }
 
 .mytheme #order\.menubar\.customerAndOrder\.button:hover,
 .mytheme #order\.positions\.button:hover,
 .mytheme #order\.menubar\.guidelinesAndPictures\.button:hover,
-.mytheme #order\.printAndClose\.button:hover,
+.mytheme #order\.commentsAndSubmit\.button:hover,
 .mytheme #order\.menubar\.customerAndOrder\.button.selected,
 .mytheme #order\.positions\.button.selected,
 .mytheme #order\.menubar\.guidelinesAndPictures\.button.selected,
-.mytheme #order\.printAndClose\.button.selected {
+.mytheme #order\.commentsAndSubmit\.button.selected {
 	color: #00ace0;
 }
 
@@ -13562,10 +13562,10 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme #order\.positions\.button:hover img,
 .mytheme #order\.menubar\.guidelinesAndPictures\.button:hover img,
-.mytheme #order\.printAndClose\.button:hover img,
+.mytheme #order\.commentsAndSubmit\.button:hover img,
 .mytheme #order\.positions\.button.selected img,
 .mytheme #order\.menubar\.guidelinesAndPictures\.button.selected img,
-.mytheme #order\.printAndClose\.button.selected img {
+.mytheme #order\.commentsAndSubmit\.button.selected img {
     content: url(img/ico/star-blue.png);
 }
 

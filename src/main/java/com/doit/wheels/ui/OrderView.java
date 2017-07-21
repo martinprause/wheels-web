@@ -144,8 +144,8 @@ public class OrderView extends VerticalLayout implements View {
         guidelines.addStyleName("order-menubar-buttons");
         menuBar.addComponent(guidelines);
 
-        printButton = new Button(messageByLocaleService.getMessage("order.printAndClose.button"));
-        printButton.setId("order.printAndClose.button");
+        printButton = new Button(messageByLocaleService.getMessage("order.commentsAndSubmit.button"));
+        printButton.setId("order.commentsAndSubmit.button");
         printButton.addStyleName("clear-button");
         printButton.setIcon(new ThemeResource("img/ico/star.png"));
         printButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
