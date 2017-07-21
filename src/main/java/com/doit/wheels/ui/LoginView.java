@@ -1,6 +1,7 @@
 package com.doit.wheels.ui;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 
 import java.util.ArrayList;
@@ -36,6 +37,13 @@ public class LoginView extends CssLayout{
     private Component buildLoginForm(LoginCallback callback) {
         FormLayout loginForm = new FormLayout();
 
+        ThemeResource resource = new ThemeResource("img/felgen.png");
+        Image image = new Image(null, resource);
+        image.addStyleName("login-image");
+        image.setWidth("200px");
+        image.setHeight("50px");
+        loginForm.addComponent(image);
+
         loginForm.addStyleName("login-form");
         loginForm.setSizeUndefined();
         loginForm.setMargin(false);
@@ -52,6 +60,7 @@ public class LoginView extends CssLayout{
         loginForm.addComponent(rememberMe);
         loginForm.addComponent(buttons);
         buttons.addComponent(login = new Button("Login"));
+        login.setWidth("150px");
         login.addClickListener((Button.ClickListener) event -> {
             String pword = password.getValue();
             if (!callback.login(username.getValue(), pword, rememberMe.getValue())) {
@@ -75,5 +84,4 @@ public class LoginView extends CssLayout{
 
         boolean login(String username, String password, boolean rememberMe);
     }
-
 }
