@@ -368,7 +368,7 @@ public class UserManagementView extends VerticalLayout implements View {
         userGrid.addSelectionListener(e -> selectUserFromGrid());
         updateUsersGrid();
 
-        userGrid.setColumns("username", "firstname", "lastname", "email", "phone", "mobile");
+        userGrid.setColumns("username", "firstname", "role", "lastname", "email", "phone", "mobile");
 
         HeaderRow defaultHeaderRow = userGrid.getDefaultHeaderRow();
 
@@ -383,6 +383,10 @@ public class UserManagementView extends VerticalLayout implements View {
         Label lastnameLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.lastname"));
         lastnameLabel.setId("userManagement.userAccess.grid.lastname");
         defaultHeaderRow.getCell("lastname").setComponent(lastnameLabel);
+
+        Label roleLabel = new Label(messageService.getMessage("userManagement.grid.role"));
+        roleLabel.setId("userManagement.grid.role");
+        defaultHeaderRow.getCell("role").setComponent(roleLabel);
 
         Label emailLabel = new Label(messageService.getMessage("userManagement.userAccess.grid.email"));
         emailLabel.setId("userManagement.userAccess.grid.email");
