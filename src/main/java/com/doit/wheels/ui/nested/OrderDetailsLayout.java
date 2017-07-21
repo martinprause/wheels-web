@@ -193,13 +193,21 @@ public class OrderDetailsLayout extends VerticalLayout{
 
         binder.forField(driver).bind(Order::getDriver, Order::setDriver);
 
-        binder.forField(deadlineFinish).withValidator(Objects::nonNull,
-                messageService.getMessage("userManagement.validation.notEmpty"))
+//        binder.forField(deadlineFinish).withValidator(Objects::nonNull,
+//                messageService.getMessage("userManagement.validation.notEmpty"))
+//                .bind(order1 -> formatToLocalDateTime(order1.getDeadlineFinish()),
+//                        (order2, deadlineFinish1) -> order2.setDeadlineFinish(formatToDateFromLocalDateTime(deadlineFinish1)));
+//
+//        binder.forField(deadlineDelivery).withValidator(Objects::nonNull,
+//                messageService.getMessage("userManagement.validation.notEmpty"))
+//                .bind(order1 -> formatToLocalDateTime(order1.getDeadlineDelivery()),
+//                        (order2, deadlineDelivery1) -> order2.setDeadlineDelivery(formatToDateFromLocalDateTime(deadlineDelivery1)));
+
+        binder.forField(deadlineFinish)
                 .bind(order1 -> formatToLocalDateTime(order1.getDeadlineFinish()),
                         (order2, deadlineFinish1) -> order2.setDeadlineFinish(formatToDateFromLocalDateTime(deadlineFinish1)));
 
-        binder.forField(deadlineDelivery).withValidator(Objects::nonNull,
-                messageService.getMessage("userManagement.validation.notEmpty"))
+        binder.forField(deadlineDelivery)
                 .bind(order1 -> formatToLocalDateTime(order1.getDeadlineDelivery()),
                         (order2, deadlineDelivery1) -> order2.setDeadlineDelivery(formatToDateFromLocalDateTime(deadlineDelivery1)));
 
