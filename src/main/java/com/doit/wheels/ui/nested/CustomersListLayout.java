@@ -168,7 +168,11 @@ public class CustomersListLayout extends VerticalLayout {
                     if (dialog.isConfirmed()) {
                         Notification.show(messageByLocaleService.getMessage("orderView.deleteCustomer.success"),
                                 Notification.Type.HUMANIZED_MESSAGE);
-                        customerService.delete(selectedCustomer);
+                        try {
+                            customerService.delete(selectedCustomer);
+                        } catch (Exception e) {
+                            Notification.show(messageByLocaleService.getMessage("customerView.deleteCustomer.error"), Notification.Type.ERROR_MESSAGE);
+                        }
                         customerGrid.setItems(customerService.findAll());
                     }
                 });
