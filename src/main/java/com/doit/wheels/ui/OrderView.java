@@ -106,7 +106,7 @@ public class OrderView extends VerticalLayout implements View {
         detailsButton.setId("order.menubar.customerAndOrder.button");
         detailsButton.addClickListener(e -> {
             makeButtonSelected(detailsButton);
-            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService,CURRENT_MODE.equals(EDIT)));
+            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService,CURRENT_MODE.equals(EDIT)));
         });
         detailsButton.addStyleName("clear-button");
         detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
@@ -159,7 +159,7 @@ public class OrderView extends VerticalLayout implements View {
 
         this.addComponent(menuBar);
 
-        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService, CURRENT_MODE.equals(EDIT) );
+        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService, CURRENT_MODE.equals(EDIT) );
         previousLayout = orderDetailsLayout;
 
         orderDetailsLayout.setHeight("100%");

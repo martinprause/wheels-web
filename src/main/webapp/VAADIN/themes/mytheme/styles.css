@@ -13685,3 +13685,18 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .filter-row th{
     text-align: center;
 }
+
+.customer-details-panel {
+	border: none !important;
+	width: auto !important;
+}
+
+.customer-details-panel-content {
+	height: 320px;
+	width: auto !important;
+}
+
+.order-details-contacts-grid, .order-details-contacts-grid > * {
+	/*margin-right: 3% !important;*/
+	/*width: auto !important;*/
+}
