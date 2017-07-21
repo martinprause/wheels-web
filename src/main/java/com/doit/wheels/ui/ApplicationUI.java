@@ -21,9 +21,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
+import javax.servlet.http.Cookie;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Optional;
 
 
 @Viewport("user-scalable=no,initial-scale=1.0")
@@ -40,12 +43,14 @@ public class ApplicationUI extends UI implements View{
     @Autowired
     private MessageByLocaleServiceImpl messageService;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     private Label headerUser;
 
     private Button changeLocale;
 
     private Button backButton;
-
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -54,7 +59,8 @@ public class ApplicationUI extends UI implements View{
         if (!((getSession().getLocale().equals(Locale.ENGLISH)) || (getSession().getLocale().equals(Locale.GERMAN)))){
             getSession().setLocale(Locale.ENGLISH);
         }
-        if (SecurityUtils.isLoggedIn()) {
+
+        if (SecurityUtils.isLoggedIn(userDetailsService)) {
             showMain();
         } else {
             showLogin();
@@ -80,7 +86,7 @@ public class ApplicationUI extends UI implements View{
         Image userImage = new Image(null, resourceHeader);
         userImage.addStyleName("header-user-image");
 
-        Label headerStatusBar = new Label("Statusbar");
+        Label headerStatusBar = new Label(messageService.getMessage("header.statusbar"));
         headerStatusBar.setId("header.statusbar");
         headerStatusBar.setStyleName("header-statusbar-title");
 
@@ -180,18 +186,20 @@ public class ApplicationUI extends UI implements View{
 
     }
 
-    private boolean login(String username, String password) {
+    private boolean login(String username, String password, boolean rememberMe) {
         try {
             Authentication token = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            // Reinitialize the session to protect against session fixation attacks. This does not work
-            // with websocket communication.
             VaadinService.reinitializeSession(VaadinService.getCurrentRequest());
             SecurityContextHolder.getContext().setAuthentication(token);
-            // Now when the session is reinitialized, we can enable websocket communication. Or we could have just
-            // used WEBSOCKET_XHR and skipped this step completely.
             getPushConfiguration().setTransport(Transport.WEBSOCKET);
             getPushConfiguration().setPushMode(PushMode.AUTOMATIC);
+            if (rememberMe){
+                Cookie cookie = new Cookie("remember-me", username);
+                cookie.setPath("/wheels");
+                cookie.setMaxAge(60 * 60 * 24 * 30);
+                VaadinService.getCurrentResponse().addCookie(cookie);
+            }
             // Show the main UI
             showMain();
 
@@ -212,8 +220,25 @@ public class ApplicationUI extends UI implements View{
     }
 
     private void logout() {
-        getUI().getPage().reload();
+        Optional<Cookie> cookie = getRememberMeCookie();
+        if (cookie.isPresent()) {
+            deleteRememberMeCookie();
+        }
         getSession().close();
+        getUI().getPage().reload();
+    }
+
+    private static void deleteRememberMeCookie() {
+//        Cookie cookie = new Cookie("remember-me", "");
+//        cookie.setPath("/wheels");
+//        cookie.setMaxAge(0);
+//        VaadinService.getCurrentResponse().addCookie(cookie);
+        getCurrent().getPage().getJavaScript().execute("document.cookie = \"remember-me=\"");
+    }
+
+    private static Optional<Cookie> getRememberMeCookie() {
+        Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+        return Arrays.stream(cookies).filter(c -> c.getName().equals("remember-me")).findFirst();
     }
 
     private void updateHeaderUser() {
