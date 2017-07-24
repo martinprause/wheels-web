@@ -17,6 +17,8 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.dialogs.ConfirmDialog;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 
@@ -56,7 +58,7 @@ public class OrdersListLayout extends VerticalLayout {
 
         orderGrid = new Grid<>(Order.class);
         orderGrid.setWidth("100%");
-        orderGrid.setColumns("orderNo", "created", "deadlineFinish");
+        orderGrid.setColumns("orderNo");
         initGridHeaders();
         orderGrid.setItems(orderService.findAll());
 
@@ -211,10 +213,12 @@ public class OrdersListLayout extends VerticalLayout {
 
         Label createdHeader = new Label(messageByLocaleService.getMessage("orderView.order.created"));
         createdHeader.setId("orderView.order.created");
+        orderGrid.addColumn(order -> formatOrderDate(order.getCreated())).setId("created");
         defaultGridHeader.getCell("created").setComponent(createdHeader);
 
         Label deadlineHeader = new Label(messageByLocaleService.getMessage("orderView.order.deadline"));
         deadlineHeader.setId("orderView.order.deadline");
+        orderGrid.addColumn(order -> formatOrderDate(order.getDeadlineFinish())).setId("deadlineFinish");
         defaultGridHeader.getCell("deadlineFinish").setComponent(deadlineHeader);
 
         orderGrid.setColumnOrder("orderNo", "status", "customer", "customerCity",
@@ -272,6 +276,11 @@ public class OrdersListLayout extends VerticalLayout {
             default:
                 return messageByLocaleService.getMessage("orderDetails.status.undefined");
         }
+    }
+
+    private String formatOrderDate(Date date) {
+        DateFormat newFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        return newFormat.format(date);
     }
 
 }
