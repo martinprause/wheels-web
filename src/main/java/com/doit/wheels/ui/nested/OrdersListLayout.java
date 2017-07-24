@@ -280,7 +280,7 @@ public class OrdersListLayout extends VerticalLayout {
 
     private String formatOrderDate(Date date) {
         DateFormat newFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        return newFormat.format(date);
+        return date == null ? "" : newFormat.format(date);
     }
 
 }
