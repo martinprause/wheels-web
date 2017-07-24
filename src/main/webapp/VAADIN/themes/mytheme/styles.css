@@ -13700,3 +13700,11 @@ div.v-layout.v-horizontal.v-widget {
 	/*margin-right: 3% !important;*/
 	/*width: auto !important;*/
 }
+
+#confirmdialog-window{
+    width: 25em !important;
+}
+
+#confirmdialog-window .v-slot.v-align-right{
+    text-align: center !important;
+}

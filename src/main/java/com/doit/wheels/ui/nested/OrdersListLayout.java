@@ -4,6 +4,7 @@ import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.dao.entities.Order;
 import com.doit.wheels.dao.entities.PrintJob;
 import com.doit.wheels.dao.entities.WheelRimPosition;
+import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.PrintJobService;
@@ -17,7 +18,10 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.dialogs.ConfirmDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrdersListLayout extends VerticalLayout {
 
@@ -41,6 +45,7 @@ public class OrdersListLayout extends VerticalLayout {
     private TextField filterCustomerOrderNo;
     private TextField filterCreatedDate;
     private TextField filterDeadlineFinish;
+    private SimpleDateFormat dateFormat;
 
     public OrdersListLayout(MessageByLocaleService messageByLocaleService, OrderService orderService, PrintJobService printJobService, UserService userService) {
         this.messageByLocaleService = messageByLocaleService;
@@ -51,6 +56,7 @@ public class OrdersListLayout extends VerticalLayout {
     }
 
     private void init() {
+        dateFormat = new SimpleDateFormat("dd.mm.yyyy");
         this.setWidth("99%");
 
         orderGrid = new Grid<>(Order.class);
@@ -117,8 +123,8 @@ public class OrdersListLayout extends VerticalLayout {
         dataProvider.addFilter((Order order) -> order, valueFilter -> caseInsensitiveContains(formatCustomerCompanyFirstLastName(valueFilter), filterCustomer.getValue()));
         dataProvider.addFilter((Order order) -> order, valueFilter -> caseInsensitiveContains(formatCustomerZipCity(valueFilter), filterCustomerZip.getValue()));
         dataProvider.addFilter(Order::getOrderNo, valueFilter -> caseInsensitiveContains(valueFilter, filterCustomerOrderNo.getValue()));
-        dataProvider.addFilter(Order::getCreated, valueFilter -> caseInsensitiveContains(valueFilter.toString(), filterCreatedDate.getValue()));
-        dataProvider.addFilter(Order::getDeadlineFinish, valueFilter -> caseInsensitiveContains(valueFilter.toString(), filterDeadlineFinish.getValue()));
+        dataProvider.addFilter(Order::getCreated, valueFilter -> caseInsensitiveContains(formatOrderDates(valueFilter), filterCreatedDate.getValue()));
+        dataProvider.addFilter(Order::getDeadlineFinish, valueFilter -> caseInsensitiveContains(formatOrderDates(valueFilter), filterDeadlineFinish.getValue()));
     }
 
     private Boolean caseInsensitiveContains(String where, String what) {
@@ -156,7 +162,9 @@ public class OrdersListLayout extends VerticalLayout {
         editOrderButton.setId("orderView.order.buttons.editOrder");
         editOrderButton.addStyleName("manage-order-button");
         editOrderButton.addClickListener(clickEvent -> {
-            getUI().setData(selectedOrder);
+            Map<String, AbstractModel> args = new HashMap<>();
+            args.put("ORDER", selectedOrder);
+            getUI().setData(args);
             getUI().getNavigator().navigateTo("new-order");
             UI.getCurrent().getSession().setAttribute("previousView", "customer-orders-list");
         });
@@ -204,7 +212,7 @@ public class OrdersListLayout extends VerticalLayout {
 
         Label customerOrderNoHeader = new Label(messageByLocaleService.getMessage("orderView.order.customerOrderNo"));
         customerOrderNoHeader.setId("orderView.order.customerOrderNo");
-        orderGrid.addColumn(order -> order.getCustomer() == null ? "" : order.getCustomer().getCustomerNo())
+        orderGrid.addColumn(Order::getCustomerNumberOrder)
                 .setId("customerOrderNo");
         defaultGridHeader.getCell("customerOrderNo").setComponent(customerOrderNoHeader);
 
@@ -235,6 +243,10 @@ public class OrdersListLayout extends VerticalLayout {
         String zipCode = customer.getZipCode() == null ? "" : customer.getZipCode() + "/";
         String city = customer.getCity() == null ? "" : customer.getCity();
         return zipCode + city;
+    }
+
+    private String formatOrderDates(Date date){
+        return date == null ? "" : dateFormat.format(date);
     }
 
     private void print(){

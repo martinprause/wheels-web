@@ -172,12 +172,17 @@ public class ApplicationUI extends UI implements View{
     }
 
     private void back() {
-        if (getSession().getAttribute("isUserEditMode") == null || !Boolean.valueOf(getSession().getAttribute("isUserEditMode").toString())){
-            this.getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
-        }
-        else {
-            ((UserManagementView) this.getNavigator().getCurrentView()).showManageAccess();
-            getSession().setAttribute("isUserEditMode", false);
+        if (this.getNavigator().getCurrentView() instanceof OrderView && (((OrderView) this.getNavigator().getCurrentView()).CURRENT_MODE.equals("Edit"))){
+            ((OrderView) this.getNavigator().getCurrentView()).saveChangesPopup();
+        } else if(this.getNavigator().getCurrentView() instanceof CreateEditCustomerView && ((CreateEditCustomerView) this.getNavigator().getCurrentView()).CURRENT_MODE.equals("Edit")){
+            ((CreateEditCustomerView) this.getNavigator().getCurrentView()).saveChangesPopup();
+        } else {
+            if (getSession().getAttribute("isUserEditMode") == null || !Boolean.valueOf(getSession().getAttribute("isUserEditMode").toString())) {
+                this.getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+            } else {
+                ((UserManagementView) this.getNavigator().getCurrentView()).showManageAccess();
+                getSession().setAttribute("isUserEditMode", false);
+            }
         }
     }
 
@@ -229,10 +234,6 @@ public class ApplicationUI extends UI implements View{
     }
 
     private static void deleteRememberMeCookie() {
-//        Cookie cookie = new Cookie("remember-me", "");
-//        cookie.setPath("/wheels");
-//        cookie.setMaxAge(0);
-//        VaadinService.getCurrentResponse().addCookie(cookie);
         getCurrent().getPage().getJavaScript().execute("document.cookie = \"remember-me=\"");
     }
 

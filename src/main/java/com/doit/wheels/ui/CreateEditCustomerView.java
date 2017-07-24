@@ -19,6 +19,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.dialogs.ConfirmDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import java.util.Map;
 @SpringView(name = "create-edit-customer")
 public class CreateEditCustomerView extends VerticalLayout implements View {
 
-    private String CURRENT_MODE ;
+    public String CURRENT_MODE ;
 
     private final String CREATE = "Create";
     private final String EDIT = "Edit";
@@ -448,6 +449,31 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
         Notification saveNotification = new Notification(messageByLocaleService.getMessage("customerView.customer.whenCreated"));
         saveNotification.setDelayMsec(3000);
         saveNotification.show(Page.getCurrent());
+    }
+
+    void saveChangesPopup() {
+        ConfirmDialog.show(getUI(),
+                messageByLocaleService.getMessage("save.notification.title"),
+                messageByLocaleService.getMessage("save.notification.body"),
+                messageByLocaleService.getMessage("save.notification.okCaption"),
+                messageByLocaleService.getMessage("save.notification.cancelCaption"),
+                messageByLocaleService.getMessage("save.notification.notOkCaption"),
+                (ConfirmDialog.Listener) dialog -> {
+                    if (dialog.isConfirmed()) {
+                        customerBinder.validate();
+                        try {
+                            customerBinder.writeBean(customer);
+                            customerService.save(customerBinder.getBean());
+                            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                        } catch (ValidationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (dialog.isNotConfirmed()) {
+                        getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                    }
+                });
+
     }
 
 }
