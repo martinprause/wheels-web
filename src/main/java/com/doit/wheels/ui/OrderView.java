@@ -7,6 +7,7 @@ import com.doit.wheels.ui.nested.CommentsSubmitLayout;
 import com.doit.wheels.ui.nested.GuidelinesLayout;
 import com.doit.wheels.ui.nested.OrderDetailsLayout;
 import com.doit.wheels.ui.nested.WheelRimPositionsLayout;
+import com.doit.wheels.utils.confirmdialog.ConfirmDialog;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.navigator.View;
@@ -21,7 +22,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.vaadin.dialogs.ConfirmDialog;
 
 import java.util.*;
 

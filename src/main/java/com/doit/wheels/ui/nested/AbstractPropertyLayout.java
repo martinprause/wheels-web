@@ -3,9 +3,9 @@ package com.doit.wheels.ui.nested;
 import com.doit.wheels.dao.entities.basic.Description;
 import com.doit.wheels.services.GenericService;
 import com.doit.wheels.services.MessageByLocaleService;
+import com.doit.wheels.utils.confirmdialog.ConfirmDialog;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.*;
-import org.vaadin.dialogs.ConfirmDialog;
 
 public class AbstractPropertyLayout<T extends Description> extends HorizontalLayout {
 

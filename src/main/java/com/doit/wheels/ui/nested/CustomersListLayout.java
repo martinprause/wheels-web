@@ -3,10 +3,10 @@ package com.doit.wheels.ui.nested;
 import com.doit.wheels.dao.entities.Customer;
 import com.doit.wheels.services.CustomerService;
 import com.doit.wheels.services.MessageByLocaleService;
+import com.doit.wheels.utils.confirmdialog.ConfirmDialog;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
-import org.vaadin.dialogs.ConfirmDialog;
 
 import java.util.Collections;
 

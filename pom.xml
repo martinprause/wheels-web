@@ -27,22 +27,12 @@
 
 	<repositories>
         <repository>
-            <id>in-project</id>
-            <name>In Project Repo</name>
-            <url>file://${project.basedir}/lib</url>
-        </repository>
-        <repository>
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository>
 	</repositories>
 
 	<dependencies>
-        <dependency>
-            <groupId>org.vaadin.addon</groupId>
-            <artifactId>confirmdialog</artifactId>
-            <version>3.2.1-SNAPSHOT</version>
-        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -81,11 +71,6 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-push</artifactId>
         </dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.vaadin.addon</groupId>-->
-			<!--<artifactId>confirmdialog</artifactId>-->
-			<!--<version>3.2.0</version>-->
-		<!--</dependency>-->
 	</dependencies>
 
 	<dependencyManagement>

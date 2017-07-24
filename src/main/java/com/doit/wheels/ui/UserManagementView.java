@@ -7,6 +7,7 @@ import com.doit.wheels.services.AccessLevelService;
 import com.doit.wheels.services.CountryService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
+import com.doit.wheels.utils.confirmdialog.ConfirmDialog;
 import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
 import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
@@ -28,7 +29,6 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.vaadin.dialogs.ConfirmDialog;
 
 import java.util.HashMap;
 import java.util.HashSet;

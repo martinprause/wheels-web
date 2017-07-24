@@ -7,11 +7,11 @@ import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.PrintJobService;
 import com.doit.wheels.services.UserService;
+import com.doit.wheels.utils.confirmdialog.ConfirmDialog;
 import com.doit.wheels.utils.enums.PrintJobStatusEnum;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.*;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.vaadin.dialogs.ConfirmDialog;
 
 import java.util.Date;
 

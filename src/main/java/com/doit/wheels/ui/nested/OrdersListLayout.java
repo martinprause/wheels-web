@@ -8,6 +8,7 @@ import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.PrintJobService;
 import com.doit.wheels.services.UserService;
+import com.doit.wheels.utils.confirmdialog.ConfirmDialog;
 import com.doit.wheels.utils.enums.PrintJobStatusEnum;
 import com.doit.wheels.utils.enums.StatusTypeEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
@@ -15,7 +16,6 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.vaadin.dialogs.ConfirmDialog;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
