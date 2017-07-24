@@ -199,7 +199,7 @@ public class ApplicationUI extends UI implements View{
             getPushConfiguration().setPushMode(PushMode.AUTOMATIC);
             if (rememberMe){
                 Cookie cookie = new Cookie("remember-me", username);
-                cookie.setPath("/wheels");
+                cookie.setPath("/");
                 cookie.setMaxAge(60 * 60 * 24 * 30);
                 VaadinService.getCurrentResponse().addCookie(cookie);
             }
