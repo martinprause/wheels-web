@@ -21,21 +21,17 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends GenericServiceImpl<User> implements UserService {
 
-    private final UserRepository userRepository;
-
-    private final AccessLevelService accessLevelService;
-
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(GenericRepository<User> genericRepository,
-                           UserRepository userRepository,
-                           AccessLevelService accessLevelService,
-                           PasswordEncoder passwordEncoder) {
+    private AccessLevelService accessLevelService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(GenericRepository<User> genericRepository) {
         super(genericRepository);
-        this.userRepository = userRepository;
-        this.accessLevelService = accessLevelService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -53,11 +49,11 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     @Override
     public User updateUser(User user){
         if (user.getPassword() == null || user.getPassword().equals("")) {
-            user.setPassword(findOne(user.getId()).getPassword());
+            user.setPassword(findById(user.getId()).getPassword());
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        return save(user);
+        return userRepository.save(user);
     }
 
     @Override
@@ -89,6 +85,11 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     @Override
     public List<User> findAllByRole(UserRoleEnum role) {
         return userRepository.findAllByRole(role);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findOne(id);
     }
 
     @Override

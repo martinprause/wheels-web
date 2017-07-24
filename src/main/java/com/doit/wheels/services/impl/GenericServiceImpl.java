@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class GenericServiceImpl<T extends AbstractModel> implements GenericService<T> {
-    protected final GenericRepository<T> genericRepository;
+    private final GenericRepository<T> genericRepository;
 
     @Autowired
     public GenericServiceImpl(GenericRepository<T> genericRepository) {
@@ -40,12 +40,4 @@ public class GenericServiceImpl<T extends AbstractModel> implements GenericServi
     public List<T> findAll() {
         return genericRepository.findAll();
     }
-
-    @Override
-    @Transactional
-    public T findOne(Long id) {
-        return genericRepository.findOne(id);
-    }
-
-
 }

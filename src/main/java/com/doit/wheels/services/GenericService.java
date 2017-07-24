@@ -13,6 +13,4 @@ public interface GenericService<T extends AbstractModel> {
     void delete(T t);
 
     List<T> findAll();
-
-    T findOne(Long id);
 }
