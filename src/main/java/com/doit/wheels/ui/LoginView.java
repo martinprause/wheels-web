@@ -1,19 +1,13 @@
 package com.doit.wheels.ui;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * UI content when the user is not logged in yet.
- */
-//@Configurable
-//@SpringComponent
-//@SpringView(name = LoginView.NAME)
 public class LoginView extends CssLayout{
 
 
@@ -28,13 +22,7 @@ public class LoginView extends CssLayout{
 
     private void buildUI(LoginCallback callback) {
         addStyleName("login-screen");
-
-        // login form, centered in the available part of the screen
         Component loginForm = buildLoginForm(callback);
-
-        // layout to center login form when there is sufficient screen space
-        // - see the theme for how this is made responsive for various screen
-        // sizes
         VerticalLayout centeringLayout = new VerticalLayout();
         centeringLayout.setMargin(false);
         centeringLayout.setSpacing(false);
@@ -49,6 +37,13 @@ public class LoginView extends CssLayout{
     private Component buildLoginForm(LoginCallback callback) {
         FormLayout loginForm = new FormLayout();
 
+        ThemeResource resource = new ThemeResource("img/felgen.png");
+        Image image = new Image(null, resource);
+        image.addStyleName("login-image");
+        image.setWidth("200px");
+        image.setHeight("50px");
+        loginForm.addComponent(image);
+
         loginForm.addStyleName("login-form");
         loginForm.setSizeUndefined();
         loginForm.setMargin(false);
@@ -60,30 +55,33 @@ public class LoginView extends CssLayout{
         password.setDescription("Write anything");
         CssLayout buttons = new CssLayout();
         buttons.setStyleName("buttons");
-        loginForm.addComponent(buttons);
 
+        CheckBox rememberMe = new CheckBox("Remember me");
+        loginForm.addComponent(rememberMe);
+        loginForm.addComponent(buttons);
         buttons.addComponent(login = new Button("Login"));
+        login.setWidth("150px");
         login.addClickListener((Button.ClickListener) event -> {
             String pword = password.getValue();
-            if (!callback.login(username.getValue(), pword)) {
+            if (!callback.login(username.getValue(), pword, rememberMe.getValue())) {
                 Notification.show("Login failed");
                 username.focus();
             }
         });
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        login.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+        login.addStyleName("theme-buttons");
         List<Locale> localeList = new ArrayList<>();
         localeList.add(Locale.ENGLISH);
         localeList.add(Locale.GERMAN);
         locales.setItems(localeList);
-//        buttons.addComponent(locales);
+
+
         return loginForm;
     }
 
     @FunctionalInterface
     public interface LoginCallback {
 
-        boolean login(String username, String password);
+        boolean login(String username, String password, boolean rememberMe);
     }
-
 }

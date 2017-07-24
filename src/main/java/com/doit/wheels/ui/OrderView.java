@@ -8,6 +8,7 @@ import com.doit.wheels.ui.nested.GuidelinesLayout;
 import com.doit.wheels.ui.nested.OrderDetailsLayout;
 import com.doit.wheels.ui.nested.WheelRimPositionsLayout;
 import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationException;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
@@ -20,6 +21,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.dialogs.ConfirmDialog;
 
 import java.util.*;
 
@@ -28,7 +30,7 @@ import java.util.*;
 @SpringView(name = OrderView.VIEW_NAME)
 public class OrderView extends VerticalLayout implements View {
     static final String VIEW_NAME = "new-order";
-    private String CURRENT_MODE;
+    public String CURRENT_MODE;
 
     private final String CREATE = "Create";
     private final String EDIT = "Edit";
@@ -61,6 +63,10 @@ public class OrderView extends VerticalLayout implements View {
     private Button guidelines;
     private Button printButton;
 
+    private Customer sharedCustomer;
+
+    private Order order;
+
     @Autowired
     public OrderView(MessageByLocaleService messageByLocaleService, ManufacturerService manufacturerService,
                      ModelService modelService, ModelTypeService modelTypeService, ValveTypeService valveTypeService,
@@ -79,18 +85,19 @@ public class OrderView extends VerticalLayout implements View {
     }
 
     private void init(){
-        Order order;
         Object data = getUI().getData();
 
         if(data != null && data.toString().length() > 0) {
-            if(data instanceof Order){
-                order = (Order) data;
-                CURRENT_MODE = ((Order) data).getId() == null ? CREATE : EDIT;
+            Order sharedOrder = (Order) ((Map) data).get("ORDER");
+            if(sharedOrder != null){
+                order = sharedOrder;
+                CURRENT_MODE = sharedOrder.getId() == null ? CREATE : EDIT;
             } else {
                 order = new Order();
                 order.setWheelRimPositions(new HashSet<>());
                 CURRENT_MODE = CREATE;
             }
+            sharedCustomer = (Customer) ((Map) data).get("CUSTOMER");
             getUI().setData(null);
         } else {
             order = new Order();
@@ -106,7 +113,7 @@ public class OrderView extends VerticalLayout implements View {
         detailsButton.setId("order.menubar.customerAndOrder.button");
         detailsButton.addClickListener(e -> {
             makeButtonSelected(detailsButton);
-            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService,CURRENT_MODE.equals(EDIT)));
+            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService,CURRENT_MODE.equals(EDIT), sharedCustomer));
         });
         detailsButton.addStyleName("clear-button");
         detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
@@ -144,8 +151,8 @@ public class OrderView extends VerticalLayout implements View {
         guidelines.addStyleName("order-menubar-buttons");
         menuBar.addComponent(guidelines);
 
-        printButton = new Button(messageByLocaleService.getMessage("order.printAndClose.button"));
-        printButton.setId("order.printAndClose.button");
+        printButton = new Button(messageByLocaleService.getMessage("order.commentsAndSubmit.button"));
+        printButton.setId("order.commentsAndSubmit.button");
         printButton.addStyleName("clear-button");
         printButton.setIcon(new ThemeResource("img/ico/star.png"));
         printButton.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
@@ -159,7 +166,7 @@ public class OrderView extends VerticalLayout implements View {
 
         this.addComponent(menuBar);
 
-        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, orderService, customerService, userService, CURRENT_MODE.equals(EDIT) );
+        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService, CURRENT_MODE.equals(EDIT), sharedCustomer );
         previousLayout = orderDetailsLayout;
 
         orderDetailsLayout.setHeight("100%");
@@ -194,6 +201,31 @@ public class OrderView extends VerticalLayout implements View {
         if (viewChangeEvent.getOldView() instanceof CreateEditCustomerView){
             SHARED_BINDER.setBean((Order) getSession().getAttribute("notSavedOrder"));
         }
+
+    }
+
+    void saveChangesPopup() {
+        ConfirmDialog.show(getUI(),
+                messageByLocaleService.getMessage("save.notification.title"),
+                messageByLocaleService.getMessage("save.notification.body"),
+                messageByLocaleService.getMessage("save.notification.okCaption"),
+                messageByLocaleService.getMessage("save.notification.cancelCaption"),
+                messageByLocaleService.getMessage("save.notification.notOkCaption"),
+                (ConfirmDialog.Listener) dialog -> {
+                    if (dialog.isConfirmed()) {
+                        SHARED_BINDER.validate();
+                        try {
+                            SHARED_BINDER.writeBean(order);
+                            orderService.save(SHARED_BINDER.getBean());
+                            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                        } catch (ValidationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (dialog.isNotConfirmed()) {
+                        getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                    }
+                });
 
     }
 }

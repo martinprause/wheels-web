@@ -95,7 +95,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
 
         HorizontalLayout controlButtonsLayout = initControlButtonsLayout();
 
-        this.addComponents(wheelRimTablesLayout, positionsGrid, controlButtonsLayout);
+        this.addComponents(wheelRimTablesLayout, controlButtonsLayout, positionsGrid);
         this.setHeight("100%");
     }
 
