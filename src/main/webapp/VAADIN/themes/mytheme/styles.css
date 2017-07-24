@@ -13641,6 +13641,21 @@ div.v-layout.v-horizontal.v-widget {
 	width: auto !important;
 }
 
+.mytheme .login-form .login-image {
+	position: absolute;
+	top: -10px;
+	right: 50px;
+}
+
+.mytheme .v-panel-content .v-slot-order-details-layout {
+	display: flex;
+	justify-content: center;
+}
+
+.mytheme .v-panel-content .v-slot-order-details-layout .order-details-layout {
+	width: auto !important;
+}
+
 .mytheme .manage-order-button {
 	background: #5b99e2 !important;
 	color: #ffffff;
