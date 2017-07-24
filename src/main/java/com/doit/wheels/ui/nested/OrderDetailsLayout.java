@@ -113,7 +113,7 @@ public class OrderDetailsLayout extends HorizontalLayout {
         createCustomerButton.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
 
         createCustomerButton.addClickListener(e -> {
-            UI.getCurrent().setData(binder.getBean());
+            UI.getCurrent().setData(Collections.singletonMap("ORDER", binder.getBean()));
             UI.getCurrent().getSession().setAttribute("previousView", "new-order");
             UI.getCurrent().getSession().setAttribute("notSavedOrder", binder.getBean());
             UI.getCurrent().getNavigator().navigateTo("create-edit-customer");
@@ -188,7 +188,7 @@ public class OrderDetailsLayout extends HorizontalLayout {
         panelLayout.setWidth("100%");
         this.addComponents(orderLayout, panelLayout);
         this.setExpandRatio(orderLayout, 3);
-        this.setExpandRatio(panelLayout, 7);
+        this.setExpandRatio(panelLayout, 4);
     }
 
     private void convertOrderNumber(HasValue.ValueChangeEvent<LocalDateTime> e) {

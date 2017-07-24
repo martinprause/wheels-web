@@ -82,21 +82,19 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
     }
 
     private void init() {
-//        setSizeFull();
-
-        Object data = getUI().getData();
-        if(data != null && data.toString().length() > 0) {
-            if(data instanceof Customer){
-                customer = (Customer) data;
-                CURRENT_MODE = EDIT;
-                getUI().setData(null);
-            } else if(data instanceof Order) {
+        Map<String, AbstractModel> data = (Map<String, AbstractModel>) getUI().getData();
+        if (data != null && data.toString().length() > 0) {
+            Customer sharedCustomer = (Customer) ((Map) data).get("CUSTOMER");
+            if (sharedCustomer != null) {
+                customer = sharedCustomer;
+                CURRENT_MODE = sharedCustomer.getId() == null ? CREATE : EDIT;
+            } else {
                 customer = new Customer();
                 customer.setCustomerContacts(new ArrayList<>());
                 CURRENT_MODE = CREATE;
             }
+            getUI().setData(data);
         } else {
-            // atm we have only two state, maybe in future we will have more, that's why this block isn't collapsed
             customer = new Customer();
             customer.setCustomerContacts(new ArrayList<>());
             CURRENT_MODE = CREATE;
@@ -254,10 +252,11 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
             contactGrid.setItems(emptyCustomer.getCustomerContacts());
             showAddNotification();
             if (getUI().getData() != null) {
-                if(getUI().getData() instanceof Order) {
+                Order order = (Order) ((Map<String, AbstractModel>) getUI().getData()).get("ORDER");
+                if(order != null) {
                     Map<String, AbstractModel> args = new HashMap<>();
                     args.put("CUSTOMER", customer);
-                    args.put("ORDER", (Order)getUI().getData());
+                    args.put("ORDER", order);
                     getUI().setData(args);
                     getUI().getNavigator().navigateTo("new-order");
                 }

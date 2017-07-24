@@ -8,6 +8,8 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
 import org.vaadin.dialogs.ConfirmDialog;
 
+import java.util.Collections;
+
 public class CustomersListLayout extends VerticalLayout {
 
     private MessageByLocaleService messageByLocaleService;
@@ -119,7 +121,7 @@ public class CustomersListLayout extends VerticalLayout {
         editCustomerButton.addStyleName("create-user-button");
         editCustomerButton.addStyleName("edit-customer-button");
         editCustomerButton.addClickListener(clickEvent -> {
-            getUI().setData(selectedCustomer);
+            getUI().setData(Collections.singletonMap("CUSTOMER", selectedCustomer));
             getUI().getNavigator().navigateTo("create-edit-customer");
             UI.getCurrent().getSession().setAttribute("previousView", "customer-orders-list");
         });

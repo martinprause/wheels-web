@@ -48,8 +48,6 @@ public class ApplicationUI extends UI implements View{
 
     private Label headerUser;
 
-    private Button changeLocale;
-
     private Button backButton;
 
     @Override
@@ -117,7 +115,7 @@ public class ApplicationUI extends UI implements View{
         comboBox.setItems(Arrays.asList(englishLabel, germanLabel));
         comboBox.setStyleName("headerButton");
         comboBox.setEmptySelectionAllowed(false);
-        comboBox.setSelectedItem(englishLabel);
+        comboBox.setSelectedItem(VaadinSession.getCurrent().getLocale().equals(Locale.ENGLISH) ? englishLabel : germanLabel);
         comboBox.setTextInputAllowed(false);
         comboBox.setItemCaptionGenerator(Label::getValue);
         comboBox.addSelectionListener(this::changeLocale);
