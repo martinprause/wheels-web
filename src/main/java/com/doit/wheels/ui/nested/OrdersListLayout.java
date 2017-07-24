@@ -17,6 +17,7 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.dialogs.ConfirmDialog;
 
+import java.util.Collections;
 import java.util.Date;
 
 public class OrdersListLayout extends VerticalLayout {
@@ -156,7 +157,7 @@ public class OrdersListLayout extends VerticalLayout {
         editOrderButton.setId("orderView.order.buttons.editOrder");
         editOrderButton.addStyleName("manage-order-button");
         editOrderButton.addClickListener(clickEvent -> {
-            getUI().setData(selectedOrder);
+            getUI().setData(Collections.singletonMap("ORDER", selectedOrder));
             getUI().getNavigator().navigateTo("new-order");
             UI.getCurrent().getSession().setAttribute("previousView", "customer-orders-list");
         });
