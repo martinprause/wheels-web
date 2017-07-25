@@ -13727,3 +13727,7 @@ div.v-layout.v-horizontal.v-widget {
 #confirmdialog-window .v-slot.v-align-right{
     text-align: center !important;
 }
+
+.no-padding-top {
+	padding-top: 0 !important;
+}
