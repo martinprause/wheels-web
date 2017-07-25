@@ -21,29 +21,30 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends GenericServiceImpl<User> implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final AccessLevelService accessLevelService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AccessLevelService accessLevelService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(GenericRepository<User> genericRepository) {
+    public UserServiceImpl(GenericRepository<User> genericRepository,
+                           UserRepository userRepository,
+                           AccessLevelService accessLevelService,
+                           PasswordEncoder passwordEncoder) {
         super(genericRepository);
+        this.userRepository = userRepository;
+        this.accessLevelService = accessLevelService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
     public User addNewUser(User user) throws UserException {
-        if (findUserByUsername(user.getUsername()) != null){
+        if (findUserByUsername(user.getUsername()) != null) {
             throw new UserException();
-        }
-        else {
+        } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        return userRepository.save(user);
+        return super.save(user);
     }
 
     @Override
@@ -54,11 +55,6 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         return userRepository.save(user);
-    }
-
-    @Override
-    public List<User> findAll(){
-        return userRepository.findAll();
     }
 
     @Override
@@ -85,11 +81,6 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     @Override
     public List<User> findAllByRole(UserRoleEnum role) {
         return userRepository.findAllByRole(role);
-    }
-
-    @Override
-    public User findById(Long id) {
-        return userRepository.findOne(id);
     }
 
     @Override

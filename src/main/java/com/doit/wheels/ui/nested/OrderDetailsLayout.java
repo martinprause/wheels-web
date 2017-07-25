@@ -170,14 +170,6 @@ public class OrderDetailsLayout extends HorizontalLayout {
         driver.addStyleName("order-details-input-elem");
 
         initCustomerInfoLayout();
-        customer.addSelectionListener(selectionEvent -> {
-            updateCustomerInfoLayoutVisibility();
-        });
-        customerInfoLayout.setVisible(false);
-        if (customer.getSelectedItem().isPresent()) {
-            customerInfoLayout.setVisible(true);
-            customerInfoLayout.getParent().addStyleName("customer-details-panel-content");
-        }
         orderLayout.addComponent(driverLayout);
         Panel customerInfoPanel = new Panel(customerInfoLayout);
         customerInfoPanel.setWidth("100%");
@@ -189,6 +181,15 @@ public class OrderDetailsLayout extends HorizontalLayout {
         this.addComponents(orderLayout, panelLayout);
         this.setExpandRatio(orderLayout, 3);
         this.setExpandRatio(panelLayout, 4);
+        panelLayout.setVisible(false);
+        if (customer.getSelectedItem().isPresent()) {
+            panelLayout.setVisible(true);
+            customerInfoLayout.getParent().addStyleName("customer-details-panel-content");
+        }
+        customer.addSelectionListener(selectionEvent -> {
+            updateCustomerInfoLayoutVisibility();
+            panelLayout.setVisible(true);
+        });
     }
 
     private void convertOrderNumber(HasValue.ValueChangeEvent<LocalDateTime> e) {
@@ -298,6 +299,7 @@ public class OrderDetailsLayout extends HorizontalLayout {
 
     private VerticalLayout initCustomerFields(Customer customer) {
         VerticalLayout basicDataLayout = new VerticalLayout();
+        basicDataLayout.addStyleName("no-padding-top");
         Label customerNoValue = new Label(customer.getCustomerNo());
         Label firstNameValue = new Label(customer.getFirstname());
         Label lastNameValue = new Label(customer.getLastname());

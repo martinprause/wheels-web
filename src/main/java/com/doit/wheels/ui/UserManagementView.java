@@ -45,17 +45,13 @@ public class UserManagementView extends VerticalLayout implements View {
     private boolean hasCreateNewUserPermissions;
     private boolean hasDeleteUserPermissions;
 
-    @Autowired
-    MessageByLocaleServiceImpl messageService;
+    private final MessageByLocaleServiceImpl messageService;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    CountryService countryService;
+    private final CountryService countryService;
 
-    @Autowired
-    AccessLevelService accessLevelService;
+    private final AccessLevelService accessLevelService;
 
     private CssLayout menubar;
 
@@ -131,6 +127,14 @@ public class UserManagementView extends VerticalLayout implements View {
     private Label accessCaption;
 
     StringLengthValidator passwordValidator;
+
+    @Autowired
+    public UserManagementView(MessageByLocaleServiceImpl messageService, UserService userService, CountryService countryService, AccessLevelService accessLevelService) {
+        this.messageService = messageService;
+        this.userService = userService;
+        this.countryService = countryService;
+        this.accessLevelService = accessLevelService;
+    }
 
     private void init(){
         editMode = false;

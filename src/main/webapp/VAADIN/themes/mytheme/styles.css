@@ -13106,6 +13106,10 @@ div.v-layout.v-horizontal.v-widget {
     width: 100px !important;
 }
 
+#localeComboBox {
+	width: 110px !important;
+}
+
 .mytheme .header-statusbar-title{
     margin-right: 5px;
     margin-top: 5px;
@@ -13722,4 +13726,8 @@ div.v-layout.v-horizontal.v-widget {
 
 #confirmdialog-window .v-slot.v-align-right{
     text-align: center !important;
+}
+
+.no-padding-top {
+	padding-top: 0 !important;
 }

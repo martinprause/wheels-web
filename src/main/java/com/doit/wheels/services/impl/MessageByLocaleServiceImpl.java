@@ -2,6 +2,7 @@ package com.doit.wheels.services.impl;
 
 import com.doit.wheels.services.MessageByLocaleService;
 import com.doit.wheels.utils.UTF8Control;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,19 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
             }
             else if (c instanceof Notification){
                 c.setCaption(rb.getString(c.getStyleName()));
+            }
+            else if (c instanceof ComboBox) {
+                try {
+                    ListDataProvider<Label> dataProvider = (ListDataProvider<Label>) ((ComboBox) c).getDataProvider();
+                    dataProvider.getItems().forEach(label -> {
+                        if(label.getId() != null) {
+                            label.setValue(rb.getString(label.getId()));
+                        }
+                    });
+                    ((ComboBox<Label>) c).setDataProvider(dataProvider);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
