@@ -245,11 +245,10 @@ public class OrdersListLayout extends VerticalLayout {
     private void print(){
         Notification.show("Print started!", Notification.Type.HUMANIZED_MESSAGE);
         selectedOrder.setQrCode(selectedOrder.getOrderNo() + "-P");
-            int i = 1;
             for (WheelRimPosition wheelRimPosition : selectedOrder.getWheelRimPositions()) {
-                wheelRimPosition.setQrCode(selectedOrder.getOrderNo() + "-" + i);
-                i++;
+                wheelRimPosition.setQrCode(selectedOrder.getOrderNo() + "-" + wheelRimPosition.getPositionNo());
             }
+            orderService.save(selectedOrder);
         PrintJob printJob = new PrintJob();
         printJob.setOrder(selectedOrder);
         printJob.setUser(userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));

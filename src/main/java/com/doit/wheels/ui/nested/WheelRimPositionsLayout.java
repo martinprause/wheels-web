@@ -55,7 +55,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         this.sharedBinder = sharedBinder;
         localBinder = new Binder<>();
         necessaryEntities = args;
-        POSITIONS_COUNTER = 0;
+        POSITIONS_COUNTER = sharedBinder.getBean().getWheelRimPositions().size();
         init();
     }
 
@@ -419,7 +419,6 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         if (validateBindedValues()) {
             WheelRimPosition position = localBinder.getBean();
             Order order = sharedBinder.getBean();
-            position.setQrCode(order.getOrderNo() );
             order.getWheelRimPositions().add(position);
             position.setPositionNo(String.valueOf(++POSITIONS_COUNTER));
             positionsGrid.setItems(order.getWheelRimPositions());
@@ -445,9 +444,10 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         duplicatedPosition.setIndexVal(wheelRimPosition.getIndexVal());
         duplicatedPosition.setSpeed(wheelRimPosition.getSpeed());
         bean.getWheelRimPositions().add(duplicatedPosition);
-        duplicatedPosition.setPositionNo(String.valueOf(Integer.valueOf(wheelRimPosition.getPositionNo()) + 1));
+        duplicatedPosition.setPositionNo(String.valueOf(++POSITIONS_COUNTER));
+//        duplicatedPosition.setPositionNo(String.valueOf(Integer.valueOf(wheelRimPosition.getPositionNo()) + 1));
         positionsGrid.setItems(bean.getWheelRimPositions());
-        POSITIONS_COUNTER++;
+//        POSITIONS_COUNTER++;
     }
 
     private void onEditPosition() {
@@ -473,6 +473,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         WheelRimPosition wheelRimPosition = positionsGrid.getSelectionModel().getFirstSelectedItem().get();
         sharedBinder.getBean().getWheelRimPositions().remove(wheelRimPosition);
         positionsGrid.setItems(sharedBinder.getBean().getWheelRimPositions());
+        POSITIONS_COUNTER--;
     }
 
     private String format(Integer value) {
