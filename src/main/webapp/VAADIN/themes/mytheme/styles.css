@@ -13106,6 +13106,10 @@ div.v-layout.v-horizontal.v-widget {
     width: 100px !important;
 }
 
+#localeComboBox {
+	width: 110px !important;
+}
+
 .mytheme .header-statusbar-title{
     margin-right: 5px;
     margin-top: 5px;

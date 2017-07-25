@@ -49,6 +49,7 @@ public class ApplicationUI extends UI implements View{
     private Label headerUser;
 
     private Button backButton;
+    private ComboBox<Label> langComboBox;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -104,7 +105,8 @@ public class ApplicationUI extends UI implements View{
         image.setHeight("50px");
         header.addComponent(image);
 
-        ComboBox<Label> comboBox = new ComboBox<>();
+        langComboBox = new ComboBox<>();
+        langComboBox.setId("localeComboBox");
         Label englishLabel = new Label(messageService.getMessage("localization.english"));
         englishLabel.setId("localization.english");
         englishLabel.setData(Locale.ENGLISH);
@@ -112,13 +114,13 @@ public class ApplicationUI extends UI implements View{
         germanLabel.setId("localization.german");
         germanLabel.setData(Locale.GERMAN);
 
-        comboBox.setItems(Arrays.asList(englishLabel, germanLabel));
-        comboBox.setStyleName("headerButton");
-        comboBox.setEmptySelectionAllowed(false);
-        comboBox.setSelectedItem(VaadinSession.getCurrent().getLocale().equals(Locale.ENGLISH) ? englishLabel : germanLabel);
-        comboBox.setTextInputAllowed(false);
-        comboBox.setItemCaptionGenerator(Label::getValue);
-        comboBox.addSelectionListener(this::changeLocale);
+        langComboBox.setItems(Arrays.asList(englishLabel, germanLabel));
+        langComboBox.setStyleName("headerButton");
+        langComboBox.setEmptySelectionAllowed(false);
+        langComboBox.setSelectedItem(VaadinSession.getCurrent().getLocale().equals(Locale.ENGLISH) ? englishLabel : germanLabel);
+        langComboBox.setTextInputAllowed(false);
+        langComboBox.setItemCaptionGenerator(Label::getValue);
+        langComboBox.addSelectionListener(this::changeLocale);
 
         Button logoutButton = new Button(messageService.getMessage("header.logout"));
         logoutButton.setId("header.logout");
@@ -129,7 +131,7 @@ public class ApplicationUI extends UI implements View{
 
         CssLayout headerRight = new CssLayout();
         headerRight.addStyleName("header-item-right");
-        headerRight.addComponents(comboBox, logoutButton);
+        headerRight.addComponents(langComboBox, logoutButton);
         header.addComponent(headerRight);
 
         Panel viewContainer = new Panel();
@@ -246,10 +248,12 @@ public class ApplicationUI extends UI implements View{
 
     private void changeLocale(SelectionEvent event){
         if (event.getFirstSelectedItem().isPresent()) {
-            Label selectedItem = (Label)event.getFirstSelectedItem().get();
+            Label selectedItem = (Label) event.getFirstSelectedItem().get();
             Locale locale = (Locale) selectedItem.getData();
             messageService.updateLocale(getUI(), locale);
             VaadinSession.getCurrent().setLocale(locale);
+            selectedItem.setValue(messageService.getMessage(selectedItem.getId()));
+            langComboBox.setSelectedItem(selectedItem);
         }
     }
 }

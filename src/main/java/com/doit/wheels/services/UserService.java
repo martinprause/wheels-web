@@ -15,8 +15,6 @@ public interface UserService extends GenericService<User>{
 
     User updateUser(User user);
 
-    List<User> findAll();
-
     User findUserByUsername(String username);
 
     void removeUserWithAccesses(User user) throws NoPermissionsException;
@@ -24,8 +22,6 @@ public interface UserService extends GenericService<User>{
     List<User> findAllByRole(UserRoleEnum role);
 
     boolean checkIfCurrentUserHasPermissions(AccessLevelTypeEnum accessLevelTypeEnum);
-
-    User findById(Long id);
 
     boolean isCurrentUserAdmin();
 }

@@ -36,6 +36,11 @@ public class GenericServiceImpl<T extends AbstractModel> implements GenericServi
     }
 
     @Override
+    public T findById(Long id) {
+        return genericRepository.findOne(id);
+    }
+
+    @Override
     @Transactional
     public List<T> findAll() {
         return genericRepository.findAll();
