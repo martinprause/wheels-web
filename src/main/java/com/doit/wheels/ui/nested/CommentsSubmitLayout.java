@@ -109,6 +109,7 @@ public class CommentsSubmitLayout extends VerticalLayout {
                         sharedBinder.getBean().setQrCode(sharedBinder.getBean().getOrderNo() + "-P");
                         sharedBinder.readBean(sharedBinder.getBean());
                         sharedBinder.validate();
+                        orderService.save(sharedBinder.getBean());
                         if (printImmediatelyCheck.getValue()){
                             for (WheelRimPosition wheelRimPosition : sharedBinder.getBean().getWheelRimPositions()) {
                                 wheelRimPosition.setQrCode(sharedBinder.getBean().getOrderNo() + "-" + wheelRimPosition.getPositionNo());
