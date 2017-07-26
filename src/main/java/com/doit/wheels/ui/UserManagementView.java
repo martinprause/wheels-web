@@ -512,6 +512,7 @@ public class UserManagementView extends VerticalLayout implements View {
         User tmpUser = user;
         userGrid.setItems(userService.findAll());
         userGrid.select(tmpUser);
+        makeButtonSelected(manageUserAccessButton);
         showManageAccess();
     }
 
