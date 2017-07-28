@@ -11,9 +11,7 @@ import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class WheelRimPositionsLayout extends VerticalLayout {
 
@@ -32,7 +30,6 @@ public class WheelRimPositionsLayout extends VerticalLayout {
     private TextField sizeWheel;
     private CheckBox hubCoverWheel;
     private ComboBox<ValveType> valveTypeWheel;
-    private ComboBox<Manufacturer> manufacturerRim;
 
     private TextField widthRim;
     private TextField heightRim;
@@ -46,7 +43,10 @@ public class WheelRimPositionsLayout extends VerticalLayout {
     private Button editButton;
     private Button deleteButton;
 
+    private ComboBox<Manufacturer> manufacturerRim;
     private ComboBox<Manufacturer> manufacturerWheel;
+
+    private Queue<WheelRimPosition> positions;
 
     private Map<Class, List<? extends AbstractModel>> necessaryEntities;
 
@@ -56,6 +56,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         localBinder = new Binder<>();
         necessaryEntities = args;
         POSITIONS_COUNTER = sharedBinder.getBean().getWheelRimPositions().size();
+        positions = new PriorityQueue<>(Comparator.comparingInt(o -> Integer.valueOf(o.getPositionNo())));
         init();
     }
 
@@ -138,8 +139,8 @@ public class WheelRimPositionsLayout extends VerticalLayout {
 
     private VerticalLayout generateWheelLayout() {
         VerticalLayout wheelLayout = new VerticalLayout();
-        Label caption = new Label(messageByLocaleService.getMessage("newOrderView.position.wheel"));
-        caption.setId("newOrderView.position.wheel");
+        Label caption = new Label(messageByLocaleService.getMessage("newOrderView.position.rim"));
+        caption.setId("newOrderView.position.rim");
         caption.addStyleName("bold-label");
         wheelLayout.addComponent(caption);
         wheelLayout.addStyleName("wheel-rim-layout");
@@ -189,8 +190,8 @@ public class WheelRimPositionsLayout extends VerticalLayout {
 
     private VerticalLayout generateRimLayout() {
         VerticalLayout rimLayout = new VerticalLayout();
-        Label caption = new Label(messageByLocaleService.getMessage("newOrderView.position.rim"));
-        caption.setId("newOrderView.position.rim");
+        Label caption = new Label(messageByLocaleService.getMessage("newOrderView.position.wheel"));
+        caption.setId("newOrderView.position.wheel");
         caption.addStyleName("bold-label");
         rimLayout.addComponent(caption);
         rimLayout.addStyleName("wheel-rim-layout");
@@ -420,7 +421,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
             WheelRimPosition position = localBinder.getBean();
             Order order = sharedBinder.getBean();
             order.getWheelRimPositions().add(position);
-            position.setPositionNo(String.valueOf(++POSITIONS_COUNTER));
+            position.setPositionNo(getNewPositionNumber());
             positionsGrid.setItems(order.getWheelRimPositions());
             WheelRimPosition newPosition = new WheelRimPosition();
             localBinder.setBean(newPosition);
@@ -444,10 +445,8 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         duplicatedPosition.setIndexVal(wheelRimPosition.getIndexVal());
         duplicatedPosition.setSpeed(wheelRimPosition.getSpeed());
         bean.getWheelRimPositions().add(duplicatedPosition);
-        duplicatedPosition.setPositionNo(String.valueOf(++POSITIONS_COUNTER));
-//        duplicatedPosition.setPositionNo(String.valueOf(Integer.valueOf(wheelRimPosition.getPositionNo()) + 1));
+        duplicatedPosition.setPositionNo(getNewPositionNumber());
         positionsGrid.setItems(bean.getWheelRimPositions());
-//        POSITIONS_COUNTER++;
     }
 
     private void onEditPosition() {
@@ -473,7 +472,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         WheelRimPosition wheelRimPosition = positionsGrid.getSelectionModel().getFirstSelectedItem().get();
         sharedBinder.getBean().getWheelRimPositions().remove(wheelRimPosition);
         positionsGrid.setItems(sharedBinder.getBean().getWheelRimPositions());
-        POSITIONS_COUNTER--;
+        positions.add(wheelRimPosition);
     }
 
     private String format(Integer value) {
@@ -489,5 +488,13 @@ public class WheelRimPositionsLayout extends VerticalLayout {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private String getNewPositionNumber() {
+        if(positions.size() > 0){
+            WheelRimPosition wheelRimPosition = positions.poll();
+            return wheelRimPosition.getPositionNo();
+        }
+        return String.valueOf(++POSITIONS_COUNTER);
     }
 }

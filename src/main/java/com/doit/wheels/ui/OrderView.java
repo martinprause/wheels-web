@@ -143,7 +143,7 @@ public class OrderView extends VerticalLayout implements View {
         guidelines.setId("order.menubar.guidelinesAndPictures.button");
         guidelines.addClickListener(e -> {
             makeButtonSelected(guidelines);
-            replaceComponent(new GuidelinesLayout(messageByLocaleService, guidelineService, SHARED_BINDER, orderService));
+            replaceComponent(new GuidelinesLayout(messageByLocaleService, guidelineService, SHARED_BINDER));
         });
         guidelines.addStyleName("clear-button");
         guidelines.setIcon(new ThemeResource("img/ico/star.png"));
