@@ -5,7 +5,6 @@ import com.doit.wheels.dao.entities.Order;
 import com.doit.wheels.dao.entities.basic.Description;
 import com.doit.wheels.services.GuidelineService;
 import com.doit.wheels.services.MessageByLocaleService;
-import com.doit.wheels.services.OrderService;
 import com.vaadin.data.Binder;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
@@ -13,6 +12,8 @@ import com.vaadin.ui.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuidelinesLayout extends HorizontalLayout{
 
@@ -28,18 +29,11 @@ public class GuidelinesLayout extends HorizontalLayout{
 
     private ComboBox<Guideline> guidelineComboBox;
 
-    private Image pictureImage;
-
-    private Image signatureImage;
-
-    private OrderService orderService;
-
 
     public GuidelinesLayout(MessageByLocaleService messageByLocaleService, GuidelineService guidelineService,
-                            Binder<Order> sharedBinder, OrderService orderService) {
+                            Binder<Order> sharedBinder) {
         this.messageByLocaleService = messageByLocaleService;
         this.guidelineService = guidelineService;
-        this.orderService = orderService;
         binder = sharedBinder;
         init();
     }
@@ -94,41 +88,24 @@ public class GuidelinesLayout extends HorizontalLayout{
         guidelines.addComponent(deleteButtonLayout);
         this.addComponent(guidelines);
 
-        VerticalLayout pictureLayout = new VerticalLayout();
-        pictureLayout.addStyleName("guideline-picture-layout");
-        Label pictureLabel = new Label(messageByLocaleService.getMessage("guidelines.picture.label"));
-        pictureLabel.setId("guidelines.picture.label");
-        pictureLayout.addComponent(pictureLabel);
+    }
+
+    private void showPictures() {
+        this.addComponent(initPictureList());
 
         ThemeResource noImageResource = new ThemeResource("img/no_image.png");
-        pictureImage = new Image();
-        pictureImage.setSource(noImageResource);
-        pictureImage.setWidth("100%");
-        pictureImage.setHeight("100%");
-        pictureLayout.addComponent(pictureImage);
-        this.addComponent(pictureLayout);
-
         VerticalLayout signatureLayout = new VerticalLayout();
         Label signatureLabel = new Label(messageByLocaleService.getMessage("guidelines.signature.label"));
         signatureLabel.setId("guidelines.signature.label");
         signatureLayout.addComponent(signatureLabel);
         signatureLayout.addStyleName("guideline-signature-layout");
-        signatureImage = new Image();
+
+        Image signatureImage = new Image();
         signatureImage.setSource(noImageResource);
         signatureImage.setWidth("100%");
         signatureImage.setHeight("100%");
         signatureLayout.addComponent(signatureImage);
         this.addComponent(signatureLayout);
-
-    }
-
-    private void showPictures() {
-        if (order.getWheelsRimPicture() != null){
-            StreamResource.StreamSource imageSourceForPicture = new ImageSource(order.getWheelsRimPicture());
-            StreamResource resourceForPicture =
-                    new StreamResource(imageSourceForPicture, "wheel.jpg");
-            pictureImage.setSource(resourceForPicture);
-        }
 
         if (order.getSignaturePicture() != null){
             StreamResource.StreamSource imageSourceForSignature = new ImageSource(order.getSignaturePicture());
@@ -161,6 +138,51 @@ public class GuidelinesLayout extends HorizontalLayout{
             order = new Order();
         }
         updateGuidelinesGrid();
+    }
+
+    private VerticalLayout initPictureList() {
+        VerticalLayout mainLayout = new VerticalLayout();
+        mainLayout.addStyleName("guideline-picture-layout");
+        Label pictureLabel = new Label(messageByLocaleService.getMessage("guidelines.picture.label"));
+        pictureLabel.setId("guidelines.picture.label");
+        mainLayout.addComponent(pictureLabel);
+
+        VerticalLayout innerLayout = new VerticalLayout();
+        innerLayout.setMargin(false);
+
+        List<byte[]> images = new ArrayList<>();
+        Panel scroll = new Panel(innerLayout);
+        scroll.setHeight("365px");
+        scroll.addStyleName("customer-details-panel");
+
+        mainLayout.addComponent(scroll);
+        if (order.getId() != null) {
+            images.add(order.getWheelsRimPicture1());
+            images.add(order.getWheelsRimPicture2());
+            images.add(order.getWheelsRimPicture3());
+            images.add(order.getWheelsRimPicture4());
+            images.forEach(image -> {
+                if (image != null) {
+                    Image pictureImage = new Image();
+                    pictureImage.setWidth("100%");
+                    pictureImage.setHeight("100%");
+                    StreamResource.StreamSource imageSourceForPicture = new ImageSource(order.getWheelsRimPicture1());
+                    StreamResource resourceForPicture =
+                            new StreamResource(imageSourceForPicture, "wheel.jpg");
+                    pictureImage.setSource(resourceForPicture);
+                    innerLayout.addComponent(pictureImage);
+                }
+            });
+
+            return mainLayout;
+        } else {
+            Image pictureImage = new Image();
+            pictureImage.setWidth("100%");
+            pictureImage.setHeight("100%");
+            pictureImage.setSource(new ThemeResource("img/no_image.png"));
+
+            return mainLayout;
+        }
     }
 
     private void updateGuidelinesGrid(){
