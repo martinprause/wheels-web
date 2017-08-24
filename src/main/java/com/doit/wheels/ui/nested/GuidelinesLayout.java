@@ -104,8 +104,8 @@ public class GuidelinesLayout extends HorizontalLayout{
         signatureImage.setSource(noImageResource);
         signatureImage.setWidth("100%");
         signatureImage.setHeight("100%");
+        signatureImage.addStyleName("signature-image");
         signatureLayout.addComponent(signatureImage);
-        this.addComponent(signatureLayout);
 
         if (order.getSignaturePicture() != null){
             StreamResource.StreamSource imageSourceForSignature = new ImageSource(order.getSignaturePicture());
@@ -113,7 +113,13 @@ public class GuidelinesLayout extends HorizontalLayout{
                     new StreamResource(imageSourceForSignature, "wheel.jpg");
             signatureImage.setSource(resourceForSignature);
         }
-
+        else {
+            signatureImage.removeStyleName("signature-image");
+        }
+        Label signatureName = new Label(order.getSignatureName());
+        signatureName.addStyleName("signature-name");
+        signatureLayout.addComponent(signatureName);
+        this.addComponent(signatureLayout);
     }
 
     private void deleteGuideline() {

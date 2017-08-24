@@ -13731,3 +13731,12 @@ div.v-layout.v-horizontal.v-widget {
 .no-padding-top {
 	padding-top: 0 !important;
 }
+
+.signature-image{
+    border: 1px solid;
+}
+
+.v-slot-signature-name{
+    text-align: center;
+    font-weight: 600;
+}

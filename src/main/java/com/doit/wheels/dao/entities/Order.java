@@ -55,6 +55,8 @@ public class Order extends AbstractModel {
     @Lob
     private byte[] wheelsRimPicture4;
 
+    private String signatureName;
+
     @Lob
     private byte[] signaturePicture;
 
@@ -239,5 +241,13 @@ public class Order extends AbstractModel {
 
     public void setWheelsRimPicture4(byte[] wheelsRimPicture4) {
         this.wheelsRimPicture4 = wheelsRimPicture4;
+    }
+
+    public String getSignatureName() {
+        return signatureName;
+    }
+
+    public void setSignatureName(String signatureName) {
+        this.signatureName = signatureName;
     }
 }
