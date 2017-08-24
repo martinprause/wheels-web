@@ -161,28 +161,27 @@ public class GuidelinesLayout extends HorizontalLayout{
             images.add(order.getWheelsRimPicture2());
             images.add(order.getWheelsRimPicture3());
             images.add(order.getWheelsRimPicture4());
-            images.forEach(image -> {
+            for (byte[] image : images) {
                 if (image != null) {
                     Image pictureImage = new Image();
                     pictureImage.setWidth("100%");
                     pictureImage.setHeight("100%");
-                    StreamResource.StreamSource imageSourceForPicture = new ImageSource(order.getWheelsRimPicture1());
+                    StreamResource.StreamSource imageSourceForPicture = new ImageSource(image);
                     StreamResource resourceForPicture =
                             new StreamResource(imageSourceForPicture, "wheel.jpg");
                     pictureImage.setSource(resourceForPicture);
                     innerLayout.addComponent(pictureImage);
                 }
-            });
-
-            return mainLayout;
-        } else {
-            Image pictureImage = new Image();
-            pictureImage.setWidth("100%");
-            pictureImage.setHeight("100%");
-            pictureImage.setSource(new ThemeResource("img/no_image.png"));
-
-            return mainLayout;
+                else{
+                    Image pictureImage = new Image();
+                    pictureImage.setWidth("100%");
+                    pictureImage.setHeight("100%");
+                    pictureImage.setSource(new ThemeResource("img/no_image.png"));
+                    innerLayout.addComponent(pictureImage);
+                }
+            }
         }
+        return mainLayout;
     }
 
     private void updateGuidelinesGrid(){
