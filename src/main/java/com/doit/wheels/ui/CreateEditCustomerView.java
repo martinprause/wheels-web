@@ -72,6 +72,8 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
 
     private Customer customer;
 
+    private Customer unchagedCustomer;
+
 
     @Autowired
     public CreateEditCustomerView(CustomerService customerService, CountryService countryService,
@@ -87,6 +89,11 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
             Customer sharedCustomer = (Customer) ((Map) data).get("CUSTOMER");
             if (sharedCustomer != null) {
                 customer = sharedCustomer;
+                try {
+                    unchagedCustomer = (Customer) customer.clone();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
                 CURRENT_MODE = sharedCustomer.getId() == null ? CREATE : EDIT;
             } else {
                 customer = new Customer();
@@ -101,8 +108,9 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
         }
 
         VerticalLayout customerLayout = new VerticalLayout();
-        Label newCustomerLabel = new Label(messageByLocaleService.getMessage("customerView.customer.new"));
-        newCustomerLabel.setId("customerView.customer.new");
+        String createCustomerLabel = CURRENT_MODE.equals(CREATE) ? "customerView.customer.new" : "customerView.customer.edit";
+        Label newCustomerLabel = new Label(messageByLocaleService.getMessage(createCustomerLabel));
+        newCustomerLabel.setId(createCustomerLabel);
 
         customerLayout.addComponents(newCustomerLabel, initCustomerFields());
 
@@ -131,6 +139,7 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
 
         Button createCustomerButton = new Button(messageByLocaleService.getMessage(createButtonCode));
         createCustomerButton.setId(createButtonCode);
+        createCustomerButton.addStyleName("theme-buttons");
         createCustomerButton.setWidth("165px");
         createCustomerButton.addClickListener(clickEvent -> saveCustomer());
 
@@ -260,6 +269,9 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
                     getUI().setData(args);
                     getUI().getNavigator().navigateTo("new-order");
                 }
+                else {
+                    getUI().getNavigator().navigateTo("customer-orders-list");
+                }
             } else {
                 getUI().getNavigator().navigateTo("customer-orders-list");
             }
@@ -338,16 +350,19 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
         buttonLayout.setHeight("100%");
         createContactButton = new Button(messageByLocaleService.getMessage("customerView.customerContact.create"));
         createContactButton.setId("customerView.customerContact.create");
+        createContactButton.addStyleName("theme-buttons");
         createContactButton.setWidth("165px");
         createContactButton.addClickListener(clickEvent -> saveContact());
 
         editContactButton = new Button(messageByLocaleService.getMessage("customerView.customerContact.edit"));
         editContactButton.setId("customerView.customerContact.edit");
+        editContactButton.addStyleName("theme-buttons");
         editContactButton.setWidth("165px");
         editContactButton.addClickListener(clickEvent -> updateContact());
 
         deleteContactButton = new Button(messageByLocaleService.getMessage("customerView.customerContact.delete"));
         deleteContactButton.setId("customerView.customerContact.delete");
+        deleteContactButton.addStyleName("theme-buttons");
         deleteContactButton.setWidth("165px");
         deleteContactButton.addClickListener(clickEvent -> deleteContact());
 
@@ -445,34 +460,42 @@ public class CreateEditCustomerView extends VerticalLayout implements View {
     }
 
     private void showAddNotification() {
-        Notification saveNotification = new Notification(messageByLocaleService.getMessage("customerView.customer.whenCreated"));
+        String notificationMessage = CURRENT_MODE.equals(CREATE) ? "customerView.customer.whenCreated" : "customerView.customer.whenEdited";
+        Notification saveNotification = new Notification(messageByLocaleService.getMessage(notificationMessage));
         saveNotification.setDelayMsec(3000);
         saveNotification.show(Page.getCurrent());
     }
 
     void saveChangesPopup() {
-        ConfirmDialog.show(getUI(),
-                messageByLocaleService.getMessage("save.notification.title"),
-                messageByLocaleService.getMessage("save.notification.body"),
-                messageByLocaleService.getMessage("save.notification.okCaption"),
-                messageByLocaleService.getMessage("save.notification.cancelCaption"),
-                messageByLocaleService.getMessage("save.notification.notOkCaption"),
-                (ConfirmDialog.Listener) dialog -> {
-                    if (dialog.isConfirmed()) {
-                        customerBinder.validate();
-                        try {
-                            customerBinder.writeBean(customer);
-                            customerService.save(customerBinder.getBean());
-                            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
-                        } catch (ValidationException e) {
-                            e.printStackTrace();
+        if (!unchagedCustomer.equals(customer)) {
+            ConfirmDialog.show(getUI(),
+                    messageByLocaleService.getMessage("save.notification.title"),
+                    messageByLocaleService.getMessage("save.notification.body"),
+                    messageByLocaleService.getMessage("save.notification.okCaption"),
+                    messageByLocaleService.getMessage("save.notification.cancelCaption"),
+                    messageByLocaleService.getMessage("save.notification.notOkCaption"),
+                    (ConfirmDialog.Listener) dialog -> {
+                        if (dialog.isConfirmed()) {
+                            customerBinder.validate();
+                            try {
+                                customerBinder.writeBean(customer);
+                                customerService.save(customerBinder.getBean());
+                                getSession().setAttribute("showCustomerList", true);
+                                getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                            } catch (ValidationException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                    if (dialog.isNotConfirmed()) {
-                        getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
-                    }
-                });
-
+                        if (dialog.isNotConfirmed()) {
+                            getSession().setAttribute("showCustomerList", true);
+                            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                        }
+                    });
+        }
+        else {
+            getSession().setAttribute("showCustomerList", true);
+            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+        }
     }
 
 }

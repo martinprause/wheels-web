@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
-public class Customer extends Contact {
+public class Customer extends Contact implements Cloneable{
     private String comment;
 
     @OneToMany(mappedBy = "customer")
@@ -51,5 +51,35 @@ public class Customer extends Contact {
 
     public String getFullName(){
         return this.getFirstname() + " " + this.getLastname();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+
+        Customer customer = (Customer) o;
+
+        if (!super.equals(o)) return false;
+
+        if (comment != null ? !comment.equals(customer.comment) : customer.comment != null) return false;
+        if (customerContacts != null ? !customerContacts.equals(customer.customerContacts) : customer.customerContacts != null)
+            return false;
+//        if (this.getLastname() != null ? !this.getLastname().equals(customer.getLastname()) : customer.getLastname() != null) return false;
+        return orders != null ? orders.equals(customer.orders) : customer.orders == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (customerContacts != null ? customerContacts.hashCode() : 0);
+        result = 31 * result + (orders != null ? orders.hashCode() : 0);
+        return result;
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl extends GenericServiceImpl<Order> implements OrderService{
@@ -53,5 +54,12 @@ public class OrderServiceImpl extends GenericServiceImpl<Order> implements Order
     public boolean checkIfCurrentUserHasPermissions(AccessLevelTypeEnum AccessLevelTypeEnum) {
         User currentUser = userService.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         return currentUser.getAccesses().stream().anyMatch(dto -> dto.getAccessLevel() == AccessLevelTypeEnum);
+    }
+
+    @Override
+    public List<Order> findAll() {
+        List<Order> sortedOrders = super.findAll();
+        sortedOrders.sort((o1, o2) -> (int)(Long.valueOf(o2.getOrderNo()) - Long.valueOf(o1.getOrderNo())));
+        return sortedOrders;
     }
 }

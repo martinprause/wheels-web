@@ -85,8 +85,8 @@ public class ApplicationUI extends UI implements View{
         Image userImage = new Image(null, resourceHeader);
         userImage.addStyleName("header-user-image");
 
-        Label headerStatusBar = new Label(messageService.getMessage("header.statusbar"));
-        headerStatusBar.setId("header.statusbar");
+        Label headerStatusBar = new Label(messageService.getMessage("header.status"));
+        headerStatusBar.setId("header.status");
         headerStatusBar.setStyleName("header-statusbar-title");
 
         headerUser = new Label();

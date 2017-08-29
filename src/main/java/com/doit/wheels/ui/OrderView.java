@@ -67,6 +67,8 @@ public class OrderView extends VerticalLayout implements View {
 
     private Order order;
 
+    private Order unchangedOrder;
+
     @Autowired
     public OrderView(MessageByLocaleService messageByLocaleService, ManufacturerService manufacturerService,
                      ModelService modelService, ModelTypeService modelTypeService, ValveTypeService valveTypeService,
@@ -91,6 +93,11 @@ public class OrderView extends VerticalLayout implements View {
             Order sharedOrder = (Order) ((Map) data).get("ORDER");
             if(sharedOrder != null){
                 order = sharedOrder;
+                try {
+                    unchangedOrder = (Order) order.clone();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
                 CURRENT_MODE = sharedOrder.getId() == null ? CREATE : EDIT;
             } else {
                 order = new Order();
@@ -205,27 +212,32 @@ public class OrderView extends VerticalLayout implements View {
     }
 
     void saveChangesPopup() {
-        ConfirmDialog.show(getUI(),
-                messageByLocaleService.getMessage("save.notification.title"),
-                messageByLocaleService.getMessage("save.notification.body"),
-                messageByLocaleService.getMessage("save.notification.okCaption"),
-                messageByLocaleService.getMessage("save.notification.cancelCaption"),
-                messageByLocaleService.getMessage("save.notification.notOkCaption"),
-                (ConfirmDialog.Listener) dialog -> {
-                    if (dialog.isConfirmed()) {
-                        SHARED_BINDER.validate();
-                        try {
-                            SHARED_BINDER.writeBean(order);
-                            orderService.save(SHARED_BINDER.getBean());
-                            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
-                        } catch (ValidationException e) {
-                            e.printStackTrace();
+        if (!unchangedOrder.equals(order)) {
+            ConfirmDialog.show(getUI(),
+                    messageByLocaleService.getMessage("save.notification.title"),
+                    messageByLocaleService.getMessage("save.notification.body"),
+                    messageByLocaleService.getMessage("save.notification.okCaption"),
+                    messageByLocaleService.getMessage("save.notification.cancelCaption"),
+                    messageByLocaleService.getMessage("save.notification.notOkCaption"),
+                    (ConfirmDialog.Listener) dialog -> {
+                        if (dialog.isConfirmed()) {
+                            SHARED_BINDER.validate();
+                            try {
+                                SHARED_BINDER.writeBean(order);
+                                orderService.save(SHARED_BINDER.getBean());
+                                getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                            } catch (ValidationException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                    if (dialog.isNotConfirmed()) {
-                        getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
-                    }
-                });
+                        if (dialog.isNotConfirmed()) {
+                            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+                        }
+                    });
+        }
+        else {
+            getUI().getNavigator().navigateTo(getSession().getAttribute("previousView").toString());
+        }
 
     }
 }

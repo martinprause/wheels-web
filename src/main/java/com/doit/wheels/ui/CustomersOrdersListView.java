@@ -47,6 +47,10 @@ public class CustomersOrdersListView extends VerticalLayout implements View {
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         init();
         getSession().setAttribute("previousView", "landing");
+        if (getSession().getAttribute("showCustomerList") != null && Boolean.valueOf(getSession().getAttribute("showCustomerList").toString())){
+            customersNavigationButton.click();
+            getSession().setAttribute("showCustomerList", false);
+        }
     }
 
     private void init() {

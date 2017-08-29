@@ -119,4 +119,50 @@ public abstract class Contact extends AbstractModel {
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Contact)) return false;
+
+        Contact contact = (Contact) o;
+
+        if (getCustomerNo() != null ? !getCustomerNo().equals(contact.getCustomerNo()) : contact.getCustomerNo() != null)
+            return false;
+        if (getFirstname() != null ? !getFirstname().equals(contact.getFirstname()) : contact.getFirstname() != null)
+            return false;
+        if (getLastname() != null ? !getLastname().equals(contact.getLastname()) : contact.getLastname() != null)
+            return false;
+        if (getCompanyName() != null ? !getCompanyName().equals(contact.getCompanyName()) : contact.getCompanyName() != null)
+            return false;
+        if (getAddress1() != null ? !getAddress1().equals(contact.getAddress1()) : contact.getAddress1() != null)
+            return false;
+        if (getAddress2() != null ? !getAddress2().equals(contact.getAddress2()) : contact.getAddress2() != null)
+            return false;
+        if (getZipCode() != null ? !getZipCode().equals(contact.getZipCode()) : contact.getZipCode() != null)
+            return false;
+        if (getCity() != null ? !getCity().equals(contact.getCity()) : contact.getCity() != null) return false;
+        if (getCountry() != null ? !getCountry().equals(contact.getCountry()) : contact.getCountry() != null)
+            return false;
+        if (getEmail() != null ? !getEmail().equals(contact.getEmail()) : contact.getEmail() != null) return false;
+        if (getPhone() != null ? !getPhone().equals(contact.getPhone()) : contact.getPhone() != null) return false;
+        return getMobile() != null ? getMobile().equals(contact.getMobile()) : contact.getMobile() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getCustomerNo() != null ? getCustomerNo().hashCode() : 0;
+        result = 31 * result + (getFirstname() != null ? getFirstname().hashCode() : 0);
+        result = 31 * result + (getLastname() != null ? getLastname().hashCode() : 0);
+        result = 31 * result + (getCompanyName() != null ? getCompanyName().hashCode() : 0);
+        result = 31 * result + (getAddress1() != null ? getAddress1().hashCode() : 0);
+        result = 31 * result + (getAddress2() != null ? getAddress2().hashCode() : 0);
+        result = 31 * result + (getZipCode() != null ? getZipCode().hashCode() : 0);
+        result = 31 * result + (getCity() != null ? getCity().hashCode() : 0);
+        result = 31 * result + (getCountry() != null ? getCountry().hashCode() : 0);
+        result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
+        result = 31 * result + (getPhone() != null ? getPhone().hashCode() : 0);
+        result = 31 * result + (getMobile() != null ? getMobile().hashCode() : 0);
+        return result;
+    }
 }
