@@ -121,7 +121,7 @@ public class CommentsSubmitLayout extends VerticalLayout {
                             printJob.setPrintJobStatusEnum(PrintJobStatusEnum.ACTIVE);
                             printJobService.save(printJob);
                         }
-                        orderService.save(sharedBinder.getBean());
+//                        orderService.save(sharedBinder.getBean());
 
                         Notification.show(messageByLocaleService.getMessage("commentSubmitView.submitNewOrder.success"),
                                 Notification.Type.HUMANIZED_MESSAGE);

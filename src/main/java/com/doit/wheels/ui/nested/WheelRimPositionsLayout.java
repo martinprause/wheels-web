@@ -3,6 +3,7 @@ package com.doit.wheels.ui.nested;
 import com.doit.wheels.dao.entities.*;
 import com.doit.wheels.dao.entities.basic.AbstractModel;
 import com.doit.wheels.services.MessageByLocaleService;
+import com.doit.wheels.utils.enums.StatusTypeEnum;
 import com.doit.wheels.utils.validators.OnlyNumbersValidator;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -422,6 +423,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
             Order order = sharedBinder.getBean();
             order.getWheelRimPositions().add(position);
             position.setPositionNo(getNewPositionNumber());
+            position.setStatus(StatusTypeEnum.CREATED);
             positionsGrid.setItems(order.getWheelRimPositions());
             WheelRimPosition newPosition = new WheelRimPosition();
             localBinder.setBean(newPosition);
@@ -446,6 +448,7 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         duplicatedPosition.setSpeed(wheelRimPosition.getSpeed());
         bean.getWheelRimPositions().add(duplicatedPosition);
         duplicatedPosition.setPositionNo(getNewPositionNumber());
+        duplicatedPosition.setStatus(StatusTypeEnum.CREATED);
         positionsGrid.setItems(bean.getWheelRimPositions());
     }
 
