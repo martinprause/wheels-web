@@ -87,6 +87,7 @@ public class OrderDetailsLayout extends HorizontalLayout {
         orderNumberLabel.setId("orderDetails.orderNumber.label");
         employeeNumberLayout.addComponents(orderNumberLabel, orderNo);
         orderNo.addStyleName("order-details-input-elem");
+        orderNo.setEnabled(!isEditMode);
         orderLayout.addComponent(employeeNumberLayout);
 
         HorizontalLayout orderDateLayout = new HorizontalLayout();
@@ -193,7 +194,7 @@ public class OrderDetailsLayout extends HorizontalLayout {
     }
 
     private void convertOrderNumber(HasValue.ValueChangeEvent<LocalDateTime> e) {
-        if (e.getValue() != null){
+        if (e.getValue() != null && !isEditMode){
             Date date = Date.from(e.getValue().atZone(ZoneId.systemDefault()).toInstant());
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMddHHmmss");
             orderNo.setValue(simpleDateFormat.format(date));
