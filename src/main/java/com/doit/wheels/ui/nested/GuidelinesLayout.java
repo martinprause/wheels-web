@@ -162,29 +162,27 @@ public class GuidelinesLayout extends HorizontalLayout{
         scroll.addStyleName("customer-details-panel");
 
         mainLayout.addComponent(scroll);
-        if (order.getId() != null) {
-            images.add(order.getWheelsRimPicture1());
-            images.add(order.getWheelsRimPicture2());
-            images.add(order.getWheelsRimPicture3());
-            images.add(order.getWheelsRimPicture4());
-            for (byte[] image : images) {
-                if (image != null) {
-                    Image pictureImage = new Image();
-                    pictureImage.setWidth("100%");
-                    pictureImage.setHeight("100%");
-                    StreamResource.StreamSource imageSourceForPicture = new ImageSource(image);
-                    StreamResource resourceForPicture =
-                            new StreamResource(imageSourceForPicture, "wheel.jpg");
-                    pictureImage.setSource(resourceForPicture);
-                    innerLayout.addComponent(pictureImage);
-                }
-                else{
-                    Image pictureImage = new Image();
-                    pictureImage.setWidth("100%");
-                    pictureImage.setHeight("100%");
-                    pictureImage.setSource(new ThemeResource("img/no_image.png"));
-                    innerLayout.addComponent(pictureImage);
-                }
+        images.add(order.getWheelsRimPicture1());
+        images.add(order.getWheelsRimPicture2());
+        images.add(order.getWheelsRimPicture3());
+        images.add(order.getWheelsRimPicture4());
+        for (byte[] image : images) {
+            if (image != null) {
+                Image pictureImage = new Image();
+                pictureImage.setWidth("100%");
+                pictureImage.setHeight("100%");
+                StreamResource.StreamSource imageSourceForPicture = new ImageSource(image);
+                StreamResource resourceForPicture =
+                        new StreamResource(imageSourceForPicture, "wheel.jpg");
+                pictureImage.setSource(resourceForPicture);
+                innerLayout.addComponent(pictureImage);
+            }
+            else{
+                Image pictureImage = new Image();
+                pictureImage.setWidth("100%");
+                pictureImage.setHeight("100%");
+                pictureImage.setSource(new ThemeResource("img/no_image.png"));
+                innerLayout.addComponent(pictureImage);
             }
         }
         return mainLayout;

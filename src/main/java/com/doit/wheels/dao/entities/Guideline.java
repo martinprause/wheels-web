@@ -14,6 +14,15 @@ public class Guideline extends Description {
             inverseJoinColumns = {@JoinColumn(name = "order_id")})
     private Set<Order> orders;
 
+    public Guideline() {
+    }
+
+    public Guideline(Guideline other) {
+        this.id = other.id;
+        this.setDescription(other.getDescription());
+        this.orders = other.orders;
+    }
+
     public Set<Order> getOrders() {
         return orders;
     }

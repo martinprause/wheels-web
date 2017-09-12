@@ -35,7 +35,7 @@ public class Order extends AbstractModel implements Cloneable{
     private Date deadlineDelivery;
 
     @Column(length = 1000)
-    private String comment;
+    private String comment = "";
 
     @ManyToOne
     private User driver;
@@ -250,7 +250,20 @@ public class Order extends AbstractModel implements Cloneable{
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        Order order = (Order) super.clone();
+
+        Set<WheelRimPosition> wheelRimPositions = new HashSet<>();
+        for (WheelRimPosition wheelRimPosition : order.getWheelRimPositions()) {
+            wheelRimPositions.add(new WheelRimPosition(wheelRimPosition));
+        }
+        order.setWheelRimPositions(wheelRimPositions);
+
+        Set<Guideline> guidelines = new HashSet<>();
+        for (Guideline guideline : order.getGuidelines()) {
+            guidelines.add(new Guideline(guideline));
+        }
+        order.setGuidelines(guidelines);
+        return order;
     }
 
     @Override

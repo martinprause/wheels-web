@@ -119,8 +119,10 @@ public class OrderView extends VerticalLayout implements View {
         detailsButton = new Button(messageByLocaleService.getMessage("order.menubar.customerAndOrder.button"));
         detailsButton.setId("order.menubar.customerAndOrder.button");
         detailsButton.addClickListener(e -> {
-            makeButtonSelected(detailsButton);
-            replaceComponent(new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService,CURRENT_MODE.equals(EDIT), sharedCustomer));
+            if (!previousLayout.getClass().equals(OrderDetailsLayout.class)){
+                makeButtonSelected(detailsButton);
+                replaceComponent(new OrderDetailsLayout( messageByLocaleService, SHARED_BINDER, customerService, userService,CURRENT_MODE.equals(EDIT), sharedCustomer));
+            }
         });
         detailsButton.addStyleName("clear-button");
         detailsButton.setIcon(new ThemeResource("img/ico/home.png"));
@@ -173,7 +175,7 @@ public class OrderView extends VerticalLayout implements View {
 
         this.addComponent(menuBar);
 
-        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService, CURRENT_MODE.equals(EDIT), sharedCustomer );
+        OrderDetailsLayout orderDetailsLayout = new OrderDetailsLayout(messageByLocaleService, SHARED_BINDER, customerService, userService, CURRENT_MODE.equals(EDIT), sharedCustomer);
         previousLayout = orderDetailsLayout;
 
         orderDetailsLayout.setHeight("100%");
@@ -212,7 +214,7 @@ public class OrderView extends VerticalLayout implements View {
     }
 
     void saveChangesPopup() {
-        if (!unchangedOrder.equals(order)) {
+        if (!order.equals(unchangedOrder)) {
             ConfirmDialog.show(getUI(),
                     messageByLocaleService.getMessage("save.notification.title"),
                     messageByLocaleService.getMessage("save.notification.body"),
