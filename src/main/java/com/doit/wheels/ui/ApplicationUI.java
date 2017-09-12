@@ -2,6 +2,7 @@ package com.doit.wheels.ui;
 
 import com.doit.wheels.auth.SecurityUtils;
 import com.doit.wheels.services.impl.MessageByLocaleServiceImpl;
+import com.doit.wheels.utils.enums.UserRoleEnum;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.event.selection.SelectionEvent;
@@ -150,7 +151,8 @@ public class ApplicationUI extends UI implements View{
         Button backButton = new Button(messageService.getMessage("header.back"));
         backButton.setId("header.back");
         backButton.addStyleName("headerButton");
-        if (navigator.getState().equals("landing")){
+        if (navigator.getState().equals("landing")  ||
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString().equals(UserRoleEnum.DRIVER.name())){
             backButton.setVisible(false);
             logoutButton.setVisible(true);
         }
