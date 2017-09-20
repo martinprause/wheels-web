@@ -62,6 +62,7 @@ public class MessageByLocaleServiceImpl implements MessageByLocaleService {
                     if(o.getId() != null)
                         o.setCaption(rb.getString(o.getId()));
                 });
+                ((Grid) c).getDataProvider().refreshAll();
             }
             else if (c instanceof Button){
                 c.setCaption(rb.getString(c.getId()));

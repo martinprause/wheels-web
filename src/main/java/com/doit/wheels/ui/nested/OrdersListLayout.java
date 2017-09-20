@@ -57,6 +57,7 @@ public class OrdersListLayout extends VerticalLayout {
         this.setWidth("99%");
 
         orderGrid = new Grid<>(Order.class);
+        orderGrid.setId("order-list");
         orderGrid.setWidth("100%");
         orderGrid.setColumns("orderNo");
         initGridHeaders();
@@ -116,7 +117,7 @@ public class OrdersListLayout extends VerticalLayout {
     private void filter() {
         ListDataProvider<Order> dataProvider = (ListDataProvider<Order>) orderGrid.getDataProvider();
         dataProvider.addFilter(Order::getOrderNo, valueFilter -> caseInsensitiveContains(valueFilter, filterOrderNumber.getValue()));
-        dataProvider.addFilter(Order::getStatus, valueFilter -> caseInsensitiveContains(valueFilter.toString(), filterStatus.getValue()));
+        dataProvider.addFilter(Order::getStatus, valueFilter -> statusFilter(valueFilter, filterStatus.getValue()));
         dataProvider.addFilter((Order order) -> order, valueFilter -> caseInsensitiveContains(formatCustomerCompanyFirstLastName(valueFilter), filterCustomer.getValue()));
         dataProvider.addFilter((Order order) -> order, valueFilter -> caseInsensitiveContains(formatCustomerZipCity(valueFilter), filterCustomerZip.getValue()));
         dataProvider.addFilter(Order::getOrderNo, valueFilter -> caseInsensitiveContains(valueFilter, filterCustomerOrderNo.getValue()));
@@ -126,6 +127,10 @@ public class OrdersListLayout extends VerticalLayout {
 
     private Boolean caseInsensitiveContains(String where, String what) {
         return where.toLowerCase().contains(what.toLowerCase());
+    }
+
+    private Boolean statusFilter(StatusTypeEnum status, String what){
+        return labelByCode(status).toLowerCase().contains(what.toLowerCase());
     }
 
     private void enableManagingButtons(boolean flag) {

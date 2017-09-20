@@ -57,7 +57,7 @@ public class ApplicationUI extends UI implements View{
         Responsive.makeResponsive(this);
         getPage().setTitle("Wheels");
         if (!((getSession().getLocale().equals(Locale.ENGLISH)) || (getSession().getLocale().equals(Locale.GERMAN)))){
-            getSession().setLocale(Locale.ENGLISH);
+            getSession().setLocale(Locale.GERMAN);
         }
 
         if (SecurityUtils.isLoggedIn(userDetailsService)) {
