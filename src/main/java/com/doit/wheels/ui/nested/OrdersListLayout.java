@@ -9,6 +9,7 @@ import com.doit.wheels.services.OrderService;
 import com.doit.wheels.services.PrintJobService;
 import com.doit.wheels.services.UserService;
 import com.doit.wheels.utils.confirmdialog.ConfirmDialog;
+import com.doit.wheels.utils.enums.AccessLevelTypeEnum;
 import com.doit.wheels.utils.enums.PrintJobStatusEnum;
 import com.doit.wheels.utils.enums.StatusTypeEnum;
 import com.doit.wheels.utils.exceptions.NoPermissionsException;
@@ -164,9 +165,14 @@ public class OrdersListLayout extends VerticalLayout {
         editOrderButton.setId("orderView.order.buttons.editOrder");
         editOrderButton.addStyleName("manage-order-button");
         editOrderButton.addClickListener(clickEvent -> {
-            getUI().setData(Collections.singletonMap("ORDER", selectedOrder));
-            getUI().getNavigator().navigateTo("new-order");
-            UI.getCurrent().getSession().setAttribute("previousView", "customer-orders-list");
+            if (userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.EditOrder)) {
+                getUI().setData(Collections.singletonMap("ORDER", selectedOrder));
+                getUI().getNavigator().navigateTo("new-order");
+                UI.getCurrent().getSession().setAttribute("previousView", "customer-orders-list");
+            } else {
+                Notification.show(messageByLocaleService.getMessage("order.edit.noAccess"),
+                        Notification.Type.ERROR_MESSAGE);
+            }
         });
 
         printOrderButton = new Button(messageByLocaleService.getMessage("orderView.order.buttons.print"));

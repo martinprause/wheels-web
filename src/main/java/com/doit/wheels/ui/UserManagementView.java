@@ -44,6 +44,7 @@ public class UserManagementView extends VerticalLayout implements View {
 
     private boolean hasCreateNewUserPermissions;
     private boolean hasDeleteUserPermissions;
+    private boolean hasEditUserPermissions;
 
     private final MessageByLocaleServiceImpl messageService;
 
@@ -121,6 +122,8 @@ public class UserManagementView extends VerticalLayout implements View {
     private CheckBox createUserCheckbox;
     private CheckBox deleteUserCheckbox;
     private CheckBox reportsCheckbox;
+    private CheckBox editUserCheckbox;
+    private CheckBox editOrderCheckbox;
     private Button saveAccessButton;
 
     private Label gridCaption;
@@ -180,15 +183,14 @@ public class UserManagementView extends VerticalLayout implements View {
 
         hasCreateNewUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.CreateUser);
         hasDeleteUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.DeleteUser);
+        hasEditUserPermissions = userService.checkIfCurrentUserHasPermissions(AccessLevelTypeEnum.EditUser);
 
         initUserCreateView();
         initUserAccessWrapper();
 
-        if(!hasCreateNewUserPermissions) {
-            userCreateDataWrapper.setVisible(false);
-            userAccessWrapper.setVisible(true);
-            makeButtonSelected(manageUserAccessButton);
-        }
+        userCreateDataWrapper.setVisible(false);
+        userAccessWrapper.setVisible(true);
+        makeButtonSelected(manageUserAccessButton);
     }
 
     private void initUserCreateView(){
@@ -445,12 +447,20 @@ public class UserManagementView extends VerticalLayout implements View {
         reportsCheckbox = new CheckBox(messageService.getMessage("userManagement.reports.checkbox"));
         reportsCheckbox.setId("userManagement.reports.checkbox");
 
+        editUserCheckbox = new CheckBox(messageService.getMessage("userManagement.editUser.checkbox"));
+        editUserCheckbox.setId("userManagement.editUser.checkbox");
+
+        editOrderCheckbox = new CheckBox(messageService.getMessage("userManagement.editOrder.checkbox"));
+        editOrderCheckbox.setId("userManagement.editOrder.checkbox");
+
         accessCheckboxes = new HashMap<>();
         accessCheckboxes.put(AccessLevelTypeEnum.CreateOrder, createOrderCheckBox);
         accessCheckboxes.put(AccessLevelTypeEnum.DeleteOrder, deleteOrderCheckbox);
         accessCheckboxes.put(AccessLevelTypeEnum.CreateUser, createUserCheckbox);
         accessCheckboxes.put(AccessLevelTypeEnum.DeleteUser, deleteUserCheckbox);
+        accessCheckboxes.put(AccessLevelTypeEnum.EditUser, editUserCheckbox);
         accessCheckboxes.put(AccessLevelTypeEnum.Reports, reportsCheckbox);
+        accessCheckboxes.put(AccessLevelTypeEnum.EditOrder, editOrderCheckbox);
 
         saveAccessButton = new Button();
         saveAccessButton.setCaption(messageService.getMessage("userManagement.saveAccessRights.button"));
@@ -466,13 +476,17 @@ public class UserManagementView extends VerticalLayout implements View {
         createUserCheckbox.setEnabled(false);
         deleteUserCheckbox.setEnabled(false);
         reportsCheckbox.setEnabled(false);
+        editUserCheckbox.setEnabled(false);
+        editOrderCheckbox.setEnabled(false);
         saveAccessButton.setEnabled(false);
 
         accessesWrapper.addComponent(accessCaption);
         accessesWrapper.addComponent(createOrderCheckBox);
         accessesWrapper.addComponent(deleteOrderCheckbox);
+        accessesWrapper.addComponent(editOrderCheckbox);
         accessesWrapper.addComponent(createUserCheckbox);
         accessesWrapper.addComponent(deleteUserCheckbox);
+        accessesWrapper.addComponent(editUserCheckbox);
         accessesWrapper.addComponent(reportsCheckbox);
         accessesWrapper.addComponent(saveAccessButton);
         userAccessWrapper.addComponent(accessesWrapper);
@@ -658,12 +672,17 @@ public class UserManagementView extends VerticalLayout implements View {
     }
 
     private void editUser(){
-        binder.setBean(user);
-        userAccessWrapper.setVisible(false);
-        userCreateDataWrapper.setVisible(true);
-        editMode = true;
-        changeMenubarButtonsVisible();
-        getSession().setAttribute("isUserEditMode", true);
+        if (hasEditUserPermissions) {
+            binder.setBean(user);
+            userAccessWrapper.setVisible(false);
+            userCreateDataWrapper.setVisible(true);
+            editMode = true;
+            changeMenubarButtonsVisible();
+            getSession().setAttribute("isUserEditMode", true);
+        } else {
+            Notification.show(messageService.getMessage("user.edit.noAccess"),
+                    Notification.Type.ERROR_MESSAGE);
+        }
     }
 
     private void changePasswordPresentation(){

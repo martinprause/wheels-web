@@ -4,8 +4,10 @@ public enum AccessLevelTypeEnum {
 
     DeleteOrder,
     CreateOrder,
+    EditOrder,
     CreateUser,
     DeleteUser,
+    EditUser,
     Reports
 
 }

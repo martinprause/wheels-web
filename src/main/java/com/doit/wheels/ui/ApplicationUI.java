@@ -55,9 +55,16 @@ public class ApplicationUI extends UI implements View{
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         Responsive.makeResponsive(this);
-        getPage().setTitle("Wheels");
-        if (!((getSession().getLocale().equals(Locale.ENGLISH)) || (getSession().getLocale().equals(Locale.GERMAN)))){
-            getSession().setLocale(Locale.GERMAN);
+        getPage().setTitle("Felgen Wie Neu");
+        Optional<Cookie> localeCookie = getCookie("locale");
+        if (localeCookie.isPresent() && localeCookie.get().getValue().equals("")){
+            if (!((getSession().getLocale().equals(Locale.ENGLISH)) || (getSession().getLocale().equals(Locale.GERMAN)))){
+                getSession().setLocale(Locale.GERMAN);
+                setLocaleCookie(Locale.GERMAN);
+            }
+        }
+        else {
+            localeCookie.ifPresent(cookie -> getSession().setLocale(Locale.forLanguageTag(cookie.getValue())));
         }
 
         if (SecurityUtils.isLoggedIn(userDetailsService)) {
@@ -227,7 +234,7 @@ public class ApplicationUI extends UI implements View{
     }
 
     private void logout() {
-        Optional<Cookie> cookie = getRememberMeCookie();
+        Optional<Cookie> cookie = getCookie("remember-me");
         if (cookie.isPresent()) {
             deleteRememberMeCookie();
         }
@@ -239,9 +246,9 @@ public class ApplicationUI extends UI implements View{
         getCurrent().getPage().getJavaScript().execute("document.cookie = \"remember-me=\"");
     }
 
-    private static Optional<Cookie> getRememberMeCookie() {
+    private static Optional<Cookie> getCookie(String cookie) {
         Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
-        return Arrays.stream(cookies).filter(c -> c.getName().equals("remember-me")).findFirst();
+        return Arrays.stream(cookies).filter(c -> c.getName().equals(cookie)).findFirst();
     }
 
     private void updateHeaderUser() {
@@ -253,9 +260,14 @@ public class ApplicationUI extends UI implements View{
             Label selectedItem = (Label) event.getFirstSelectedItem().get();
             Locale locale = (Locale) selectedItem.getData();
             messageService.updateLocale(getUI(), locale);
+            setLocaleCookie(locale);
             VaadinSession.getCurrent().setLocale(locale);
             selectedItem.setValue(messageService.getMessage(selectedItem.getId()));
             langComboBox.setSelectedItem(selectedItem);
         }
+    }
+
+    private void setLocaleCookie(Locale locale){
+        getCurrent().getPage().getJavaScript().execute("document.cookie = \"locale=" + locale.getLanguage() + "\"");
     }
 }
