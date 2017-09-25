@@ -69,7 +69,7 @@ public class Order extends AbstractModel implements Cloneable{
             inverseJoinColumns = {@JoinColumn(name = "guideline_id")})
     private Set<Guideline> guidelines = new HashSet<>();
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
     private List<PrintJob> printJobs;
 
     public String getOrderNo() {
