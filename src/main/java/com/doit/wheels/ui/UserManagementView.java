@@ -582,8 +582,8 @@ public class UserManagementView extends VerticalLayout implements View {
 
         binder.forField(role).withValidator(Objects::nonNull, messageService.getMessage("userManagement.validation.notEmpty")).bind(User::getRole, User::setRole);
 
-        binder.forField(firstname).withValidator(notEmptyValidator).bind(User::getFirstname, User::setFirstname);
-        binder.forField(lastname).withValidator(notEmptyValidator).bind(User::getLastname, User::setLastname);
+        binder.forField(firstname).bind(User::getFirstname, User::setFirstname);
+        binder.forField(lastname).bind(User::getLastname, User::setLastname);
 
         user = new User();
         binder.setBean(user);

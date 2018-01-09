@@ -9,6 +9,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.server.Setter;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.HeaderRow;
 
@@ -198,9 +199,9 @@ public class WheelRimPositionsLayout extends VerticalLayout {
         rimLayout.addStyleName("wheel-rim-layout");
 
         HorizontalLayout manufacturerWheelLayout = new HorizontalLayout();
-        Label manufacturerWheelLabel = new Label(messageByLocaleService.getMessage("newOrderView.position.wheel.manufacturer"));
+        Label manufacturerWheelLabel = new Label(messageByLocaleService.getMessage("newOrderView.position.wheel.rim.manufacturer"));
         manufacturerWheelLabel.addStyleName("user-management-label");
-        manufacturerWheelLabel.setId("newOrderView.position.wheel.manufacturer");
+        manufacturerWheelLabel.setId("newOrderView.position.wheel.rim.manufacturer");
         manufacturerWheelLayout.addComponents(manufacturerWheelLabel, manufacturerRim);
 
         HorizontalLayout widthLayout = new HorizontalLayout();
@@ -287,41 +288,49 @@ public class WheelRimPositionsLayout extends VerticalLayout {
                         messageByLocaleService.getMessage("newOrderView.position.validationMessages.manufacturer"))
                 .bind(WheelRimPosition::getManufacturerWheel, WheelRimPosition::setManufacturerWheel);
         localBinder.forField(modelWheel)
-                .withValidator(Objects::nonNull,
-                messageByLocaleService.getMessage("newOrderView.position.validationMessages.model"))
+//                .withValidator(Objects::nonNull,
+//                messageByLocaleService.getMessage("newOrderView.position.validationMessages.model"))
                 .bind(WheelRimPosition::getModel, WheelRimPosition::setModel);
-        localBinder.forField(modelTypeWheel).withValidator(
-                Objects::nonNull,
-                messageByLocaleService.getMessage("newOrderView.position.validationMessages.modelType"))
+        localBinder.forField(modelTypeWheel)
+//                .withValidator(Objects::nonNull,
+//                messageByLocaleService.getMessage("newOrderView.position.validationMessages.modelType"))
                 .bind(WheelRimPosition::getModelType, WheelRimPosition::setModelType);
-        localBinder.forField(sizeWheel).withValidator(notEmptyValidator)
-                .withValidator(onlyNumbersValidator)
+        localBinder.forField(sizeWheel)
+//                .withValidator(notEmptyValidator)
+//                .withValidator(onlyNumbersValidator)
                 .bind(wheelRimPosition -> format(wheelRimPosition.getSize()),
-                (wheelRimPosition1, size) -> wheelRimPosition1.setSize(Integer.valueOf(size)));
+                        (Setter<WheelRimPosition, String>) (wheelRimPosition1, size) -> wheelRimPosition1.setSize(size.equals("") ? null : Integer.valueOf(size)));
         localBinder.forField(hubCoverWheel).bind(WheelRimPosition::getHubCover, WheelRimPosition::setHubCover);
-        localBinder.forField(valveTypeWheel).withValidator(Objects::nonNull,
-                messageByLocaleService.getMessage("newOrderView.position.validationMessages.valveType"))
+        localBinder.forField(valveTypeWheel)
+//                .withValidator(Objects::nonNull,
+//                messageByLocaleService.getMessage("newOrderView.position.validationMessages.valveType"))
                 .bind(WheelRimPosition::getValveType, WheelRimPosition::setValveType);
-        localBinder.forField(manufacturerRim).withValidator(Objects::nonNull,
-                messageByLocaleService.getMessage("newOrderView.position.validationMessages.manufacturer"))
+        localBinder.forField(manufacturerRim)
+//                .withValidator(Objects::nonNull,
+//                messageByLocaleService.getMessage("newOrderView.position.validationMessages.manufacturer"))
                 .bind(WheelRimPosition::getManufacturerRim, WheelRimPosition::setManufacturerRim);
-        localBinder.forField(widthRim).withValidator(notEmptyValidator)
-                .withValidator(onlyNumbersValidator)
+        localBinder.forField(widthRim)
+//                .withValidator(notEmptyValidator)
+//                .withValidator(onlyNumbersValidator)
                 .bind(wheelRimPosition -> format(wheelRimPosition.getWidth()),
-                (wheelRimPosition, s) -> wheelRimPosition.setWidth(Integer.valueOf(s)));
-        localBinder.forField(heightRim).withValidator(notEmptyValidator)
-                .withValidator(onlyNumbersValidator)
+                (wheelRimPosition, s) -> wheelRimPosition.setWidth(s.equals("") ? null : Integer.valueOf(s)));
+        localBinder.forField(heightRim)
+//                .withValidator(notEmptyValidator)
+//                .withValidator(onlyNumbersValidator)
                 .bind(wheelRimPosition -> format(wheelRimPosition.getHeight()),
-                (wheelRimPosition, s) -> wheelRimPosition.setHeight(Integer.valueOf(s)));
-        localBinder.forField(diameterRim).withValidator(notEmptyValidator)
-                .withValidator(onlyNumbersValidator)
+                (wheelRimPosition, s) -> wheelRimPosition.setHeight(s.equals("") ? null : Integer.valueOf(s)));
+        localBinder.forField(diameterRim)
+//                .withValidator(notEmptyValidator)
+//                .withValidator(onlyNumbersValidator)
                 .bind(wheelRimPosition -> format(wheelRimPosition.getDiameter()),
-                (wheelRimPosition, s) -> wheelRimPosition.setDiameter(Integer.valueOf(s)));
-        localBinder.forField(indexRim).withValidator(notEmptyValidator)
-                .withValidator(onlyNumbersValidator)
+                (wheelRimPosition, s) -> wheelRimPosition.setDiameter(s.equals("") ? null : Integer.valueOf(s)));
+        localBinder.forField(indexRim)
+//                .withValidator(notEmptyValidator)
+//                .withValidator(onlyNumbersValidator)
                 .bind(wheelRimPosition -> format(wheelRimPosition.getIndexVal()),
-                (wheelRimPosition, s) -> wheelRimPosition.setIndexVal(Integer.valueOf(s)));
-        localBinder.forField(speedRim).withValidator(notEmptyValidator)
+                (wheelRimPosition, s) -> wheelRimPosition.setIndexVal(s.equals("") ? null : Integer.valueOf(s)));
+        localBinder.forField(speedRim)
+//                .withValidator(notEmptyValidator)
                 .bind(WheelRimPosition::getSpeed, WheelRimPosition::setSpeed);
     }
 
@@ -333,18 +342,18 @@ public class WheelRimPositionsLayout extends VerticalLayout {
                 .getManufacturerWheel()
                 .getDescription())
                 .setId("manufacturerWheel");
-        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition.getModel().getDescription()).setId("model");
-        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition
+        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition.getModel() != null ? wheelRimPosition.getModel().getDescription() : "").setId("model");
+        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition.getModelType() != null ? wheelRimPosition
                 .getModelType()
-                .getDescription())
+                .getDescription() : "")
                 .setId("modelType");
         positionsGrid.addColumn(WheelRimPosition::getSize).setId("size");
         positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition.getHubCover() == null ? "No" :
                 wheelRimPosition.getHubCover() ? "Yes" : "No").setId("hubCover");
-        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition.getValveType().getDescription()).setId("valveType");
-        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition
+        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition.getValveType() != null ? wheelRimPosition.getValveType().getDescription(): "").setId("valveType");
+        positionsGrid.addColumn(wheelRimPosition -> wheelRimPosition.getManufacturerRim() != null ? wheelRimPosition
                 .getManufacturerRim()
-                .getDescription())
+                .getDescription() : "")
                 .setId("manufacturerRim");
         positionsGrid.addColumn(WheelRimPosition::getWidth).setId("width");
         positionsGrid.addColumn(WheelRimPosition::getHeight).setId("height");
